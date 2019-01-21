@@ -4,6 +4,7 @@ using Ref.App.Core;
 using Ref.App.Options;
 using Ref.Data.Repositories;
 using Ref.Shared.Common;
+using Ref.Shared.Notifications;
 using Ref.Sites;
 using System;
 
@@ -25,6 +26,17 @@ namespace Ref.App.DI
                     configurationRoot["storages:file_json:dir"],
                     clientId)
                 );
+            #endregion
+
+            #region Notifications
+            services.AddTransient<IPushOverProvider>(
+                s => new PushOverProvider(
+                    configurationRoot["notifications:pushover:token"],
+                    configurationRoot["notifications:pushover:recipients"],
+                    configurationRoot["notifications:pushover:endpoint"])
+                );
+
+            services.AddTransient<IPushOverNotification, PushOverNotification>();
             #endregion
 
             #region Repositories

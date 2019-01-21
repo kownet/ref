@@ -2,6 +2,7 @@
 using Ref.App.Options;
 using Ref.Data.Repositories;
 using Ref.Shared.Extensions;
+using Ref.Shared.Notifications;
 using Ref.Sites;
 using System;
 using System.Linq;
@@ -13,15 +14,18 @@ namespace Ref.App.Core
         private readonly IOptions<FilterConfiguration> _configuration;
         private readonly ISite _site;
         private readonly IAdRepository _adRepository;
+        private readonly IPushOverNotification _pushOverNotification;
 
         public RefService(
             IOptions<FilterConfiguration> configuration,
             ISite site,
-            IAdRepository adRepository)
+            IAdRepository adRepository,
+            IPushOverNotification pushOverNotification)
         {
             _configuration = configuration;
             _site = site;
             _adRepository = adRepository;
+            _pushOverNotification = pushOverNotification;
         }
 
         public void Crawl()
@@ -41,14 +45,14 @@ namespace Ref.App.Core
                 {
                     _adRepository.SaveAll(newest);
                 }
-                
+
                 var newestOne = newest.Where(p => oldest.All(p2 => p2.Id != p.Id));
 
                 var notActual = oldest.Where(p => newest.All(p2 => p2.Id != p.Id));
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                _pushOverNotification.Send("Ref Error", ex.Message);
             }
         }
     }
