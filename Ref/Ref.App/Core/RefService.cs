@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using Ref.App.Options;
 using Ref.Data.Repositories;
+using Ref.Data.Views;
 using Ref.Shared.Extensions;
 using Ref.Shared.Notifications;
 using Ref.Sites;
@@ -48,7 +49,12 @@ namespace Ref.App.Core
 
                 var newestOne = newest.Where(p => oldest.All(p2 => p2.Id != p.Id));
 
-                var notActual = oldest.Where(p => newest.All(p2 => p2.Id != p.Id));
+                if (newestOne.AnyAndNotNull())
+                {
+                    var ntf = View.ForPushOver(newestOne);
+
+                    _pushOverNotification.Send(ntf.Title, ntf.Message);
+                }
             }
             catch (Exception ex)
             {

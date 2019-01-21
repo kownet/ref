@@ -27,7 +27,8 @@ namespace Ref.Shared.Notifications
                     { "token", _pushOverProvider.Token() },
                     { "user", _pushOverProvider.Recipients() },
                     { "message", message },
-                    { "title", title }
+                    { "title", title },
+                    { "html", "1" }
                 };
 
                 using (var client = new WebClient())
