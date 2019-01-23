@@ -25,7 +25,7 @@ namespace Ref.Sites.Helpers
 
             result = result + $"{divider}created_since%5D={filter.Newest()}&";
 
-            if (string.IsNullOrWhiteSpace(filter.Market()))
+            if (!string.IsNullOrWhiteSpace(filter.Market()))
                 result = result + $"{divider}filter_enum_market%5D%5B0%5D={filter.Market()}&";
 
             return result;
