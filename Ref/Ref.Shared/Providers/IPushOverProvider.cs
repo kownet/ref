@@ -1,4 +1,4 @@
-﻿namespace Ref.Shared.Common
+﻿namespace Ref.Shared.Providers
 {
     public interface IPushOverProvider
     {

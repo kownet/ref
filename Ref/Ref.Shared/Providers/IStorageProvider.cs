@@ -1,7 +1,7 @@
 ﻿using Ref.Shared.Utils;
 using System.IO;
 
-namespace Ref.Shared.Common
+namespace Ref.Shared.Providers
 {
     public interface IStorageProvider
     {

@@ -1,10 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Ref.App.Core;
-using Ref.App.Options;
 using Ref.Data.Repositories;
-using Ref.Shared.Common;
 using Ref.Shared.Notifications;
+using Ref.Shared.Providers;
 using Ref.Sites;
 using System;
 
@@ -44,10 +43,19 @@ namespace Ref.App.DI
             #endregion
 
             #region Filters
-            services.Configure<FilterConfiguration>(
-                opt => configurationRoot
-                .GetSection("filter")
-                .Bind(opt));
+            services.AddTransient<IFilterProvider>(
+                s => new FilterProvider(
+                        configurationRoot["filter:type"],
+                        configurationRoot["filter:deal"],
+                        configurationRoot["filter:location"],
+                        configurationRoot["filter:flatareafrom"],
+                        configurationRoot["filter:flatareato"],
+                        configurationRoot["filter:pricefrom"],
+                        configurationRoot["filter:priceto"],
+                        configurationRoot["filter:market"],
+                        configurationRoot["filter:newest"]
+                    )
+                );
             #endregion
 
             #region Sites

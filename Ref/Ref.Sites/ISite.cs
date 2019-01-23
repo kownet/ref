@@ -1,10 +1,11 @@
 ﻿using Ref.Data.Models;
+using Ref.Shared.Providers;
 using System.Collections.Generic;
 
 namespace Ref.Sites
 {
     public interface ISite
     {
-        IEnumerable<Ad> Search(string type, string deal, string location, int flatAreaFrom, int flatAreaTo);
+        IEnumerable<Ad> Search(IFilterProvider filterProvider);
     }
 }
