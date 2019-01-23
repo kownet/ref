@@ -1,4 +1,5 @@
-﻿using Ref.Data.Repositories;
+﻿using Microsoft.Extensions.Logging;
+using Ref.Data.Repositories;
 using Ref.Data.Views;
 using Ref.Shared.Extensions;
 using Ref.Shared.Notifications;
@@ -11,17 +12,21 @@ namespace Ref.App.Core
 {
     public class RefService
     {
+        private readonly ILogger<RefService> _logger;
+
         private readonly IFilterProvider _filterProvider;
         private readonly ISite _site;
         private readonly IAdRepository _adRepository;
         private readonly IPushOverNotification _pushOverNotification;
 
         public RefService(
+            ILogger<RefService> logger,
             IFilterProvider filterProvider,
             ISite site,
             IAdRepository adRepository,
             IPushOverNotification pushOverNotification)
         {
+            _logger = logger;
             _filterProvider = filterProvider;
             _site = site;
             _adRepository = adRepository;
@@ -49,6 +54,7 @@ namespace Ref.App.Core
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex.Message);
                 _pushOverNotification.Send("Ref Error", ex.Message);
             }
         }

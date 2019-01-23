@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using NLog.Extensions.Logging;
 using Ref.App.Core;
 using Ref.Data.Repositories;
 using Ref.Shared.Notifications;
@@ -14,6 +16,18 @@ namespace Ref.App.DI
         public static IServiceProvider Get(IConfigurationRoot configurationRoot, string clientId)
         {
             var services = new ServiceCollection();
+
+            #region Logging
+            services.AddLogging(builder =>
+            {
+                builder.SetMinimumLevel(LogLevel.Trace);
+                builder.AddNLog(new NLogProviderOptions
+                {
+                    CaptureMessageTemplates = true,
+                    CaptureMessageProperties = true
+                });
+            });
+            #endregion
 
             #region Client
             services.AddTransient<IClientProvider>(s => new ClientProvider(clientId));

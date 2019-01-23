@@ -4,6 +4,7 @@ using Ref.App.Core;
 using Ref.App.DI;
 using Ref.Shared.Providers;
 using Ref.Shared.Utils;
+using System;
 using System.IO;
 
 namespace Ref.App
@@ -15,6 +16,9 @@ namespace Ref.App
             if (args != null && args.Length > 0)
             {
                 var clientId = args[0];
+
+                NLog.LogManager.Configuration.Variables["fileName"] = $"ref-{clientId}-{DateTime.UtcNow.ToString("ddMMyyyy")}.log";
+                NLog.LogManager.Configuration.Variables["archiveFileName"] = $"ref-{clientId}-{DateTime.UtcNow.ToString("ddMMyyyy")}.log";
 
                 var builder = new ConfigurationBuilder()
                     .SetBasePath(Directory.GetCurrentDirectory())
@@ -30,6 +34,8 @@ namespace Ref.App
 
                 servicesProvider.GetRequiredService<RefService>().Crawl();
             }
+
+            NLog.LogManager.Shutdown();
         }
 
         static void Create(IStorageProvider jsonStorageConfiguration, string clientId)
