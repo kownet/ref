@@ -50,6 +50,15 @@ namespace Ref.App.DI
                 );
 
             services.AddTransient<IPushOverNotification, PushOverNotification>();
+
+            services.AddTransient<IEmailProvider>(
+                s => new EmailProvider(
+                    configurationRoot["notifications:email:host"],
+                    configurationRoot["notifications:email:apikey"],
+                    configurationRoot["notifications:email:recipients"])
+                );
+
+            services.AddTransient<IEmailNotification, EmailNotification>();
             #endregion
 
             #region Repositories

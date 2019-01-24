@@ -4,6 +4,7 @@ using Ref.Data.Models;
 using Ref.Shared.Extensions;
 using Ref.Shared.Providers;
 using Ref.Sites.Helpers;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -15,6 +16,11 @@ namespace Ref.Sites
         {
             var result = new List<Ad>();
 
+            var options = new ChromeOptions();
+
+            options.AddArgument("--headless");
+            options.AddArgument("--no-sandbox");
+
             var service = ChromeDriverService.CreateDefaultService(Path.Combine(@"C:\!Scrapper\drivers"));
 
             service.SuppressInitialDiagnosticInformation = false;
@@ -22,7 +28,7 @@ namespace Ref.Sites
 
             var searchQuery = QueryStringBuilder.OtoDom(filterProvider);
 
-            using (var driver = new ChromeDriver(service))
+            using (var driver = new ChromeDriver(service, options, TimeSpan.FromSeconds(120)))
             {
                 driver.Navigate().GoToUrl(searchQuery);
 
@@ -42,7 +48,7 @@ namespace Ref.Sites
                 {
                     driver.Navigate().GoToUrl($@"{searchQuery}page={i}");
 
-                    if(Element.IsPresent(driver, By.XPath("//*[@id=\"body-container\"]/div/div/div[2]")))
+                    if (Element.IsPresent(driver, By.XPath("//*[@id=\"body-container\"]/div/div/div[2]")))
                     {
                         var listing = driver.FindElement(By.XPath("//*[@id=\"body-container\"]/div/div/div[2]"));
 
