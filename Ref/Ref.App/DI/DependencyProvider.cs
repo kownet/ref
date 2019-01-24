@@ -85,6 +85,15 @@ namespace Ref.App.DI
             services.AddTransient<ISite, OtoDomSite>();
             #endregion
 
+            #region App
+            services.AddTransient<IAppProvider>(
+                s => new AppProvider(
+                    configurationRoot["app:version"],
+                    configurationRoot["app:sender"],
+                    configurationRoot["app:replyto"])
+                );
+            #endregion
+
             services.AddTransient<RefService>();
 
             var serviceProvider = services.BuildServiceProvider();

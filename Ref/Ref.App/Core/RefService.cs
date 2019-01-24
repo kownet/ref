@@ -18,19 +18,22 @@ namespace Ref.App.Core
         private readonly ISite _site;
         private readonly IAdRepository _adRepository;
         private readonly IPushOverNotification _pushOverNotification;
+        private readonly IEmailNotification _emailNotification;
 
         public RefService(
             ILogger<RefService> logger,
             IFilterProvider filterProvider,
             ISite site,
             IAdRepository adRepository,
-            IPushOverNotification pushOverNotification)
+            IPushOverNotification pushOverNotification,
+            IEmailNotification emailNotification)
         {
             _logger = logger;
             _filterProvider = filterProvider;
             _site = site;
             _adRepository = adRepository;
             _pushOverNotification = pushOverNotification;
+            _emailNotification = emailNotification;
         }
 
         public void Crawl()
@@ -48,9 +51,12 @@ namespace Ref.App.Core
 
                 var newestOne = newest.Where(p => oldest.All(p2 => p2.Id != p.Id));
 
-                var ntf = View.ForPushOver(newestOne);
+                var ntfp = View.ForPushOver(newestOne);
+                var ntfe = View.ForEmail(newestOne);
 
-                _pushOverNotification.Send(ntf.Title, ntf.Message);
+                _emailNotification.Send(ntfe.Title, ntfe.RawMessage, ntfe.HtmlMessage);
+
+                _pushOverNotification.Send(ntfp.Title, ntfp.Message);
             }
             catch (Exception ex)
             {
