@@ -2,14 +2,14 @@
 {
     public interface IFilterProvider
     {
-        string Type();
-        string Deal();
+        int Type();
+        int Deal();
         string Location();
         int FlatAreaFrom();
         int FlatAreaTo();
         int PriceFrom();
         int PriceTo();
-        string Market();
+        int Market();
         int Newest();
     }
 
@@ -47,14 +47,14 @@
             _newest = newest;
         }
 
-        public string Type() => _type;
-        public string Deal() => _deal;
+        public int Type() => int.Parse(_type);
+        public int Deal() => int.Parse(_deal);
         public string Location() => _location;
         public int FlatAreaFrom() => int.Parse(_flatAreaFrom);
         public int FlatAreaTo() => int.Parse(_flatAreaTo);
         public int PriceFrom() => int.Parse(_priceFrom);
         public int PriceTo() => int.Parse(_priceTo);
-        public string Market() => _market;
+        public int Market() => int.Parse(_market);
         public int Newest() => int.Parse(_newest);
     }
 }

@@ -4,12 +4,14 @@ using Ref.Shared.Extensions;
 using Ref.Shared.Providers;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Ref.Data.Repositories
 {
     public interface IAdRepository : IRepository
     {
         IEnumerable<Ad> GetAll();
+        IEnumerable<Ad> GetBySite(SiteType siteType);
         void SaveAll(IEnumerable<Ad> ads);
     }
 
@@ -37,6 +39,9 @@ namespace Ref.Data.Repositories
 
             return result;
         }
+
+        public IEnumerable<Ad> GetBySite(SiteType siteType)
+            => GetAll().Where(s => s.SiteType == siteType);
 
         public void SaveAll(IEnumerable<Ad> ads)
         {

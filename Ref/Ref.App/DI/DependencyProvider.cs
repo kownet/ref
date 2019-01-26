@@ -4,10 +4,13 @@ using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using Ref.App.Core;
 using Ref.Data.Repositories;
+using Ref.Shared.Extensions;
 using Ref.Shared.Notifications;
 using Ref.Shared.Providers;
 using Ref.Sites;
 using System;
+using System.Linq;
+using System.Reflection;
 
 namespace Ref.App.DI
 {
@@ -82,7 +85,16 @@ namespace Ref.App.DI
             #endregion
 
             #region Sites
-            services.AddTransient<ISite, OtoDomSite>();
+            //var siteAssembly = AppDomain.CurrentDomain.GetAssemblies()
+            //    .FirstOrDefault(a => a.ManifestModule.Name == "Ref.Sites.dll");
+
+            //siteAssembly.GetTypesAssignableFrom<ISite>().ForEach((t) =>
+            //{
+            //    services.AddTransient(typeof(ISite), t);
+            //});
+
+            //services.AddTransient<ISite, OtoDomSite>();
+            services.AddTransient<ISite, OlxSite>();
             #endregion
 
             #region App
@@ -90,7 +102,8 @@ namespace Ref.App.DI
                 s => new AppProvider(
                     configurationRoot["app:version"],
                     configurationRoot["app:sender"],
-                    configurationRoot["app:replyto"])
+                    configurationRoot["app:replyto"],
+                    configurationRoot["app:binpath"])
                 );
             #endregion
 

@@ -6,6 +6,7 @@ using Ref.Shared.Notifications;
 using Ref.Shared.Providers;
 using Ref.Sites;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Ref.App.Core
@@ -15,6 +16,7 @@ namespace Ref.App.Core
         private readonly ILogger<RefService> _logger;
 
         private readonly IFilterProvider _filterProvider;
+        //private readonly IEnumerable<ISite> _sites;
         private readonly ISite _site;
         private readonly IAdRepository _adRepository;
         private readonly IPushOverNotification _pushOverNotification;
@@ -23,6 +25,7 @@ namespace Ref.App.Core
         public RefService(
             ILogger<RefService> logger,
             IFilterProvider filterProvider,
+            //IEnumerable<ISite> sites,
             ISite site,
             IAdRepository adRepository,
             IPushOverNotification pushOverNotification,
@@ -30,6 +33,7 @@ namespace Ref.App.Core
         {
             _logger = logger;
             _filterProvider = filterProvider;
+            //_sites = sites;
             _site = site;
             _adRepository = adRepository;
             _pushOverNotification = pushOverNotification;
@@ -41,6 +45,16 @@ namespace Ref.App.Core
             try
             {
                 var oldest = _adRepository.GetAll();
+
+                //if(_sites.AnyAndNotNull())
+                //{
+                //    foreach (var site in _sites)
+                //    {
+                //        site.Search(_filterProvider);
+                //    }
+                //}
+
+                //var newest = _sites.First().Search(_filterProvider);
 
                 var newest = _site.Search(_filterProvider);
 

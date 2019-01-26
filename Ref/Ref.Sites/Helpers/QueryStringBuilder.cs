@@ -1,34 +1,42 @@
-﻿using Ref.Shared.Providers;
+﻿using Ref.Data.Models;
+using Ref.Shared.Providers;
+using Ref.Sites.Helpers.QueryStrings;
 
 namespace Ref.Sites.Helpers
 {
-    public static class QueryStringBuilder
+    public class QueryStringBuilder
     {
-        public static string OtoDom(IFilterProvider filter)
+        private readonly SiteType _siteType;
+        private readonly IFilterProvider _filterProvider;
+
+        public QueryStringBuilder(
+            SiteType siteType,
+            IFilterProvider filterProvider)
         {
-            var result =
-                $"https://www.otodom.pl/{filter.Deal()}/{filter.Type()}/{filter.Location()}/?";
+            _siteType = siteType;
+            _filterProvider = filterProvider;
+        }
 
-            var divider = "search%5B";
-
-            if (filter.PriceFrom() != 0)
-                result = result + $"{divider}filter_float_price%3Afrom%5D={filter.PriceFrom()}&";
-
-            if (filter.PriceTo() != 0)
-                result = result + $"{divider}filter_float_price%3Ato%5D={filter.PriceTo()}&";
-
-            if (filter.FlatAreaFrom() != 0)
-                result = result + $"{divider}filter_float_m%3Afrom%5D={filter.FlatAreaFrom()}&";
-
-            if (filter.FlatAreaTo() != 0)
-                result = result + $"{divider}filter_float_m%3Ato%5D={filter.FlatAreaTo()}&";
-
-            result = result + $"{divider}created_since%5D={filter.Newest()}&";
-
-            if (!string.IsNullOrWhiteSpace(filter.Market()))
-                result = result + $"{divider}filter_enum_market%5D%5B0%5D={filter.Market()}&";
-
-            return result;
+        public string Get()
+        {
+            switch (_siteType)
+            {
+                case SiteType.OtoDom:
+                    return new OtoDomQs().Get(_filterProvider);
+                case SiteType.Olx:
+                    return new OlxQs().Get(_filterProvider); ;
+                case SiteType.Adresowo:
+                    return string.Empty;
+                case SiteType.DomiPorta:
+                    return string.Empty;
+                case SiteType.Gratka:
+                    return string.Empty;
+                case SiteType.Morizon:
+                    return string.Empty;
+                case SiteType.Gumtree:
+                    return string.Empty;
+                default: return string.Empty;
+            }
         }
     }
 }

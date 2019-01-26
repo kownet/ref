@@ -9,5 +9,6 @@
         public string Rooms { get; set; }
         public string Area { get; set; }
         public string PricePerMeter { get; set; }
+        public SiteType SiteType { get; set; }
     }
 }

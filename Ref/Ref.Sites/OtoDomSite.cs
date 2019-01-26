@@ -6,12 +6,19 @@ using Ref.Shared.Providers;
 using Ref.Sites.Helpers;
 using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace Ref.Sites
 {
     public class OtoDomSite : ISite
     {
+        private readonly IAppProvider _appProvider;
+
+        public OtoDomSite(
+            IAppProvider appProvider)
+        {
+            _appProvider = appProvider;
+        }
+
         public IEnumerable<Ad> Search(IFilterProvider filterProvider)
         {
             var result = new List<Ad>();
@@ -21,12 +28,12 @@ namespace Ref.Sites
             options.AddArgument("--headless");
             options.AddArgument("--no-sandbox");
 
-            var service = ChromeDriverService.CreateDefaultService(Path.Combine(@"C:\!Scrapper\drivers"));
+            var service = ChromeDriverService.CreateDefaultService(_appProvider.BinPath());
 
             service.SuppressInitialDiagnosticInformation = false;
             service.HideCommandPromptWindow = true;
 
-            var searchQuery = QueryStringBuilder.OtoDom(filterProvider);
+            var searchQuery = new QueryStringBuilder(SiteType.OtoDom, filterProvider).Get();
 
             using (var driver = new ChromeDriver(service, options, TimeSpan.FromSeconds(120)))
             {
@@ -92,7 +99,8 @@ namespace Ref.Sites
                                         Price = PriceE,
                                         Rooms = RoomsE,
                                         Area = AreaE,
-                                        PricePerMeter = PricePerMeterE
+                                        PricePerMeter = PricePerMeterE,
+                                        SiteType = SiteType.OtoDom
                                     };
 
                                     result.Add(ad);
