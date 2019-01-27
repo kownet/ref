@@ -52,8 +52,8 @@ namespace Ref.Sites.Helpers
                     {
                         switch (typeEnum)
                         {
-                            case PropertyTypes.Flat: return string.Empty;
-                            case PropertyTypes.House: return string.Empty;
+                            case PropertyTypes.Flat: return "mieszkania";
+                            case PropertyTypes.House: return "domy";
                             default: return string.Empty;
                         };
                     }
@@ -61,8 +61,8 @@ namespace Ref.Sites.Helpers
                     {
                         switch (typeEnum)
                         {
-                            case PropertyTypes.Flat: return string.Empty;
-                            case PropertyTypes.House: return string.Empty;
+                            case PropertyTypes.Flat: return "mieszkania";
+                            case PropertyTypes.House: return "domy";
                             default: return string.Empty;
                         };
                     }
@@ -70,8 +70,8 @@ namespace Ref.Sites.Helpers
                     {
                         switch (typeEnum)
                         {
-                            case PropertyTypes.Flat: return string.Empty;
-                            case PropertyTypes.House: return string.Empty;
+                            case PropertyTypes.Flat: return "s-mieszkania-i-domy";
+                            case PropertyTypes.House: return "s-mieszkania-i-domy";
                             default: return string.Empty;
                         };
                     }
@@ -125,8 +125,8 @@ namespace Ref.Sites.Helpers
                     {
                         switch (dealEnum)
                         {
-                            case DealTypes.Sale: return string.Empty;
-                            case DealTypes.Rent: return string.Empty;
+                            case DealTypes.Sale: return "sprzedaz";
+                            case DealTypes.Rent: return "wynajem";
                             default: return string.Empty;
                         };
                     }
@@ -135,7 +135,7 @@ namespace Ref.Sites.Helpers
                         switch (dealEnum)
                         {
                             case DealTypes.Sale: return string.Empty;
-                            case DealTypes.Rent: return string.Empty;
+                            case DealTypes.Rent: return "do-wynajecia";
                             default: return string.Empty;
                         };
                     }
@@ -143,8 +143,8 @@ namespace Ref.Sites.Helpers
                     {
                         switch (dealEnum)
                         {
-                            case DealTypes.Sale: return string.Empty;
-                            case DealTypes.Rent: return string.Empty;
+                            case DealTypes.Sale: return "-sprzedam-i-kupie";
+                            case DealTypes.Rent: return "-do-wynajecia";
                             default: return string.Empty;
                         };
                     }
@@ -198,8 +198,8 @@ namespace Ref.Sites.Helpers
                     {
                         switch (marketEnum)
                         {
-                            case MarketTypes.Primary: return string.Empty;
-                            case MarketTypes.Secondary: return string.Empty;
+                            case MarketTypes.Primary: return "pierwotny";
+                            case MarketTypes.Secondary: return "wtorny";
                             default: return string.Empty;
                         };
                     }
@@ -207,8 +207,8 @@ namespace Ref.Sites.Helpers
                     {
                         switch (marketEnum)
                         {
-                            case MarketTypes.Primary: return string.Empty;
-                            case MarketTypes.Secondary: return string.Empty;
+                            case MarketTypes.Primary: return "1";
+                            case MarketTypes.Secondary: return "2";
                             default: return string.Empty;
                         };
                     }
@@ -221,6 +221,16 @@ namespace Ref.Sites.Helpers
                             default: return string.Empty;
                         };
                     }
+                default: return string.Empty;
+            }
+        }
+
+        public static string Code(IFilterProvider filter)
+        {
+            /// TODO: cities!
+            switch (filter.Location())
+            {
+                case "warszawa": return "v1c9073l3200008a1dwp1";
                 default: return string.Empty;
             }
         }

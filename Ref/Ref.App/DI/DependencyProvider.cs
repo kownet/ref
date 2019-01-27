@@ -93,7 +93,7 @@ namespace Ref.App.DI
             //    services.AddTransient(typeof(ISite), t);
             //});
 
-            services.AddTransient<ISite, DomiportaSite>();
+            services.AddTransient<ISite, OtoDomSite>();
             #endregion
 
             #region App
