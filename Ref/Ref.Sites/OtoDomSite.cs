@@ -9,33 +9,20 @@ using System.Collections.Generic;
 
 namespace Ref.Sites
 {
-    public class OtoDomSite : ISite
+    public class OtoDomSite : BaseSite, ISite
     {
-        private readonly IAppProvider _appProvider;
-
-        public OtoDomSite(
-            IAppProvider appProvider)
+        public OtoDomSite(IAppProvider appProvider)
+            : base(appProvider)
         {
-            _appProvider = appProvider;
         }
 
         public IEnumerable<Ad> Search(IFilterProvider filterProvider)
         {
             var result = new List<Ad>();
 
-            var options = new ChromeOptions();
-
-            options.AddArgument("--headless");
-            options.AddArgument("--no-sandbox");
-
-            var service = ChromeDriverService.CreateDefaultService(_appProvider.BinPath());
-
-            service.SuppressInitialDiagnosticInformation = false;
-            service.HideCommandPromptWindow = true;
-
             var searchQuery = new QueryStringBuilder(SiteType.OtoDom, filterProvider).Get();
 
-            using (var driver = new ChromeDriver(service, options, TimeSpan.FromSeconds(120)))
+            using (var driver = new ChromeDriver(_service, _options, TimeSpan.FromSeconds(DriverTimeSpan)))
             {
                 driver.Navigate().GoToUrl(searchQuery);
 

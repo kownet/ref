@@ -34,8 +34,8 @@ namespace Ref.Sites.Helpers
                     {
                         switch (typeEnum)
                         {
-                            case PropertyTypes.Flat: return string.Empty;
-                            case PropertyTypes.House: return string.Empty;
+                            case PropertyTypes.Flat: return "mieszkania";
+                            case PropertyTypes.House: return "domy";
                             default: return string.Empty;
                         };
                     }
@@ -43,8 +43,8 @@ namespace Ref.Sites.Helpers
                     {
                         switch (typeEnum)
                         {
-                            case PropertyTypes.Flat: return string.Empty;
-                            case PropertyTypes.House: return string.Empty;
+                            case PropertyTypes.Flat: return "mieszkanie";
+                            case PropertyTypes.House: return "dom";
                             default: return string.Empty;
                         };
                     }
@@ -116,8 +116,8 @@ namespace Ref.Sites.Helpers
                     {
                         switch (dealEnum)
                         {
-                            case DealTypes.Sale: return string.Empty;
-                            case DealTypes.Rent: return string.Empty;
+                            case DealTypes.Sale: return "sprzedam";
+                            case DealTypes.Rent: return "wynajme";
                             default: return string.Empty;
                         };
                     }
@@ -181,7 +181,7 @@ namespace Ref.Sites.Helpers
                         switch (marketEnum)
                         {
                             case MarketTypes.Primary: return string.Empty;
-                            case MarketTypes.Secondary: return string.Empty;
+                            case MarketTypes.Secondary: return "fuz";
                             default: return string.Empty;
                         };
                     }
@@ -190,7 +190,7 @@ namespace Ref.Sites.Helpers
                         switch (marketEnum)
                         {
                             case MarketTypes.Primary: return string.Empty;
-                            case MarketTypes.Secondary: return string.Empty;
+                            case MarketTypes.Secondary: return "Wtorny";
                             default: return string.Empty;
                         };
                     }

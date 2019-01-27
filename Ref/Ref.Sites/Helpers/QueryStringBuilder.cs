@@ -22,19 +22,19 @@ namespace Ref.Sites.Helpers
             switch (_siteType)
             {
                 case SiteType.OtoDom:
-                    return new OtoDomQs().Get(_filterProvider);
+                    return new OtoDomQs(_filterProvider).Get();
                 case SiteType.Olx:
-                    return new OlxQs().Get(_filterProvider); ;
+                    return new OlxQs(_filterProvider).Get(); ;
                 case SiteType.Adresowo:
-                    return string.Empty;
+                    return new AdresowoQs(_filterProvider).Get();
                 case SiteType.DomiPorta:
-                    return string.Empty;
+                    return new DomiportaQs(_filterProvider).Get();
                 case SiteType.Gratka:
-                    return string.Empty;
+                    return new GratkaQs(_filterProvider).Get();
                 case SiteType.Morizon:
-                    return string.Empty;
+                    return new MorizonQs(_filterProvider).Get();
                 case SiteType.Gumtree:
-                    return string.Empty;
+                    return new GumtreeQs(_filterProvider).Get();
                 default: return string.Empty;
             }
         }
