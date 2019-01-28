@@ -37,7 +37,7 @@ namespace Ref.Sites.Helpers.QueryStrings
                 result = result + $"_{market}";
 
             if (_filter.Newest() == 1)
-                result = result + $"_lod";
+                result = result + $"_l";
 
             return result;
         }

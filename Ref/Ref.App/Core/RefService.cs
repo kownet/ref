@@ -54,8 +54,6 @@ namespace Ref.App.Core
                 //    }
                 //}
 
-                //var newest = _sites.First().Search(_filterProvider);
-
                 var newest = _site.Search(_filterProvider);
 
                 if (newest.AnyAndNotNull())

@@ -37,7 +37,7 @@ namespace Ref.Sites.Helpers.QueryStrings
                 result = result + $"&rynek={market}";
 
             if (_filter.Newest() == 1)
-                result = result + $"&data-dodania-search=ostatnich-24h";
+                result = result + $"&data-dodania-search=ostatnich-24h&sort=newest";
 
             return result;
         }

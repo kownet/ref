@@ -23,6 +23,8 @@ namespace Ref.Sites
             using (var driver = new ChromeDriver(_service, _options, TimeSpan.FromSeconds(DriverTimeSpan)))
             {
                 driver.Navigate().GoToUrl(searchQuery);
+
+                driver.Close();
             }
 
             return result;

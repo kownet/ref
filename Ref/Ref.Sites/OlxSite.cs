@@ -67,6 +67,7 @@ namespace Ref.Sites
                         }
                     }
                 }
+                driver.Close();
             }
 
             return result;
