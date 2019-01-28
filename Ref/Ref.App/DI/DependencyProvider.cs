@@ -93,7 +93,7 @@ namespace Ref.App.DI
             //    services.AddTransient(typeof(ISite), t);
             //});
 
-            services.AddTransient<ISite, GratkaSite>();
+            services.AddTransient<ISite, MorizonSite>();
             #endregion
 
             #region App
