@@ -26,50 +26,92 @@ namespace Ref.Sites
             {
                 driver.Navigate().GoToUrl(searchQuery);
 
-                if (Element.IsPresent(driver, By.XPath("//*[@id=\"offers_table\"]")))
+                int pages = 1;
+
+                if (Element.IsPresent(driver, By.ClassName("pager")))
                 {
-                    var listing = driver.FindElement(By.XPath("//*[@id=\"offers_table\"]"));
+                    var pagesElementText = driver.FindElement(By.ClassName("pager"));
 
-                    var offers = listing.FindElements(By.ClassName("offer"));
-
-                    if (offers.AnyAndNotNull())
+                    if (Element.IsPresent(pagesElementText, By.TagName("a")))
                     {
-                        foreach (var offer in offers)
+                        var elements = pagesElementText.FindElements(By.TagName("a"));
+
+                        if (elements.AnyAndNotNull())
                         {
-                            string IdE = string.Empty;
-                            string UrlE = string.Empty;
-                            string HeaderE = string.Empty;
-                            string PriceE = string.Empty;
-                            string RoomsE = string.Empty;
-                            string AreaE = string.Empty;
-                            string PricePerMeterE = string.Empty;
+                            var last = elements.SecondLast();
 
-                            if (Element.IsPresent(offer, By.XPath("//*[@id=\"offers_table\"]/tbody/tr[5]/td/div/table")))
-                                IdE = offer.FindElement(By.XPath("//*[@id=\"offers_table\"]/tbody/tr[5]/td/div/table")).Text;
+                            if (int.TryParse(last.Text, out pages))
+                            {
 
-                            if (Element.IsPresent(offer, By.ClassName("offer-item-price")))
-                                UrlE = offer.FindElement(By.ClassName("offer-item-price")).Text;
+                            }
+                        }
+                    }
+                }
 
-                            if (Element.IsPresent(offer, By.ClassName("offer-item-title")))
-                                HeaderE = offer.FindElement(By.ClassName("offer-item-title")).Text;
+                for (int i = 1; i <= pages; i++)
+                {
+                    driver.Navigate().GoToUrl($@"{searchQuery}page={i}");
 
-                            if (Element.IsPresent(offer, By.ClassName("offer-item-price")))
-                                PriceE = offer.FindElement(By.ClassName("offer-item-price")).Text;
+                    if (Element.IsPresent(driver, By.ClassName("offer-wrapper")))
+                    {
+                        var offers = driver.FindElements(By.ClassName("offer-wrapper"));
 
-                            if (Element.IsPresent(offer, By.ClassName("offer-item-rooms")))
-                                RoomsE = offer.FindElement(By.ClassName("offer-item-rooms")).Text;
+                        if (offers.AnyAndNotNull())
+                        {
+                            foreach (var offer in offers)
+                            {
+                                string IdE = string.Empty;
+                                string UrlE = string.Empty;
+                                string HeaderE = string.Empty;
+                                string PriceE = string.Empty;
+                                string RoomsE = string.Empty;
+                                string AreaE = string.Empty;
+                                string PricePerMeterE = string.Empty;
 
-                            if (Element.IsPresent(offer, By.ClassName("offer-item-area")))
-                                AreaE = offer.FindElement(By.ClassName("offer-item-area")).Text;
+                                if (Element.IsPresent(offer, By.TagName("table")))
+                                {
+                                    var table = offer.FindElement(By.TagName("table"));
 
-                            if (Element.IsPresent(offer, By.ClassName("offer-item-price-per-m")))
-                                PricePerMeterE = offer.FindElement(By.ClassName("offer-item-price-per-m")).Text;
+                                    IdE = table.GetAttribute("data-id");
+
+                                    if(Element.IsPresent(table, By.ClassName("linkWithHash")))
+                                    {
+                                        var link = table.FindElement(By.ClassName("linkWithHash"));
+
+                                        UrlE = link.GetAttribute("href");
+                                        HeaderE = UrlE.Replace("https://www.olx.pl/oferta/", string.Empty);
+                                    }
+
+                                    if (Element.IsPresent(table, By.ClassName("price")))
+                                    {
+                                        var price = table.FindElement(By.ClassName("price"));
+
+                                        PriceE = price.Text;
+                                    }
+                                }
+
+                                if (!string.IsNullOrWhiteSpace(IdE))
+                                {
+                                    var ad = new Ad
+                                    {
+                                        Id = IdE,
+                                        Url = UrlE,
+                                        Header = HeaderE,
+                                        Price = PriceE,
+                                        Rooms = RoomsE,
+                                        Area = AreaE,
+                                        PricePerMeter = PricePerMeterE,
+                                        SiteType = SiteType.Olx
+                                    };
+
+                                    result.Add(ad);
+                                }
+                            }
                         }
                     }
                 }
                 driver.Close();
             }
-
             return result;
         }
     }

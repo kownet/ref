@@ -44,7 +44,7 @@ namespace Ref.App.Core
             {
                 var oldest = _adRepository.GetAll();
 
-                var newest = _siteAccessor(SiteType.Gumtree).Search(_filterProvider);
+                var newest = _siteAccessor(SiteType.Olx).Search(_filterProvider);
                 //var newestFromAdresowo = _siteAccessor(SiteType.Adresowo).Search(_filterProvider);
 
                 //if (newest.AnyAndNotNull())

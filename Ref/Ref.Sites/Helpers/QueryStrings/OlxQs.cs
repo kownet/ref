@@ -39,7 +39,9 @@ namespace Ref.Sites.Helpers.QueryStrings
                 result = result + $"{divider}filter_enum_market%5D%5B0%5D={market}&";
 
             if (_filter.Newest() == 1)
-                result = result + $"{divider}Border%5D=created_at%3Adesc";
+                result = result + $"{divider}Border%5D=created_at%3Adesc&";
+
+            result = result + $"{divider}private_business%5D=private&";
 
             return result;
         }
