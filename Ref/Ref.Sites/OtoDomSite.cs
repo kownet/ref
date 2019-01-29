@@ -28,13 +28,18 @@ namespace Ref.Sites
 
                 int pages = 1;
 
-                if (Element.IsPresent(driver, By.XPath("//*[@id=\"pagerForm\"]/ul/li[1]/strong")))
+                if (Element.IsPresent(driver, By.ClassName("pager")))
                 {
-                    var pagesElementText = driver.FindElement(By.XPath("//*[@id=\"pagerForm\"]/ul/li[1]/strong")).Text;
+                    var pagesElementText = driver.FindElement(By.ClassName("pager"));
 
-                    if (int.TryParse(pagesElementText, out pages))
+                    if (Element.IsPresent(pagesElementText, By.ClassName("current")))
                     {
+                        var current = driver.FindElement(By.ClassName("current")).Text;
 
+                        if (int.TryParse(current, out pages))
+                        {
+
+                        }
                     }
                 }
 
@@ -42,64 +47,65 @@ namespace Ref.Sites
                 {
                     driver.Navigate().GoToUrl($@"{searchQuery}page={i}");
 
-                    if (Element.IsPresent(driver, By.XPath("//*[@id=\"body-container\"]/div/div/div[2]")))
+                    if (Element.IsPresent(driver, By.ClassName("section-listing__row-content")))
                     {
-                        var listing = driver.FindElement(By.XPath("//*[@id=\"body-container\"]/div/div/div[2]"));
+                        var listing = driver.FindElement(By.ClassName("section-listing__row-content"));
 
-                        var articles = listing.FindElements(By.TagName("article"));
-
-                        if (articles.AnyAndNotNull())
+                        if (Element.IsPresent(listing, By.TagName("article")))
                         {
-                            foreach (var article in articles)
+                            var articles = listing.FindElements(By.TagName("article"));
+
+                            if (articles.AnyAndNotNull())
                             {
-                                var IdE = article.GetAttribute("data-tracking-id");
-                                var UrlE = article.GetAttribute("data-url");
-
-                                string HeaderE = string.Empty;
-                                string PriceE = string.Empty;
-                                string RoomsE = string.Empty;
-                                string AreaE = string.Empty;
-                                string PricePerMeterE = string.Empty;
-
-                                if (Element.IsPresent(article, By.ClassName("offer-item-title")))
-                                    HeaderE = article.FindElement(By.ClassName("offer-item-title")).Text;
-
-                                if (Element.IsPresent(article, By.ClassName("offer-item-price")))
-                                    PriceE = article.FindElement(By.ClassName("offer-item-price")).Text;
-
-                                if (Element.IsPresent(article, By.ClassName("offer-item-rooms")))
-                                    RoomsE = article.FindElement(By.ClassName("offer-item-rooms")).Text;
-
-                                if (Element.IsPresent(article, By.ClassName("offer-item-area")))
-                                    AreaE = article.FindElement(By.ClassName("offer-item-area")).Text;
-
-                                if (Element.IsPresent(article, By.ClassName("offer-item-price-per-m")))
-                                    PricePerMeterE = article.FindElement(By.ClassName("offer-item-price-per-m")).Text;
-
-                                if (!string.IsNullOrWhiteSpace(IdE))
+                                foreach (var article in articles)
                                 {
-                                    var ad = new Ad
-                                    {
-                                        Id = IdE,
-                                        Url = UrlE,
-                                        Header = HeaderE,
-                                        Price = PriceE,
-                                        Rooms = RoomsE,
-                                        Area = AreaE,
-                                        PricePerMeter = PricePerMeterE,
-                                        SiteType = SiteType.OtoDom
-                                    };
+                                    var IdE = article.GetAttribute("data-tracking-id");
+                                    var UrlE = article.GetAttribute("data-url");
 
-                                    result.Add(ad);
+                                    string HeaderE = string.Empty;
+                                    string PriceE = string.Empty;
+                                    string RoomsE = string.Empty;
+                                    string AreaE = string.Empty;
+                                    string PricePerMeterE = string.Empty;
+
+                                    if (Element.IsPresent(article, By.ClassName("offer-item-title")))
+                                        HeaderE = article.FindElement(By.ClassName("offer-item-title")).Text;
+
+                                    if (Element.IsPresent(article, By.ClassName("offer-item-price")))
+                                        PriceE = article.FindElement(By.ClassName("offer-item-price")).Text;
+
+                                    if (Element.IsPresent(article, By.ClassName("offer-item-rooms")))
+                                        RoomsE = article.FindElement(By.ClassName("offer-item-rooms")).Text;
+
+                                    if (Element.IsPresent(article, By.ClassName("offer-item-area")))
+                                        AreaE = article.FindElement(By.ClassName("offer-item-area")).Text;
+
+                                    if (Element.IsPresent(article, By.ClassName("offer-item-price-per-m")))
+                                        PricePerMeterE = article.FindElement(By.ClassName("offer-item-price-per-m")).Text;
+
+                                    if (!string.IsNullOrWhiteSpace(IdE))
+                                    {
+                                        var ad = new Ad
+                                        {
+                                            Id = IdE,
+                                            Url = UrlE,
+                                            Header = HeaderE,
+                                            Price = PriceE,
+                                            Rooms = RoomsE,
+                                            Area = AreaE,
+                                            PricePerMeter = PricePerMeterE,
+                                            SiteType = SiteType.OtoDom
+                                        };
+
+                                        result.Add(ad);
+                                    }
                                 }
                             }
                         }
                     }
                 }
-
                 driver.Close();
             }
-
             return result;
         }
     }

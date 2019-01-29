@@ -3,14 +3,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using Ref.App.Core;
+using Ref.Data.Models;
 using Ref.Data.Repositories;
-using Ref.Shared.Extensions;
 using Ref.Shared.Notifications;
 using Ref.Shared.Providers;
 using Ref.Sites;
 using System;
-using System.Linq;
-using System.Reflection;
+using System.Collections.Generic;
 
 namespace Ref.App.DI
 {
@@ -85,15 +84,36 @@ namespace Ref.App.DI
             #endregion
 
             #region Sites
-            //var siteAssembly = AppDomain.CurrentDomain.GetAssemblies()
-            //    .FirstOrDefault(a => a.ManifestModule.Name == "Ref.Sites.dll");
+            services.AddTransient<OtoDomSite>();
+            services.AddTransient<OlxSite>();
+            services.AddTransient<AdresowoSite>();
+            services.AddTransient<DomiportaSite>();
+            services.AddTransient<GratkaSite>();
+            services.AddTransient<MorizonSite>();
+            services.AddTransient<GumtreeSite>();
 
-            //siteAssembly.GetTypesAssignableFrom<ISite>().ForEach((t) =>
-            //{
-            //    services.AddTransient(typeof(ISite), t);
-            //});
-
-            services.AddTransient<ISite, MorizonSite>();
+            services.AddTransient<Func<SiteType, ISite>>(sp => key =>
+            {
+                switch (key)
+                {
+                    case SiteType.OtoDom:
+                        return sp.GetService<OtoDomSite>();
+                    case SiteType.Olx:
+                        return sp.GetService<OlxSite>();
+                    case SiteType.Adresowo:
+                        return sp.GetService<AdresowoSite>();
+                    case SiteType.DomiPorta:
+                        return sp.GetService<DomiportaSite>();
+                    case SiteType.Gratka:
+                        return sp.GetService<GratkaSite>();
+                    case SiteType.Morizon:
+                        return sp.GetService<MorizonSite>();
+                    case SiteType.Gumtree:
+                        return sp.GetService<GumtreeSite>();
+                    default:
+                        throw new KeyNotFoundException();
+                }
+            });
             #endregion
 
             #region App

@@ -32,13 +32,16 @@ namespace Ref.Sites
                 {
                     var pagesElementText = driver.FindElement(By.ClassName("pagination"));
 
-                    var pagesElements = pagesElementText.FindElements(By.TagName("li"));
-
-                    if (pagesElements.AnyAndNotNull())
+                    if (Element.IsPresent(pagesElementText, By.TagName("li")))
                     {
-                        if (int.TryParse(pagesElements.SecondLast().Text, out pages))
-                        {
+                        var pagesElements = pagesElementText.FindElements(By.TagName("li"));
 
+                        if (pagesElements.AnyAndNotNull())
+                        {
+                            if (int.TryParse(pagesElements.SecondLast().Text, out pages))
+                            {
+
+                            }
                         }
                     }
                 }
@@ -47,72 +50,73 @@ namespace Ref.Sites
                 {
                     driver.Navigate().GoToUrl($@"{searchQuery}&PageNumber={i}");
 
-                    if (Element.IsPresent(driver, By.ClassName("js-listing")))
+                    if (Element.IsPresent(driver, By.ClassName("listing")))
                     {
                         var listing = driver.FindElement(By.ClassName("listing"));
 
-                        var articles = listing.FindElements(By.TagName("article"));
-
-                        if (articles.AnyAndNotNull())
+                        if (Element.IsPresent(listing, By.TagName("article")))
                         {
-                            foreach (var article in articles)
+                            var articles = listing.FindElements(By.TagName("article"));
+
+                            if (articles.AnyAndNotNull())
                             {
-                                string IdE = string.Empty;
-                                string UrlE = string.Empty;
-                                string HeaderE = string.Empty;
-                                string PriceE = string.Empty;
-                                string RoomsE = string.Empty;
-                                string AreaE = string.Empty;
-                                string PricePerMeterE = string.Empty;
-
-                                if (Element.IsPresent(article, By.ClassName("sneakpeak__pin")))
+                                foreach (var article in articles)
                                 {
-                                    IdE = article.FindElement(By.ClassName("sneakpeak__pin"))
-                                        .FindElement(By.TagName("input"))
-                                        .GetAttribute("value");
-                                }
+                                    string IdE = string.Empty;
+                                    string UrlE = string.Empty;
+                                    string HeaderE = string.Empty;
+                                    string PriceE = string.Empty;
+                                    string RoomsE = string.Empty;
+                                    string AreaE = string.Empty;
+                                    string PricePerMeterE = string.Empty;
 
-                                if (Element.IsPresent(article, By.ClassName("sneakpeak__picture_container")))
-                                {
-                                    var el = article.FindElement(By.ClassName("sneakpeak__picture_container"));
-
-                                    UrlE = el.GetAttribute("href");
-                                    HeaderE = el.GetAttribute("title");
-                                }
-
-                                if (Element.IsPresent(article, By.ClassName("sneakpeak__details_price")))
-                                    PriceE = article.FindElement(By.ClassName("sneakpeak__details_price")).Text;
-
-                                if (Element.IsPresent(article, By.ClassName("sneakpeak__details_item--area")))
-                                    AreaE = article.FindElement(By.ClassName("sneakpeak__details_item--area")).Text;
-
-                                if (Element.IsPresent(article, By.ClassName("sneakpeak__details_item--price")))
-                                    PricePerMeterE = article.FindElement(By.ClassName("sneakpeak__details_item--price")).Text;
-
-                                if (!string.IsNullOrWhiteSpace(IdE))
-                                {
-                                    var ad = new Ad
+                                    if (Element.IsPresent(article, By.ClassName("sneakpeak__pin")))
                                     {
-                                        Id = IdE,
-                                        Url = UrlE,
-                                        Header = HeaderE,
-                                        Price = PriceE,
-                                        Rooms = RoomsE,
-                                        Area = AreaE,
-                                        PricePerMeter = PricePerMeterE,
-                                        SiteType = SiteType.DomiPorta
-                                    };
+                                        IdE = article.FindElement(By.ClassName("sneakpeak__pin"))
+                                            .FindElement(By.TagName("input"))
+                                            .GetAttribute("value");
+                                    }
 
-                                    result.Add(ad);
+                                    if (Element.IsPresent(article, By.ClassName("sneakpeak__picture_container")))
+                                    {
+                                        var el = article.FindElement(By.ClassName("sneakpeak__picture_container"));
+
+                                        UrlE = el.GetAttribute("href");
+                                        HeaderE = el.GetAttribute("title");
+                                    }
+
+                                    if (Element.IsPresent(article, By.ClassName("sneakpeak__details_price")))
+                                        PriceE = article.FindElement(By.ClassName("sneakpeak__details_price")).Text;
+
+                                    if (Element.IsPresent(article, By.ClassName("sneakpeak__details_item--area")))
+                                        AreaE = article.FindElement(By.ClassName("sneakpeak__details_item--area")).Text;
+
+                                    if (Element.IsPresent(article, By.ClassName("sneakpeak__details_item--price")))
+                                        PricePerMeterE = article.FindElement(By.ClassName("sneakpeak__details_item--price")).Text;
+
+                                    if (!string.IsNullOrWhiteSpace(IdE))
+                                    {
+                                        var ad = new Ad
+                                        {
+                                            Id = IdE,
+                                            Url = UrlE,
+                                            Header = HeaderE,
+                                            Price = PriceE,
+                                            Rooms = RoomsE,
+                                            Area = AreaE,
+                                            PricePerMeter = PricePerMeterE,
+                                            SiteType = SiteType.DomiPorta
+                                        };
+
+                                        result.Add(ad);
+                                    }
                                 }
                             }
                         }
                     }
                 }
-
                 driver.Close();
             }
-
             return result;
         }
     }

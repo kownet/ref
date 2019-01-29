@@ -230,7 +230,7 @@ namespace Ref.Sites.Helpers
             /// TODO: cities!
             switch (filter.Location())
             {
-                case "warszawa": return "v1c9073l3200008a1dwp1";
+                case "warszawa": return "v1c9073l3200008a1dwp";
                 default: return string.Empty;
             }
         }

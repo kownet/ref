@@ -32,11 +32,14 @@ namespace Ref.Sites
                 {
                     var pagesElementText = driver.FindElement(By.ClassName("pagination"));
 
-                    var input = pagesElementText.FindElement(By.TagName("input"));
-
-                    if (int.TryParse(input.GetAttribute("max"), out pages))
+                    if (Element.IsPresent(pagesElementText, By.TagName("input")))
                     {
+                        var input = pagesElementText.FindElement(By.TagName("input"));
 
+                        if (int.TryParse(input.GetAttribute("max"), out pages))
+                        {
+
+                        }
                     }
                 }
 
@@ -48,58 +51,59 @@ namespace Ref.Sites
                     {
                         var listing = driver.FindElement(By.ClassName("content__listing"));
 
-                        var articles = listing.FindElements(By.TagName("article"));
-
-                        if (articles.AnyAndNotNull())
+                        if(Element.IsPresent(listing, By.TagName("article")))
                         {
-                            foreach (var article in articles)
+                            var articles = listing.FindElements(By.TagName("article"));
+
+                            if (articles.AnyAndNotNull())
                             {
-                                var IdE = article.GetAttribute("id");
-                                var UrlE = article.GetAttribute("data-href");
-
-                                string HeaderE = string.Empty;
-                                string PriceE = string.Empty;
-                                string RoomsE = string.Empty;
-                                string AreaE = string.Empty;
-                                string PricePerMeterE = string.Empty;
-
-                                if (Element.IsPresent(article, By.ClassName("teaser__anchor")))
-                                    HeaderE = article.FindElement(By.ClassName("teaser__anchor")).Text;
-
-                                if (Element.IsPresent(article, By.ClassName("teaser__price")))
+                                foreach (var article in articles)
                                 {
-                                    var p = article.FindElement(By.ClassName("teaser__price")).Text;
+                                    var IdE = article.GetAttribute("id");
+                                    var UrlE = article.GetAttribute("data-href");
 
-                                    var splitted = p.Split("\r\n");
+                                    string HeaderE = string.Empty;
+                                    string PriceE = string.Empty;
+                                    string RoomsE = string.Empty;
+                                    string AreaE = string.Empty;
+                                    string PricePerMeterE = string.Empty;
 
-                                    PriceE = splitted[0];
-                                    PricePerMeterE = splitted[1];
-                                }
+                                    if (Element.IsPresent(article, By.ClassName("teaser__anchor")))
+                                        HeaderE = article.FindElement(By.ClassName("teaser__anchor")).Text;
 
-                                if (!string.IsNullOrWhiteSpace(IdE))
-                                {
-                                    var ad = new Ad
+                                    if (Element.IsPresent(article, By.ClassName("teaser__price")))
                                     {
-                                        Id = IdE,
-                                        Url = UrlE,
-                                        Header = HeaderE,
-                                        Price = PriceE,
-                                        Rooms = RoomsE,
-                                        Area = AreaE,
-                                        PricePerMeter = PricePerMeterE,
-                                        SiteType = SiteType.Gratka
-                                    };
+                                        var p = article.FindElement(By.ClassName("teaser__price")).Text;
 
-                                    result.Add(ad);
+                                        var splitted = p.Split("\r\n");
+
+                                        PriceE = splitted[0];
+                                        PricePerMeterE = splitted[1];
+                                    }
+
+                                    if (!string.IsNullOrWhiteSpace(IdE))
+                                    {
+                                        var ad = new Ad
+                                        {
+                                            Id = IdE,
+                                            Url = UrlE,
+                                            Header = HeaderE,
+                                            Price = PriceE,
+                                            Rooms = RoomsE,
+                                            Area = AreaE,
+                                            PricePerMeter = PricePerMeterE,
+                                            SiteType = SiteType.Gratka
+                                        };
+
+                                        result.Add(ad);
+                                    }
                                 }
                             }
                         }
                     }
                 }
-
                 driver.Close();
             }
-
             return result;
         }
     }

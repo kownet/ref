@@ -33,13 +33,16 @@ namespace Ref.Sites
                 {
                     var pagesElementText = driver.FindElement(By.ClassName("mz-pagination-number"));
 
-                    var pagesElements = pagesElementText.FindElements(By.TagName("li"));
-
-                    if (pagesElements.AnyAndNotNull())
+                    if (Element.IsPresent(pagesElementText, By.TagName("li")))
                     {
-                        if (int.TryParse(pagesElements.SecondLast().Text, out pages))
-                        {
+                        var pagesElements = pagesElementText.FindElements(By.TagName("li"));
 
+                        if (pagesElements.AnyAndNotNull())
+                        {
+                            if (int.TryParse(pagesElements.SecondLast().Text, out pages))
+                            {
+
+                            }
                         }
                     }
                 }
@@ -52,53 +55,71 @@ namespace Ref.Sites
                     {
                         var listing = driver.FindElement(By.XPath("//*[@id=\"contentPage\"]/div/div/div/div/section"));
 
-                        var articles = listing.FindElements(By.ClassName("row--property-list"));
-
-                        if (articles.AnyAndNotNull())
+                        if (Element.IsPresent(listing, By.ClassName("row--property-list")))
                         {
-                            foreach (var article in articles)
+                            var articles = listing.FindElements(By.ClassName("row--property-list"));
+
+                            if (articles.AnyAndNotNull())
                             {
-                                var IdE = article.GetAttribute("data-id");
-
-                                string UrlE = string.Empty;
-                                string HeaderE = string.Empty;
-                                string PriceE = string.Empty;
-                                string RoomsE = string.Empty;
-                                string AreaE = string.Empty;
-                                string PricePerMeterE = string.Empty;
-
-                                if (Element.IsPresent(article, By.ClassName("property_link")))
-                                    UrlE = article.FindElement(By.ClassName("property_link")).GetAttribute("href");
-
-                                if (Element.IsPresent(article, By.ClassName("single-result__title")))
-                                    HeaderE = article.FindElement(By.ClassName("single-result__title")).Text;
-
-                                if (Element.IsPresent(article, By.ClassName("single-result__price")))
-                                    PriceE = article.FindElement(By.ClassName("single-result__price")).Text;
-
-                                if (Element.IsPresent(article, By.ClassName("single-result__price--currency")))
-                                    PricePerMeterE = article.FindElement(By.ClassName("single-result__price--currency")).Text;
-
-                                if (Element.IsPresent(article, By.ClassName("info-description")))
+                                foreach (var article in articles)
                                 {
-                                    var infos = driver.FindElement(By.ClassName("info-description"));
+                                    var IdE = article.GetAttribute("data-id");
 
-                                    var elements = infos.FindElements(By.TagName("li"));
+                                    string UrlE = string.Empty;
+                                    string HeaderE = string.Empty;
+                                    string PriceE = string.Empty;
+                                    string RoomsE = string.Empty;
+                                    string AreaE = string.Empty;
+                                    string PricePerMeterE = string.Empty;
 
-                                    if (elements.AnyAndNotNull())
+                                    if (Element.IsPresent(article, By.ClassName("property_link")))
+                                        UrlE = article.FindElement(By.ClassName("property_link")).GetAttribute("href");
+
+                                    if (Element.IsPresent(article, By.ClassName("single-result__title")))
+                                        HeaderE = article.FindElement(By.ClassName("single-result__title")).Text;
+
+                                    if (Element.IsPresent(article, By.ClassName("single-result__price")))
+                                        PriceE = article.FindElement(By.ClassName("single-result__price")).Text;
+
+                                    if (Element.IsPresent(article, By.ClassName("single-result__price--currency")))
+                                        PricePerMeterE = article.FindElement(By.ClassName("single-result__price--currency")).Text;
+
+                                    if (Element.IsPresent(article, By.ClassName("info-description")))
                                     {
-                                        RoomsE = elements.First().Text;
-                                        AreaE = elements.SecondLast().Text;
+                                        var infos = driver.FindElement(By.ClassName("info-description"));
+
+                                        var elements = infos.FindElements(By.TagName("li"));
+
+                                        if (elements.AnyAndNotNull())
+                                        {
+                                            RoomsE = elements.First().Text;
+                                            AreaE = elements.SecondLast().Text;
+                                        }
+                                    }
+
+                                    if (!string.IsNullOrWhiteSpace(IdE))
+                                    {
+                                        var ad = new Ad
+                                        {
+                                            Id = IdE,
+                                            Url = UrlE,
+                                            Header = HeaderE,
+                                            Price = PriceE,
+                                            Rooms = RoomsE,
+                                            Area = AreaE,
+                                            PricePerMeter = PricePerMeterE,
+                                            SiteType = SiteType.Morizon
+                                        };
+
+                                        result.Add(ad);
                                     }
                                 }
                             }
                         }
                     }
                 }
-
                 driver.Close();
             }
-
             return result;
         }
     }

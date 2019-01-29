@@ -37,7 +37,7 @@ namespace Ref.Sites.Helpers.QueryStrings
                 result = result + $"&Rynek={market}";
 
             if (_filter.Newest() == 1)
-                result = result + $"&SortingOrder=InsertionDate";
+                result = result + $"&Rodzaj=Bezposrednie&SortingOrder=InsertionDate";
 
             return result;
         }

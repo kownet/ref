@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Ref.Data.Models;
 using Ref.Data.Repositories;
 using Ref.Data.Views;
 using Ref.Shared.Extensions;
@@ -15,26 +16,23 @@ namespace Ref.App.Core
     {
         private readonly ILogger<RefService> _logger;
 
+        private readonly Func<SiteType, ISite> _siteAccessor;
         private readonly IFilterProvider _filterProvider;
-        //private readonly IEnumerable<ISite> _sites;
-        private readonly ISite _site;
         private readonly IAdRepository _adRepository;
         private readonly IPushOverNotification _pushOverNotification;
         private readonly IEmailNotification _emailNotification;
 
         public RefService(
             ILogger<RefService> logger,
+            Func<SiteType, ISite> siteAccessor,
             IFilterProvider filterProvider,
-            //IEnumerable<ISite> sites,
-            ISite site,
             IAdRepository adRepository,
             IPushOverNotification pushOverNotification,
             IEmailNotification emailNotification)
         {
             _logger = logger;
+            _siteAccessor = siteAccessor;
             _filterProvider = filterProvider;
-            //_sites = sites;
-            _site = site;
             _adRepository = adRepository;
             _pushOverNotification = pushOverNotification;
             _emailNotification = emailNotification;
@@ -46,29 +44,22 @@ namespace Ref.App.Core
             {
                 var oldest = _adRepository.GetAll();
 
-                //if(_sites.AnyAndNotNull())
+                var newest = _siteAccessor(SiteType.Gumtree).Search(_filterProvider);
+                //var newestFromAdresowo = _siteAccessor(SiteType.Adresowo).Search(_filterProvider);
+
+                //if (newest.AnyAndNotNull())
                 //{
-                //    foreach (var site in _sites)
-                //    {
-                //        site.Search(_filterProvider);
-                //    }
+                //    _adRepository.SaveAll(newest);
                 //}
 
-                var newest = _site.Search(_filterProvider);
+                //var newestOne = newest.Where(p => oldest.All(p2 => p2.Id != p.Id));
 
-                if (newest.AnyAndNotNull())
-                {
-                    _adRepository.SaveAll(newest);
-                }
+                //var ntfp = View.ForPushOver(newestOne);
+                //var ntfe = View.ForEmail(newestOne);
 
-                var newestOne = newest.Where(p => oldest.All(p2 => p2.Id != p.Id));
+                //_emailNotification.Send(ntfe.Title, ntfe.RawMessage, ntfe.HtmlMessage);
 
-                var ntfp = View.ForPushOver(newestOne);
-                var ntfe = View.ForEmail(newestOne);
-
-                _emailNotification.Send(ntfe.Title, ntfe.RawMessage, ntfe.HtmlMessage);
-
-                _pushOverNotification.Send(ntfp.Title, ntfp.Message);
+                //_pushOverNotification.Send(ntfp.Title, ntfp.Message);
             }
             catch (Exception ex)
             {

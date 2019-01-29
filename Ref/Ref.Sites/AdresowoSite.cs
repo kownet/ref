@@ -6,6 +6,7 @@ using Ref.Shared.Providers;
 using Ref.Sites.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Ref.Sites
 {
@@ -28,59 +29,82 @@ namespace Ref.Sites
             {
                 driver.Navigate().GoToUrl(searchQuery);
 
-                var page = 1;
+                int pages = 1;
 
-                while (Element.IsPresent(driver, By.ClassName("offer-list")))
+                if (Element.IsPresent(driver, By.ClassName("content-indent")))
                 {
-                    driver.Navigate().GoToUrl($"{searchQuery}{page}{newest}");
+                    var pagesElementText = driver.FindElement(By.ClassName("content-indent"));
 
-                    var listing = driver.FindElement(By.ClassName("offer-list"));
-
-                    var articles = listing.FindElements(By.TagName("tr"));
-
-                    if (articles.AnyAndNotNull())
+                    if (Element.IsPresent(pagesElementText, By.ClassName("pure-button")))
                     {
-                        foreach (var article in articles)
+                        var pagesElement = pagesElementText.FindElements(By.ClassName("pure-button"));
+
+                        if (pagesElement.AnyAndNotNull())
                         {
-                            string IdE = article.GetAttribute("id");
-                            string UrlE = $"https://adresowo.pl/o/{IdE}";
-                            string HeaderE = string.Empty;
-                            string PriceE = string.Empty;
-                            string RoomsE = string.Empty;
-                            string AreaE = string.Empty;
-                            string PricePerMeterE = string.Empty;
+                            var last = pagesElement.Last().Text;
 
-                            if (Element.IsPresent(article, By.ClassName("address")))
-                                HeaderE = article.FindElement(By.ClassName("address")).Text;
-
-                            if (Element.IsPresent(article, By.ClassName("price")))
-                                PriceE = article.FindElement(By.ClassName("price")).Text;
-
-                            if (Element.IsPresent(article, By.ClassName("price-per-unit")))
-                                PricePerMeterE = article.FindElement(By.ClassName("price-per-unit")).Text;
-
-                            if (!string.IsNullOrWhiteSpace(IdE))
+                            if (int.TryParse(last, out pages))
                             {
-                                var ad = new Ad
-                                {
-                                    Id = IdE,
-                                    Url = UrlE,
-                                    Header = HeaderE,
-                                    Price = PriceE,
-                                    Rooms = RoomsE,
-                                    Area = AreaE,
-                                    PricePerMeter = PricePerMeterE,
-                                    SiteType = SiteType.Adresowo
-                                };
 
-                                result.Add(ad);
                             }
                         }
-
-                        page++;
                     }
                 }
 
+                for (int i = 1; i <= pages; i++)
+                {
+                    driver.Navigate().GoToUrl($"{searchQuery}{i}{newest}");
+
+                    if (Element.IsPresent(driver, By.ClassName("offer-list")))
+                    {
+                        var listing = driver.FindElement(By.ClassName("offer-list"));
+
+                        if (Element.IsPresent(listing, By.TagName("tr")))
+                        {
+                            var articles = listing.FindElements(By.TagName("tr"));
+
+                            if (articles.AnyAndNotNull())
+                            {
+                                foreach (var article in articles)
+                                {
+                                    string IdE = article.GetAttribute("id");
+                                    string UrlE = $"https://adresowo.pl/o/{IdE}";
+                                    string HeaderE = string.Empty;
+                                    string PriceE = string.Empty;
+                                    string RoomsE = string.Empty;
+                                    string AreaE = string.Empty;
+                                    string PricePerMeterE = string.Empty;
+
+                                    if (Element.IsPresent(article, By.ClassName("address")))
+                                        HeaderE = article.FindElement(By.ClassName("address")).Text;
+
+                                    if (Element.IsPresent(article, By.ClassName("price")))
+                                        PriceE = article.FindElement(By.ClassName("price")).Text;
+
+                                    if (Element.IsPresent(article, By.ClassName("price-per-unit")))
+                                        PricePerMeterE = article.FindElement(By.ClassName("price-per-unit")).Text;
+
+                                    if (!string.IsNullOrWhiteSpace(IdE))
+                                    {
+                                        var ad = new Ad
+                                        {
+                                            Id = IdE,
+                                            Url = UrlE,
+                                            Header = HeaderE,
+                                            Price = PriceE,
+                                            Rooms = RoomsE,
+                                            Area = AreaE,
+                                            PricePerMeter = PricePerMeterE,
+                                            SiteType = SiteType.Adresowo
+                                        };
+
+                                        result.Add(ad);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
                 driver.Close();
             }
             return result;
