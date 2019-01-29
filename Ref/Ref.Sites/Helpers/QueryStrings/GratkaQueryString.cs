@@ -3,11 +3,11 @@ using Ref.Shared.Providers;
 
 namespace Ref.Sites.Helpers.QueryStrings
 {
-    public class GratkaQs : IQs
+    public class GratkaQueryString : IQueryString
     {
         private readonly IFilterProvider _filter;
 
-        public GratkaQs(IFilterProvider filter)
+        public GratkaQueryString(IFilterProvider filter)
         {
             _filter = filter;
         }

@@ -3,11 +3,11 @@ using Ref.Shared.Providers;
 
 namespace Ref.Sites.Helpers.QueryStrings
 {
-    public class OtoDomQs : IQs
+    public class OtoDomQueryString : IQueryString
     {
         private readonly IFilterProvider _filter;
 
-        public OtoDomQs(IFilterProvider filter)
+        public OtoDomQueryString(IFilterProvider filter)
         {
             _filter = filter;
         }

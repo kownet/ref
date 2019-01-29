@@ -4,6 +4,7 @@ using Ref.Data.Models;
 using Ref.Shared.Extensions;
 using Ref.Shared.Providers;
 using Ref.Sites.Helpers;
+using Ref.Sites.Helpers.Pagination;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,34 +30,7 @@ namespace Ref.Sites
             {
                 driver.Navigate().GoToUrl(searchQuery);
 
-                int pages = 1;
-
-                if (Element.IsPresent(driver, By.ClassName("pagination")))
-                {
-                    var pagesElementText = driver.FindElement(By.ClassName("pagination"));
-
-                    if (Element.IsPresent(pagesElementText, By.ClassName("after")))
-                    {
-                        var pagesElements = pagesElementText.FindElement(By.ClassName("after"));
-
-                        if (Element.IsPresent(pagesElements, By.TagName("a")))
-                        {
-                            var aElements = pagesElements.FindElements(By.TagName("a"));
-
-                            if (aElements.AnyAndNotNull())
-                            {
-                                var lastPageLink = aElements.Last().GetAttribute("href");
-
-                                var lastPageValue = lastPageLink.TextAfter(code).First().ToString();
-
-                                if (int.TryParse(lastPageValue, out pages))
-                                {
-
-                                }
-                            }
-                        }
-                    }
-                }
+                int pages = new GumtreePagination().Get(driver, code);
 
                 for (int i = 1; i <= pages; i++)
                 {
@@ -64,7 +38,7 @@ namespace Ref.Sites
 
                     driver.Navigate().GoToUrl($@"{sq}");
 
-                    if(Element.IsPresent(driver, By.ClassName("result-link")))
+                    if (Element.IsPresent(driver, By.ClassName("result-link")))
                     {
                         var articles = driver.FindElements(By.ClassName("result-link"));
 

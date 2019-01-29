@@ -3,11 +3,11 @@ using Ref.Shared.Providers;
 
 namespace Ref.Sites.Helpers.QueryStrings
 {
-    public class DomiportaQs : IQs
+    public class DomiportaQueryString : IQueryString
     {
         private readonly IFilterProvider _filter;
 
-        public DomiportaQs(IFilterProvider filter)
+        public DomiportaQueryString(IFilterProvider filter)
         {
             _filter = filter;
         }

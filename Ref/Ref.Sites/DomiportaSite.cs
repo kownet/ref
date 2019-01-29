@@ -4,6 +4,7 @@ using Ref.Data.Models;
 using Ref.Shared.Extensions;
 using Ref.Shared.Providers;
 using Ref.Sites.Helpers;
+using Ref.Sites.Helpers.Pagination;
 using System;
 using System.Collections.Generic;
 
@@ -26,25 +27,7 @@ namespace Ref.Sites
             {
                 driver.Navigate().GoToUrl(searchQuery);
 
-                int pages = 1;
-
-                if (Element.IsPresent(driver, By.ClassName("pagination")))
-                {
-                    var pagesElementText = driver.FindElement(By.ClassName("pagination"));
-
-                    if (Element.IsPresent(pagesElementText, By.TagName("li")))
-                    {
-                        var pagesElements = pagesElementText.FindElements(By.TagName("li"));
-
-                        if (pagesElements.AnyAndNotNull())
-                        {
-                            if (int.TryParse(pagesElements.SecondLast().Text, out pages))
-                            {
-
-                            }
-                        }
-                    }
-                }
+                int pages = new DomiportaPagination().Get(driver);
 
                 for (int i = 1; i <= pages; i++)
                 {

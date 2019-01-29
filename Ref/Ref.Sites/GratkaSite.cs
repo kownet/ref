@@ -4,6 +4,7 @@ using Ref.Data.Models;
 using Ref.Shared.Extensions;
 using Ref.Shared.Providers;
 using Ref.Sites.Helpers;
+using Ref.Sites.Helpers.Pagination;
 using System;
 using System.Collections.Generic;
 
@@ -26,22 +27,7 @@ namespace Ref.Sites
             {
                 driver.Navigate().GoToUrl(searchQuery);
 
-                int pages = 1;
-
-                if (Element.IsPresent(driver, By.ClassName("pagination")))
-                {
-                    var pagesElementText = driver.FindElement(By.ClassName("pagination"));
-
-                    if (Element.IsPresent(pagesElementText, By.TagName("input")))
-                    {
-                        var input = pagesElementText.FindElement(By.TagName("input"));
-
-                        if (int.TryParse(input.GetAttribute("max"), out pages))
-                        {
-
-                        }
-                    }
-                }
+                int pages = new GratkaPagination().Get(driver);
 
                 for (int i = 1; i <= pages; i++)
                 {
@@ -51,7 +37,7 @@ namespace Ref.Sites
                     {
                         var listing = driver.FindElement(By.ClassName("content__listing"));
 
-                        if(Element.IsPresent(listing, By.TagName("article")))
+                        if (Element.IsPresent(listing, By.TagName("article")))
                         {
                             var articles = listing.FindElements(By.TagName("article"));
 

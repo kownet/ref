@@ -3,11 +3,11 @@ using Ref.Shared.Providers;
 
 namespace Ref.Sites.Helpers.QueryStrings
 {
-    public class OlxQs : IQs
+    public class OlxQueryString : IQueryString
     {
         private readonly IFilterProvider _filter;
 
-        public OlxQs(IFilterProvider filter)
+        public OlxQueryString(IFilterProvider filter)
         {
             _filter = filter;
         }

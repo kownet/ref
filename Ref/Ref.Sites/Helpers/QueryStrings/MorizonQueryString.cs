@@ -3,11 +3,11 @@ using Ref.Shared.Providers;
 
 namespace Ref.Sites.Helpers.QueryStrings
 {
-    public class MorizonQs : IQs
+    public class MorizonQueryString : IQueryString
     {
         private readonly IFilterProvider _filter;
 
-        public MorizonQs(IFilterProvider filter)
+        public MorizonQueryString(IFilterProvider filter)
         {
             _filter = filter;
         }

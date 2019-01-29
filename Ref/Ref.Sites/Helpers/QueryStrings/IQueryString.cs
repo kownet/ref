@@ -1,6 +1,6 @@
 ﻿namespace Ref.Sites.Helpers.QueryStrings
 {
-    public interface IQs
+    public interface IQueryString
     {
         string Get();
     }

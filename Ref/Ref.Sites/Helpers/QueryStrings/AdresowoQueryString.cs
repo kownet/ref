@@ -3,11 +3,11 @@ using Ref.Shared.Providers;
 
 namespace Ref.Sites.Helpers.QueryStrings
 {
-    public class AdresowoQs : IQs
+    public class AdresowoQueryString : IQueryString
     {
         private readonly IFilterProvider _filter;
 
-        public AdresowoQs(IFilterProvider filter)
+        public AdresowoQueryString(IFilterProvider filter)
         {
             _filter = filter;
         }

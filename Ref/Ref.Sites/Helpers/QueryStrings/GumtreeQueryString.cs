@@ -3,11 +3,11 @@ using Ref.Shared.Providers;
 
 namespace Ref.Sites.Helpers.QueryStrings
 {
-    public class GumtreeQs : IQs
+    public class GumtreeQueryString : IQueryString
     {
         private readonly IFilterProvider _filter;
 
-        public GumtreeQs(IFilterProvider filter)
+        public GumtreeQueryString(IFilterProvider filter)
         {
             _filter = filter;
         }

@@ -4,6 +4,7 @@ using Ref.Data.Models;
 using Ref.Shared.Extensions;
 using Ref.Shared.Providers;
 using Ref.Sites.Helpers;
+using Ref.Sites.Helpers.Pagination;
 using System;
 using System.Collections.Generic;
 
@@ -26,22 +27,7 @@ namespace Ref.Sites
             {
                 driver.Navigate().GoToUrl(searchQuery);
 
-                int pages = 1;
-
-                if (Element.IsPresent(driver, By.ClassName("pager")))
-                {
-                    var pagesElementText = driver.FindElement(By.ClassName("pager"));
-
-                    if (Element.IsPresent(pagesElementText, By.ClassName("current")))
-                    {
-                        var current = driver.FindElement(By.ClassName("current")).Text;
-
-                        if (int.TryParse(current, out pages))
-                        {
-
-                        }
-                    }
-                }
+                int pages = new OtoDomPagination().Get(driver);
 
                 for (int i = 1; i <= pages; i++)
                 {
