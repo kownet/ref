@@ -1,6 +1,7 @@
 ﻿using Ref.Data.Models;
 using Ref.Shared.Extensions;
 using Ref.Shared.Notifications.Messages;
+using Ref.Shared.Utils;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,27 +12,35 @@ namespace Ref.Data.Views
     {
         public static PushOverMessage ForPushOver(IEnumerable<Ad> records)
         {
-            if(records.AnyAndNotNull())
+            if (records.AnyAndNotNull())
             {
-                var isare = records.Count() > 1 ? $"are {records.Count()}" : $"is {records.Count()}";
-                var s = records.Count() > 1 ? "s" : string.Empty;
-
-                var title = $"There {isare} new record{s}";
-
                 var sb = new StringBuilder();
 
-                foreach (var record in records)
-                {
-                    var msg = $"{record.Price} - <a href=\"{record.Url}\">{record.Header}</a>";
+                var grouped = records.GroupBy(r => r.SiteType);
 
-                    sb.AppendLine(msg);
+                foreach (var group in grouped)
+                {
+                    var site = group.Key.ToString();
+
+                    var list = group.Select(g => g);
+
+                    var count = 0;
+
+                    if (list.AnyAndNotNull())
+                    {
+                        count = list.Count();
+
+                        sb.AppendLine($"{site} [{list.Count()}]");
+                    }
                 }
 
-                return new PushOverMessage(title, sb.ToString());
+                sb.AppendLine(Labels.RecordsFoundPushoverContent);
+
+                return new PushOverMessage(Labels.RecordsFoundTitle, sb.ToString());
             }
             else
             {
-                return new PushOverMessage("There are no new records.", "Maybe next time.");
+                return new PushOverMessage(Labels.NoNewRecordsMsgTitle, Labels.NoNewRecordsMsgContent);
             }
         }
 
@@ -39,34 +48,40 @@ namespace Ref.Data.Views
         {
             if (records.AnyAndNotNull())
             {
-                var isare = records.Count() > 1 ? $"are {records.Count()}" : $"is {records.Count()}";
-                var s = records.Count() > 1 ? "s" : string.Empty;
-
-                var title = $"There {isare} new record{s}";
-
                 var sbRaw = new StringBuilder();
-
-                foreach (var record in records)
-                {
-                    var msg = $"{record.Price} - {record.Url} - {record.Header}";
-
-                    sbRaw.AppendLine(msg);
-                }
-
                 var sbHtml = new StringBuilder();
 
-                foreach (var record in records)
-                {
-                    var msg = $"{record.Price} - <a href=\"{record.Url}\">{record.Header}</a> [{record.Area}]<br>";
+                var grouped = records.GroupBy(r => r.SiteType);
 
-                    sbHtml.AppendLine(msg);
+                foreach (var group in grouped)
+                {
+                    var site = group.Key.ToString();
+
+                    var list = group.Select(g => g);
+
+                    var count = 0;
+
+                    if (list.AnyAndNotNull())
+                        count = list.Count();
+
+                    sbRaw.AppendLine($"{site} [{count}]:");
+                    sbHtml.AppendLine($"<strong>{site} [{count}]:</strong>");
+
+                    foreach (var element in list)
+                    {
+                        var msgRaw = $"{element.Price} - {element.Url} - {element.Header}";
+                        sbRaw.AppendLine(msgRaw);
+
+                        var msgHtml = $"{element.Price} - <a href=\"{element.Url}\">{element.Header}</a><br>";
+                        sbHtml.AppendLine(msgHtml);
+                    }
                 }
 
-                return new EmailMessage(title, sbRaw.ToString(), sbHtml.ToString());
+                return new EmailMessage(Labels.RecordsFoundTitle, sbRaw.ToString(), sbHtml.ToString());
             }
             else
             {
-                return new EmailMessage("There are no new records.", "Maybe next time.");
+                return new EmailMessage(Labels.NoNewRecordsMsgTitle, Labels.NoNewRecordsMsgContent);
             }
         }
     }

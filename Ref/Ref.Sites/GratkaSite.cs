@@ -5,6 +5,7 @@ using Ref.Shared.Extensions;
 using Ref.Shared.Providers;
 using Ref.Sites.Helpers;
 using Ref.Sites.Helpers.Pagination;
+using Ref.Sites.Helpers.QueryStrings;
 using System;
 using System.Collections.Generic;
 
@@ -21,7 +22,7 @@ namespace Ref.Sites
         {
             var result = new List<Ad>();
 
-            var searchQuery = new QueryStringBuilder(SiteType.Gratka, filterProvider).Get();
+            var searchQuery = new GratkaQueryString(filterProvider).Get();
 
             using (var driver = new ChromeDriver(_service, _options, TimeSpan.FromSeconds(DriverTimeSpan)))
             {

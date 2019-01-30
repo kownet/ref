@@ -5,6 +5,7 @@ using Ref.Shared.Extensions;
 using Ref.Shared.Providers;
 using Ref.Sites.Helpers;
 using Ref.Sites.Helpers.Pagination;
+using Ref.Sites.Helpers.QueryStrings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,7 @@ namespace Ref.Sites
         {
             var result = new List<Ad>();
 
-            var searchQuery = new QueryStringBuilder(SiteType.Gumtree, filterProvider).Get();
+            var searchQuery = new GumtreeQueryString(filterProvider).Get();
 
             var code = FilterResolver.Code(filterProvider);
 
