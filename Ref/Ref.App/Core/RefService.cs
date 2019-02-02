@@ -47,6 +47,9 @@ namespace Ref.App.Core
 
         public void Crawl()
         {
+            /// TODO: send email to client email
+            /// TODO: filter name to email
+
             try
             {
                 var clients = _clientRepository.GetAll();
