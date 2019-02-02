@@ -1,77 +1,73 @@
 ﻿using Ref.Data.Models;
-using Ref.Shared.Providers;
-using Ref.Shared.Utils;
 
 namespace Ref.Sites.Helpers
 {
     public static class FilterResolver
     {
-        public static string Type(SiteType siteType, IFilterProvider filter)
+        public static string Type(SiteType siteType, Filter filter)
         {
-            var typeEnum = (PropertyTypes)filter.Type();
-
             switch (siteType)
             {
                 case SiteType.OtoDom:
                     {
-                        switch (typeEnum)
+                        switch (filter.Type)
                         {
-                            case PropertyTypes.Flat: return "mieszkanie";
-                            case PropertyTypes.House: return "dom";
+                            case PropertyType.Flat: return "mieszkanie";
+                            case PropertyType.House: return "dom";
                             default: return string.Empty;
                         };
                     }
                 case SiteType.Olx:
                     {
-                        switch (typeEnum)
+                        switch (filter.Type)
                         {
-                            case PropertyTypes.Flat: return "mieszkania";
-                            case PropertyTypes.House: return "domy";
+                            case PropertyType.Flat: return "mieszkania";
+                            case PropertyType.House: return "domy";
                             default: return string.Empty;
                         };
                     }
                 case SiteType.Adresowo:
                     {
-                        switch (typeEnum)
+                        switch (filter.Type)
                         {
-                            case PropertyTypes.Flat: return "mieszkania";
-                            case PropertyTypes.House: return "domy";
+                            case PropertyType.Flat: return "mieszkania";
+                            case PropertyType.House: return "domy";
                             default: return string.Empty;
                         };
                     }
                 case SiteType.DomiPorta:
                     {
-                        switch (typeEnum)
+                        switch (filter.Type)
                         {
-                            case PropertyTypes.Flat: return "mieszkanie";
-                            case PropertyTypes.House: return "dom";
+                            case PropertyType.Flat: return "mieszkanie";
+                            case PropertyType.House: return "dom";
                             default: return string.Empty;
                         };
                     }
                 case SiteType.Gratka:
                     {
-                        switch (typeEnum)
+                        switch (filter.Type)
                         {
-                            case PropertyTypes.Flat: return "mieszkania";
-                            case PropertyTypes.House: return "domy";
+                            case PropertyType.Flat: return "mieszkania";
+                            case PropertyType.House: return "domy";
                             default: return string.Empty;
                         };
                     }
                 case SiteType.Morizon:
                     {
-                        switch (typeEnum)
+                        switch (filter.Type)
                         {
-                            case PropertyTypes.Flat: return "mieszkania";
-                            case PropertyTypes.House: return "domy";
+                            case PropertyType.Flat: return "mieszkania";
+                            case PropertyType.House: return "domy";
                             default: return string.Empty;
                         };
                     }
                 case SiteType.Gumtree:
                     {
-                        switch (typeEnum)
+                        switch (filter.Type)
                         {
-                            case PropertyTypes.Flat: return "s-mieszkania-i-domy";
-                            case PropertyTypes.House: return "s-mieszkania-i-domy";
+                            case PropertyType.Flat: return "s-mieszkania-i-domy";
+                            case PropertyType.House: return "s-mieszkania-i-domy";
                             default: return string.Empty;
                         };
                     }
@@ -79,72 +75,70 @@ namespace Ref.Sites.Helpers
             }
         }
 
-        public static string Deal(SiteType siteType, IFilterProvider filter)
+        public static string Deal(SiteType siteType, Filter filter)
         {
-            var dealEnum = (DealTypes)filter.Deal();
-
             switch (siteType)
             {
                 case SiteType.OtoDom:
                     {
-                        switch (dealEnum)
+                        switch (filter.Deal)
                         {
-                            case DealTypes.Sale: return "sprzedaz";
-                            case DealTypes.Rent: return "wynajem";
+                            case DealType.Sale: return "sprzedaz";
+                            case DealType.Rent: return "wynajem";
                             default: return string.Empty;
                         };
                     }
                 case SiteType.Olx:
                     {
-                        switch (dealEnum)
+                        switch (filter.Deal)
                         {
-                            case DealTypes.Sale: return "sprzedaz";
-                            case DealTypes.Rent: return "wynajem";
+                            case DealType.Sale: return "sprzedaz";
+                            case DealType.Rent: return "wynajem";
                             default: return string.Empty;
                         };
                     }
                 case SiteType.Adresowo:
                     {
-                        switch (dealEnum)
+                        switch (filter.Deal)
                         {
-                            case DealTypes.Sale: return string.Empty;
-                            case DealTypes.Rent: return string.Empty;
+                            case DealType.Sale: return string.Empty;
+                            case DealType.Rent: return string.Empty;
                             default: return string.Empty;
                         };
                     }
                 case SiteType.DomiPorta:
                     {
-                        switch (dealEnum)
+                        switch (filter.Deal)
                         {
-                            case DealTypes.Sale: return "sprzedam";
-                            case DealTypes.Rent: return "wynajme";
+                            case DealType.Sale: return "sprzedam";
+                            case DealType.Rent: return "wynajme";
                             default: return string.Empty;
                         };
                     }
                 case SiteType.Gratka:
                     {
-                        switch (dealEnum)
+                        switch (filter.Deal)
                         {
-                            case DealTypes.Sale: return "sprzedaz";
-                            case DealTypes.Rent: return "wynajem";
+                            case DealType.Sale: return "sprzedaz";
+                            case DealType.Rent: return "wynajem";
                             default: return string.Empty;
                         };
                     }
                 case SiteType.Morizon:
                     {
-                        switch (dealEnum)
+                        switch (filter.Deal)
                         {
-                            case DealTypes.Sale: return string.Empty;
-                            case DealTypes.Rent: return "do-wynajecia";
+                            case DealType.Sale: return string.Empty;
+                            case DealType.Rent: return "do-wynajecia";
                             default: return string.Empty;
                         };
                     }
                 case SiteType.Gumtree:
                     {
-                        switch (dealEnum)
+                        switch (filter.Deal)
                         {
-                            case DealTypes.Sale: return "-sprzedam-i-kupie";
-                            case DealTypes.Rent: return "-do-wynajecia";
+                            case DealType.Sale: return "-sprzedam-i-kupie";
+                            case DealType.Rent: return "-do-wynajecia";
                             default: return string.Empty;
                         };
                     }
@@ -152,72 +146,70 @@ namespace Ref.Sites.Helpers
             }
         }
 
-        public static string Market(SiteType siteType, IFilterProvider filter)
+        public static string Market(SiteType siteType, Filter filter)
         {
-            var marketEnum = (MarketTypes)filter.Market();
-
             switch (siteType)
             {
                 case SiteType.OtoDom:
                     {
-                        switch (marketEnum)
+                        switch (filter.Market)
                         {
-                            case MarketTypes.Primary: return ""; // TODO: nowe-Type()
-                            case MarketTypes.Secondary: return "secondary";
+                            case MarketType.Primary: return ""; // TODO: nowe-Type()
+                            case MarketType.Secondary: return "secondary";
                             default: return string.Empty;
                         };
                     }
                 case SiteType.Olx:
                     {
-                        switch (marketEnum)
+                        switch (filter.Market)
                         {
-                            case MarketTypes.Primary: return "primary";
-                            case MarketTypes.Secondary: return "secondary";
+                            case MarketType.Primary: return "primary";
+                            case MarketType.Secondary: return "secondary";
                             default: return string.Empty;
                         };
                     }
                 case SiteType.Adresowo:
                     {
-                        switch (marketEnum)
+                        switch (filter.Market)
                         {
-                            case MarketTypes.Primary: return string.Empty;
-                            case MarketTypes.Secondary: return "fuz";
+                            case MarketType.Primary: return string.Empty;
+                            case MarketType.Secondary: return "fuz";
                             default: return string.Empty;
                         };
                     }
                 case SiteType.DomiPorta:
                     {
-                        switch (marketEnum)
+                        switch (filter.Market)
                         {
-                            case MarketTypes.Primary: return string.Empty;
-                            case MarketTypes.Secondary: return "Wtorny";
+                            case MarketType.Primary: return string.Empty;
+                            case MarketType.Secondary: return "Wtorny";
                             default: return string.Empty;
                         };
                     }
                 case SiteType.Gratka:
                     {
-                        switch (marketEnum)
+                        switch (filter.Market)
                         {
-                            case MarketTypes.Primary: return "pierwotny";
-                            case MarketTypes.Secondary: return "wtorny";
+                            case MarketType.Primary: return "pierwotny";
+                            case MarketType.Secondary: return "wtorny";
                             default: return string.Empty;
                         };
                     }
                 case SiteType.Morizon:
                     {
-                        switch (marketEnum)
+                        switch (filter.Market)
                         {
-                            case MarketTypes.Primary: return "1";
-                            case MarketTypes.Secondary: return "2";
+                            case MarketType.Primary: return "1";
+                            case MarketType.Secondary: return "2";
                             default: return string.Empty;
                         };
                     }
                 case SiteType.Gumtree:
                     {
-                        switch (marketEnum)
+                        switch (filter.Market)
                         {
-                            case MarketTypes.Primary: return string.Empty;
-                            case MarketTypes.Secondary: return string.Empty;
+                            case MarketType.Primary: return string.Empty;
+                            case MarketType.Secondary: return string.Empty;
                             default: return string.Empty;
                         };
                     }
@@ -225,10 +217,10 @@ namespace Ref.Sites.Helpers
             }
         }
 
-        public static string Code(IFilterProvider filter)
+        public static string Code(Filter filter)
         {
             /// TODO: cities!
-            switch (filter.Location())
+            switch (filter.Location)
             {
                 case "warszawa": return "v1c9073l3200008a1dwp";
                 default: return string.Empty;

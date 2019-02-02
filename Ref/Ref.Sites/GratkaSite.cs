@@ -8,6 +8,7 @@ using Ref.Sites.Helpers.Pagination;
 using Ref.Sites.Helpers.QueryStrings;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Ref.Sites
 {
@@ -18,11 +19,13 @@ namespace Ref.Sites
         {
         }
 
-        public IEnumerable<Ad> Search(IFilterProvider filterProvider)
+        public IEnumerable<Ad> Search(IEnumerable<Filter> filterProvider)
         {
+            var filter = filterProvider.First();
+
             var result = new List<Ad>();
 
-            var searchQuery = new GratkaQueryString(filterProvider).Get();
+            var searchQuery = new GratkaQueryString(filter).Get();
 
             using (var driver = new ChromeDriver(_service, _options, TimeSpan.FromSeconds(DriverTimeSpan)))
             {

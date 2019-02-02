@@ -1,29 +1,31 @@
-﻿using Ref.Shared.Utils;
-using System.IO;
+﻿using System.IO;
 
 namespace Ref.Shared.Providers
 {
     public interface IStorageProvider
     {
-        string Dir();
-        string Client();
-        string FullPath();
+        string ResultPath();
+        string ResultFullPath(string clientCode);
+
+        string ClientsPath();
+        string ClientsFullPath(string clientCode);
     }
 
     public class StorageProvider : IStorageProvider
     {
-        private readonly string _dir;
-        private readonly string _client;
+        private readonly string _resultPath;
+        private readonly string _clientsPath;
 
-        public StorageProvider(string dir, string client)
+        public StorageProvider(string resultPath, string clientsPath)
         {
-            _dir = dir;
-            _client = client;
+            _resultPath = resultPath;
+            _clientsPath = clientsPath;
         }
 
-        public string Dir() => _dir;
-        public string Client() => _client;
+        public string ResultPath() => _resultPath;
+        public string ClientsPath() => _clientsPath;
 
-        public string FullPath() => Path.Combine(_dir, StorageFile.Name(Client()));
+        public string ResultFullPath(string clientCode) => Path.Combine(ResultPath(), $"{clientCode}-result.json");
+        public string ClientsFullPath(string clientCode) => Path.Combine(ClientsPath(), $"{clientCode}.json");
     }
 }

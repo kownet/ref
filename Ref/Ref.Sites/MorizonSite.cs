@@ -19,11 +19,13 @@ namespace Ref.Sites
         {
         }
 
-        public IEnumerable<Ad> Search(IFilterProvider filterProvider)
+        public IEnumerable<Ad> Search(IEnumerable<Filter> filterProvider)
         {
+            var filter = filterProvider.First();
+
             var result = new List<Ad>();
 
-            var searchQuery = new MorizonQueryString(filterProvider).Get();
+            var searchQuery = new MorizonQueryString(filter).Get();
 
             using (var driver = new ChromeDriver(_service, _options, TimeSpan.FromSeconds(DriverTimeSpan)))
             {

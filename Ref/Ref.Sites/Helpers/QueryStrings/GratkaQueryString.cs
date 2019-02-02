@@ -1,13 +1,12 @@
 ﻿using Ref.Data.Models;
-using Ref.Shared.Providers;
 
 namespace Ref.Sites.Helpers.QueryStrings
 {
     public class GratkaQueryString : IQueryString
     {
-        private readonly IFilterProvider _filter;
+        private readonly Filter _filter;
 
-        public GratkaQueryString(IFilterProvider filter)
+        public GratkaQueryString(Filter filter)
         {
             _filter = filter;
         }
@@ -19,24 +18,24 @@ namespace Ref.Sites.Helpers.QueryStrings
             var market = FilterResolver.Market(SiteType.Gratka, _filter);
 
             var result =
-                $"https://gratka.pl/nieruchomosci/{type}/{_filter.Location()}/{deal}?";
+                $"https://gratka.pl/nieruchomosci/{type}/{_filter.Location}/{deal}?";
 
-            if (_filter.PriceFrom() != 0)
-                result = result + $"cena-calkowita:min={_filter.PriceFrom()}";
+            if (_filter.PriceFrom != 0)
+                result = result + $"cena-calkowita:min={_filter.PriceFrom}";
 
-            if (_filter.PriceTo() != 0)
-                result = result + $"&cena-calkowita:max={_filter.PriceTo()}";
+            if (_filter.PriceTo != 0)
+                result = result + $"&cena-calkowita:max={_filter.PriceTo}";
 
-            if (_filter.FlatAreaFrom() != 0)
-                result = result + $"&powierzchnia-w-m2:min={_filter.FlatAreaFrom()}";
+            if (_filter.FlatAreaFrom != 0)
+                result = result + $"&powierzchnia-w-m2:min={_filter.FlatAreaFrom}";
 
-            if (_filter.FlatAreaTo() != 0)
-                result = result + $"&powierzchnia-w-m2:max={_filter.FlatAreaTo()}";
+            if (_filter.FlatAreaTo != 0)
+                result = result + $"&powierzchnia-w-m2:max={_filter.FlatAreaTo}";
 
             if (!string.IsNullOrWhiteSpace(market))
                 result = result + $"&rynek={market}";
 
-            if (_filter.Newest() == 1)
+            if (_filter.Newest == 1)
                 result = result + $"&data-dodania-search=ostatnich-24h&sort=newest";
 
             return result;

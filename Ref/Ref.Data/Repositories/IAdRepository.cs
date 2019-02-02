@@ -4,53 +4,53 @@ using Ref.Shared.Extensions;
 using Ref.Shared.Providers;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace Ref.Data.Repositories
 {
     public interface IAdRepository : IRepository
     {
-        IEnumerable<Ad> GetAll();
-        IEnumerable<Ad> GetBySite(SiteType siteType);
-        void SaveAll(IEnumerable<Ad> ads);
+        IEnumerable<Ad> GetAll(string clientCode);
+        void SaveAll(string clientCode, IEnumerable<Ad> ads);
     }
 
-    public class JsonRepository : IAdRepository
+    public class AdJsonRepository : IAdRepository
     {
         private readonly IStorageProvider _storageProvider;
 
-        public JsonRepository(IStorageProvider storageProvider)
+        public AdJsonRepository(IStorageProvider storageProvider)
         {
             _storageProvider = storageProvider;
         }
 
-        public IEnumerable<Ad> GetAll()
+        public IEnumerable<Ad> GetAll(string clientCode)
         {
             var result = new List<Ad>();
 
-            var currentContent = File.ReadAllText(_storageProvider.FullPath());
+            var clientPath = _storageProvider.ResultFullPath(clientCode);
 
-            var currentContentList = JsonConvert.DeserializeObject<List<Ad>>(currentContent);
-
-            if (currentContentList.AnyAndNotNull())
+            if(File.Exists(clientPath))
             {
-                result.AddRange(currentContentList);
+                var currentContent = File.ReadAllText(clientPath);
+
+                var currentContentList = JsonConvert.DeserializeObject<List<Ad>>(currentContent);
+
+                if (currentContentList.AnyAndNotNull())
+                {
+                    result.AddRange(currentContentList);
+                }
             }
 
             return result;
         }
 
-        public IEnumerable<Ad> GetBySite(SiteType siteType)
-            => GetAll().Where(s => s.SiteType == siteType);
-
-        public void SaveAll(IEnumerable<Ad> ads)
+        public void SaveAll(string clientCode, IEnumerable<Ad> ads)
         {
             var json = JsonConvert.SerializeObject(ads);
 
             if (!string.IsNullOrWhiteSpace(json))
             {
                 File.WriteAllText(
-                    _storageProvider.FullPath(),
+                    _storageProvider.ResultFullPath(clientCode),
                     json
                 );
             }

@@ -19,26 +19,28 @@ namespace Ref.App.Core
         private readonly ILogger<RefService> _logger;
 
         private readonly Func<SiteType, ISite> _siteAccessor;
-        private readonly IFilterProvider _filterProvider;
         private readonly IAppProvider _appProvider;
+
         private readonly IAdRepository _adRepository;
+        private readonly IClientRepository _clientRepository;
+
         private readonly IPushOverNotification _pushOverNotification;
         private readonly IEmailNotification _emailNotification;
 
         public RefService(
             ILogger<RefService> logger,
             Func<SiteType, ISite> siteAccessor,
-            IFilterProvider filterProvider,
             IAppProvider appProvider,
             IAdRepository adRepository,
+            IClientRepository clientRepository,
             IPushOverNotification pushOverNotification,
             IEmailNotification emailNotification)
         {
             _logger = logger;
             _siteAccessor = siteAccessor;
-            _filterProvider = filterProvider;
             _appProvider = appProvider;
             _adRepository = adRepository;
+            _clientRepository = clientRepository;
             _pushOverNotification = pushOverNotification;
             _emailNotification = emailNotification;
         }
@@ -47,43 +49,56 @@ namespace Ref.App.Core
         {
             try
             {
-                var oldest = _adRepository.GetAll();
+                var clients = _clientRepository.GetAll();
 
-                var newestAll = new List<Ad>();
-                var newest = new List<Ad>();
-
-                foreach (SiteType siteType in Enum.GetValues(typeof(SiteType)))
+                if(clients.AnyAndNotNull())
                 {
-                    var newestFromSite = _siteAccessor(siteType).Search(_filterProvider);
+                    foreach (var client in clients)
+                    {
+                        var oldest = _adRepository.GetAll(client.Code);
 
-                    newestAll.AddRange(newestFromSite);
+                        if(oldest.AnyAndNotNull())
+                        {
+                            var newestAll = new List<Ad>();
+                            var newest = new List<Ad>();
 
-                    var newestFrom = newestFromSite
-                        .Where(p => oldest.Where(t => t.SiteType == siteType)
-                        .All(p2 => p2.Id != p.Id));
+                            foreach (SiteType siteType in Enum.GetValues(typeof(SiteType)))
+                            {
+                                var newestFromSite = _siteAccessor(siteType).Search(client.Filters);
 
-                    newest.AddRange(newestFrom);
+                                newestAll.AddRange(newestFromSite);
 
-                    _logger.LogTrace($"From {siteType.ToString()} collected {newestFromSite.Count()} records, {newestFrom.Count()} new.");
+                                var newestFrom = newestFromSite
+                                    .Where(p => oldest.Where(t => t.SiteType == siteType)
+                                    .All(p2 => p2.Id != p.Id));
 
-                    Thread.Sleep(_appProvider.PauseTime());
+                                newest.AddRange(newestFrom);
+
+                                _logger.LogTrace($"From {siteType.ToString()} collected {newestFromSite.Count()} records, {newestFrom.Count()} new.");
+
+                                Thread.Sleep(_appProvider.PauseTime());
+                            }
+
+                            if (newestAll.AnyAndNotNull())
+                            {
+                                _adRepository.SaveAll(client.Code, newestAll);
+                            }
+
+                            if (newest.AnyAndNotNull())
+                            {
+                                var ntfe = View.ForEmail(newest);
+
+                                _emailNotification.Send(ntfe.Title, ntfe.RawMessage, ntfe.HtmlMessage);
+                            }
+
+                            var ntfp = View.ForPushOver(newest);
+
+                            _pushOverNotification.Send(ntfp.Title, ntfp.Message);
+                        }
+
+                        Thread.Sleep(_appProvider.PauseTime());
+                    }
                 }
-
-                if (newestAll.AnyAndNotNull())
-                {
-                    _adRepository.SaveAll(newestAll);
-                }
-
-                if(newest.AnyAndNotNull())
-                {
-                    var ntfe = View.ForEmail(newest);
-
-                    _emailNotification.Send(ntfe.Title, ntfe.RawMessage, ntfe.HtmlMessage);
-                }
-
-                var ntfp = View.ForPushOver(newest);
-
-                _pushOverNotification.Send(ntfp.Title, ntfp.Message);
             }
             catch (Exception ex)
             {

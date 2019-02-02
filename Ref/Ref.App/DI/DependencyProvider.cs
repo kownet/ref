@@ -15,7 +15,7 @@ namespace Ref.App.DI
 {
     public static class DependencyProvider
     {
-        public static IServiceProvider Get(IConfigurationRoot configurationRoot, string clientId)
+        public static IServiceProvider Get(IConfigurationRoot configurationRoot, string appId)
         {
             var services = new ServiceCollection();
 
@@ -31,15 +31,11 @@ namespace Ref.App.DI
             });
             #endregion
 
-            #region Client
-            services.AddTransient<IClientProvider>(s => new ClientProvider(clientId));
-            #endregion
-
             #region Storages
             services.AddTransient<IStorageProvider>(
                 s => new StorageProvider(
-                    configurationRoot["storages:file_json:dir"],
-                    clientId)
+                    configurationRoot["storages:file_json:result"],
+                    configurationRoot["storages:file_json:clients"])
                 );
             #endregion
 
@@ -64,23 +60,8 @@ namespace Ref.App.DI
             #endregion
 
             #region Repositories
-            services.AddTransient<IAdRepository, JsonRepository>();
-            #endregion
-
-            #region Filters
-            services.AddTransient<IFilterProvider>(
-                s => new FilterProvider(
-                        configurationRoot["filter:type"],
-                        configurationRoot["filter:deal"],
-                        configurationRoot["filter:location"],
-                        configurationRoot["filter:flatareafrom"],
-                        configurationRoot["filter:flatareato"],
-                        configurationRoot["filter:pricefrom"],
-                        configurationRoot["filter:priceto"],
-                        configurationRoot["filter:market"],
-                        configurationRoot["filter:newest"]
-                    )
-                );
+            services.AddTransient<IClientRepository, ClientJsonRepository>();
+            services.AddTransient<IAdRepository, AdJsonRepository>();
             #endregion
 
             #region Sites
@@ -119,7 +100,6 @@ namespace Ref.App.DI
             #region App
             services.AddTransient<IAppProvider>(
                 s => new AppProvider(
-                    configurationRoot["app:version"],
                     configurationRoot["app:sender"],
                     configurationRoot["app:replyto"],
                     configurationRoot["app:binpath"],

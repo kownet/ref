@@ -19,13 +19,15 @@ namespace Ref.Sites
         {
         }
 
-        public IEnumerable<Ad> Search(IFilterProvider filterProvider)
+        public IEnumerable<Ad> Search(IEnumerable<Filter> filterProvider)
         {
+            var filter = filterProvider.First();
+
             var result = new List<Ad>();
 
-            var searchQuery = new GumtreeQueryString(filterProvider).Get();
+            var searchQuery = new GumtreeQueryString(filter).Get();
 
-            var code = FilterResolver.Code(filterProvider);
+            var code = FilterResolver.Code(filter);
 
             using (var driver = new ChromeDriver(_service, _options, TimeSpan.FromSeconds(DriverTimeSpan)))
             {
