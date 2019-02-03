@@ -47,14 +47,13 @@ namespace Ref.App.Core
 
         public void Crawl()
         {
-            /// TODO: send email to client email
             /// TODO: filter name to email
 
             try
             {
                 var clients = _clientRepository.GetAll();
 
-                if(clients.AnyAndNotNull())
+                if (clients.AnyAndNotNull())
                 {
                     foreach (var client in clients)
                     {
@@ -91,7 +90,11 @@ namespace Ref.App.Core
                             {
                                 var ntfe = View.ForEmail(newest);
 
-                                _emailNotification.Send(ntfe.Title, ntfe.RawMessage, ntfe.HtmlMessage);
+                                _emailNotification.Send(
+                                    ntfe.Title,
+                                    ntfe.RawMessage,
+                                    ntfe.HtmlMessage,
+                                    new string[] { $"{client.Name} <{client.Email}>" });
                             }
 
                             var ntfp = View.ForPushOver(newest);

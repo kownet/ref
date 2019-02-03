@@ -52,8 +52,7 @@ namespace Ref.App.DI
             services.AddTransient<IEmailProvider>(
                 s => new EmailProvider(
                     configurationRoot["notifications:email:host"],
-                    configurationRoot["notifications:email:apikey"],
-                    configurationRoot["notifications:email:recipients"])
+                    configurationRoot["notifications:email:apikey"])
                 );
 
             services.AddTransient<IEmailNotification, EmailNotification>();

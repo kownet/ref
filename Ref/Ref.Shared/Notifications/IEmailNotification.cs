@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Ref.Shared.Extensions;
 using Ref.Shared.Notifications.Payloads;
 using Ref.Shared.Providers;
 using System;
@@ -11,7 +12,7 @@ namespace Ref.Shared.Notifications
 {
     public interface IEmailNotification
     {
-        void Send(string title, string rawMessage, string htmlMessage);
+        void Send(string title, string rawMessage, string htmlMessage, string[] recipients);
     }
 
     public class EmailNotification : IEmailNotification
@@ -27,15 +28,13 @@ namespace Ref.Shared.Notifications
             _appProvider = appProvider;
         }
 
-        public void Send(string title, string rawMessage, string htmlMessage)
+        public void Send(string title, string rawMessage, string htmlMessage, string[] recipients)
         {
             if (!string.IsNullOrWhiteSpace(title) &&
-                (!string.IsNullOrWhiteSpace(rawMessage) || !string.IsNullOrWhiteSpace(htmlMessage)))
+                (!string.IsNullOrWhiteSpace(rawMessage) || !string.IsNullOrWhiteSpace(htmlMessage)) &&
+                recipients.AnyAndNotNull())
             {
-                var to = new List<string>
-                {
-                    _emailProvider.Recipients()
-                };
+                var to = new List<string>(recipients);
 
                 var payload = new EmailPayload
                 {
