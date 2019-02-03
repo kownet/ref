@@ -1,10 +1,11 @@
 ﻿using Ref.Data.Models;
+using Ref.Sites.Helpers;
 using System.Collections.Generic;
 
 namespace Ref.Sites
 {
     public interface ISite
     {
-        IEnumerable<Ad> Search(IEnumerable<Filter> filterProvider);
+        SiteResponse Search(IEnumerable<Filter> filterProvider);
     }
 }

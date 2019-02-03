@@ -10,8 +10,10 @@ namespace Ref.Data.Views
 {
     public static class View
     {
-        public static PushOverMessage ForPushOver(IEnumerable<Ad> records)
+        public static PushOverMessage ForPushOver(IEnumerable<Ad> records, string title = "")
         {
+            var header = string.IsNullOrWhiteSpace(title) ? "" : $" - {title}";
+
             if (records.AnyAndNotNull())
             {
                 var sb = new StringBuilder();
@@ -36,16 +38,18 @@ namespace Ref.Data.Views
 
                 sb.AppendLine(Labels.RecordsFoundPushoverContent);
 
-                return new PushOverMessage(Labels.RecordsFoundTitle, sb.ToString());
+                return new PushOverMessage($"{Labels.RecordsFoundTitle}{header}", sb.ToString());
             }
             else
             {
-                return new PushOverMessage(Labels.NoNewRecordsMsgTitle, Labels.NoNewRecordsMsgContent);
+                return new PushOverMessage($"{Labels.NoNewRecordsMsgTitle}{header}", Labels.NoNewRecordsMsgContent);
             }
         }
 
-        public static EmailMessage ForEmail(IEnumerable<Ad> records)
+        public static EmailMessage ForEmail(IEnumerable<Ad> records, string title = "")
         {
+            var header = string.IsNullOrWhiteSpace(title) ? "" : $" - {title}";
+
             if (records.AnyAndNotNull())
             {
                 var sbRaw = new StringBuilder();
@@ -65,7 +69,7 @@ namespace Ref.Data.Views
                         count = list.Count();
 
                     sbRaw.AppendLine($"{site} [{count}]:");
-                    sbHtml.AppendLine($"<strong>{site} [{count}]:</strong>");
+                    sbHtml.AppendLine($"<strong>{site} [{count}]:</strong><br>");
 
                     foreach (var element in list)
                     {
@@ -77,11 +81,11 @@ namespace Ref.Data.Views
                     }
                 }
 
-                return new EmailMessage(Labels.RecordsFoundTitle, sbRaw.ToString(), sbHtml.ToString());
+                return new EmailMessage($"{Labels.RecordsFoundTitle}{header}", sbRaw.ToString(), sbHtml.ToString());
             }
             else
             {
-                return new EmailMessage(Labels.NoNewRecordsMsgTitle, Labels.NoNewRecordsMsgContent);
+                return new EmailMessage($"{Labels.NoNewRecordsMsgTitle}{header}", Labels.NoNewRecordsMsgContent);
             }
         }
     }

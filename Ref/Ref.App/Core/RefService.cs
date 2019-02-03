@@ -47,11 +47,10 @@ namespace Ref.App.Core
 
         public void Crawl()
         {
-            /// TODO: filter name to email
-
             try
             {
                 var clients = _clientRepository.GetAll();
+                var availableSites = _appProvider.Sites().Select(s => (SiteType)s);
 
                 if (clients.AnyAndNotNull())
                 {
@@ -59,48 +58,51 @@ namespace Ref.App.Core
                     {
                         var oldest = _adRepository.GetAll(client.Code);
 
-                        if(oldest.AnyAndNotNull())
+                        var newestAll = new List<Ad>();
+                        var newest = new List<Ad>();
+                        var filterName = string.Empty;
+
+                        foreach (SiteType siteType in availableSites)
                         {
-                            var newestAll = new List<Ad>();
-                            var newest = new List<Ad>();
+                            var result = _siteAccessor(siteType).Search(client.Filters);
 
-                            foreach (SiteType siteType in Enum.GetValues(typeof(SiteType)))
-                            {
-                                var newestFromSite = _siteAccessor(siteType).Search(client.Filters);
+                            var newestFromSite = result.Advertisements;
+                            filterName = result.FilterName;
 
-                                newestAll.AddRange(newestFromSite);
+                            newestAll.AddRange(newestFromSite);
 
-                                var newestFrom = newestFromSite
-                                    .Where(p => oldest.Where(t => t.SiteType == siteType)
-                                    .All(p2 => p2.Id != p.Id));
+                            var newestFrom = newestFromSite
+                                .Where(p => oldest.Where(t => t.SiteType == siteType)
+                                .All(p2 => p2.Id != p.Id));
 
-                                newest.AddRange(newestFrom);
+                            newest.AddRange(newestFrom);
 
-                                _logger.LogTrace($"From {siteType.ToString()} collected {newestFromSite.Count()} records, {newestFrom.Count()} new.");
+                            _logger.LogTrace(
+                                $"From {siteType.ToString()} collected {newestFromSite.Count()} records," +
+                                $" {newestFrom.Count()} new. Client '{client.Name}', Filter '{result.FilterName}'.");
 
-                                Thread.Sleep(_appProvider.PauseTime());
-                            }
-
-                            if (newestAll.AnyAndNotNull())
-                            {
-                                _adRepository.SaveAll(client.Code, newestAll);
-                            }
-
-                            if (newest.AnyAndNotNull())
-                            {
-                                var ntfe = View.ForEmail(newest);
-
-                                _emailNotification.Send(
-                                    ntfe.Title,
-                                    ntfe.RawMessage,
-                                    ntfe.HtmlMessage,
-                                    new string[] { $"{client.Name} <{client.Email}>" });
-                            }
-
-                            var ntfp = View.ForPushOver(newest);
-
-                            _pushOverNotification.Send(ntfp.Title, ntfp.Message);
+                            Thread.Sleep(_appProvider.PauseTime());
                         }
+
+                        if (newestAll.AnyAndNotNull())
+                        {
+                            _adRepository.SaveAll(client.Code, newestAll);
+                        }
+
+                        if (newest.AnyAndNotNull())
+                        {
+                            var ntfe = View.ForEmail(newest, filterName);
+
+                            _emailNotification.Send(
+                                ntfe.Title,
+                                ntfe.RawMessage,
+                                ntfe.HtmlMessage,
+                                new string[] { $"{client.Name} <{client.Email}>" });
+                        }
+
+                        var ntfp = View.ForPushOver(newest, filterName);
+
+                        _pushOverNotification.Send(ntfp.Title, ntfp.Message);
 
                         Thread.Sleep(_appProvider.PauseTime());
                     }

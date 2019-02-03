@@ -19,7 +19,7 @@ namespace Ref.Sites
         {
         }
 
-        public IEnumerable<Ad> Search(IEnumerable<Filter> filterProvider)
+        public SiteResponse Search(IEnumerable<Filter> filterProvider)
         {
             var filter = filterProvider.First();
 
@@ -81,7 +81,7 @@ namespace Ref.Sites
                                     if (Element.IsPresent(article, By.ClassName("sneakpeak__details_item--price")))
                                         PricePerMeterE = article.FindElement(By.ClassName("sneakpeak__details_item--price")).Text;
 
-                                    if (!string.IsNullOrWhiteSpace(IdE))
+                                    if (!string.IsNullOrWhiteSpace(IdE) && !string.IsNullOrWhiteSpace(UrlE))
                                     {
                                         var ad = new Ad
                                         {
@@ -104,7 +104,11 @@ namespace Ref.Sites
                 }
                 driver.Close();
             }
-            return result;
+            return new SiteResponse
+            {
+                FilterName = filter.Name,
+                Advertisements = result
+            };
         }
     }
 }

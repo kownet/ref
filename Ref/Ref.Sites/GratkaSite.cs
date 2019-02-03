@@ -19,7 +19,7 @@ namespace Ref.Sites
         {
         }
 
-        public IEnumerable<Ad> Search(IEnumerable<Filter> filterProvider)
+        public SiteResponse Search(IEnumerable<Filter> filterProvider)
         {
             var filter = filterProvider.First();
 
@@ -71,7 +71,7 @@ namespace Ref.Sites
                                         PricePerMeterE = splitted[1];
                                     }
 
-                                    if (!string.IsNullOrWhiteSpace(IdE))
+                                    if (!string.IsNullOrWhiteSpace(IdE) && !string.IsNullOrWhiteSpace(UrlE))
                                     {
                                         var ad = new Ad
                                         {
@@ -94,7 +94,11 @@ namespace Ref.Sites
                 }
                 driver.Close();
             }
-            return result;
+            return new SiteResponse
+            {
+                FilterName = filter.Name,
+                Advertisements = result
+            };
         }
     }
 }

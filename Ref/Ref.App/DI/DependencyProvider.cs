@@ -102,7 +102,8 @@ namespace Ref.App.DI
                     configurationRoot["app:sender"],
                     configurationRoot["app:replyto"],
                     configurationRoot["app:binpath"],
-                    configurationRoot["app:pausetime"])
+                    configurationRoot["app:pausetime"],
+                    configurationRoot["app:sites"])
                 );
             #endregion
 
