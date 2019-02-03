@@ -31,6 +31,15 @@ namespace Ref.Sites
             {
                 driver.Navigate().GoToUrl(searchQuery);
 
+                if(Element.IsPresent(driver, By.ClassName("search-location-extended-warning")))
+                {
+                    return new SiteResponse
+                    {
+                        FilterName = filter.Name,
+                        Advertisements = result
+                    };
+                }
+
                 int pages = new OtoDomPagination().Get(driver);
 
                 for (int i = 1; i <= pages; i++)
