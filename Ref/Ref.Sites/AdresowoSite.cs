@@ -51,7 +51,7 @@ namespace Ref.Sites
                             {
                                 foreach (var article in articles)
                                 {
-                                    string IdE = article.GetAttribute("id");
+                                    string IdE = !string.IsNullOrWhiteSpace(article.GetAttribute("id")) ? article.GetAttribute("id").Remove(0, 1) : string.Empty;
                                     string UrlE = $"https://adresowo.pl/o/{IdE}";
                                     string HeaderE = string.Empty;
                                     string PriceE = string.Empty;
