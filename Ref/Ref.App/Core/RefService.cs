@@ -113,7 +113,7 @@ namespace Ref.App.Core
                 var msgException = $"Message: {ex.GetFullMessage()}, StackTrace: {ex.StackTrace}";
 
                 _logger.LogError(msgException);
-                _pushOverNotification.Send(Labels.ErrorMsgTitle, ex.GetFullMessage());
+                _pushOverNotification.Send($"[{_appProvider.AppId()}]{Labels.ErrorMsgTitle}", ex.GetFullMessage());
             }
         }
     }
