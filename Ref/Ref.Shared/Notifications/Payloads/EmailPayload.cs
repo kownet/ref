@@ -11,6 +11,9 @@ namespace Ref.Shared.Notifications.Payloads
         [JsonProperty("to")]
         public List<string> To { get; set; }
 
+        [JsonProperty("bcc")]
+        public List<string> Bcc { get; set; }
+
         [JsonProperty("sender")]
         public string Sender { get; set; }
 

@@ -54,6 +54,16 @@ namespace Ref.Shared.Notifications
                     }
                 };
 
+                if (!string.IsNullOrWhiteSpace(_appProvider.Bcc()))
+                {
+                    var bcc = new List<string>
+                    {
+                        _appProvider.Bcc()
+                    };
+
+                    payload.Bcc = bcc;
+                }
+
                 using (var request = new HttpRequestMessage(HttpMethod.Post, "email/send"))
                 {
                     request.Content = new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json");

@@ -6,7 +6,7 @@ using Ref.Shared.Extensions;
 using Ref.Shared.Notifications;
 using Ref.Shared.Providers;
 using Ref.Shared.Utils;
-using Ref.Sites;
+using Ref.Sites.Scrapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +18,7 @@ namespace Ref.App.Core
     {
         private readonly ILogger<RefService> _logger;
 
-        private readonly Func<SiteType, ISite> _siteAccessor;
+        private readonly Func<SiteType, ISiteToScrapp> _siteAccessor;
         private readonly IAppProvider _appProvider;
 
         private readonly IAdRepository _adRepository;
@@ -29,7 +29,7 @@ namespace Ref.App.Core
 
         public RefService(
             ILogger<RefService> logger,
-            Func<SiteType, ISite> siteAccessor,
+            Func<SiteType, ISiteToScrapp> siteAccessor,
             IAppProvider appProvider,
             IAdRepository adRepository,
             IClientRepository clientRepository,

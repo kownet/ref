@@ -7,7 +7,9 @@ using Ref.Data.Models;
 using Ref.Data.Repositories;
 using Ref.Shared.Notifications;
 using Ref.Shared.Providers;
-using Ref.Sites;
+using Ref.Sites.Pages;
+using Ref.Sites.QueryStrings;
+using Ref.Sites.Scrapper;
 using System;
 using System.Collections.Generic;
 
@@ -63,33 +65,99 @@ namespace Ref.App.DI
             services.AddTransient<IAdRepository, AdJsonRepository>();
             #endregion
 
-            #region Sites
-            services.AddTransient<OtoDomSite>();
-            services.AddTransient<OlxSite>();
-            services.AddTransient<AdresowoSite>();
-            services.AddTransient<DomiportaSite>();
-            services.AddTransient<GratkaSite>();
-            services.AddTransient<MorizonSite>();
-            services.AddTransient<GumtreeSite>();
+            #region QueryStrings
+            services.AddTransient<OtoDomQueryString>();
+            services.AddTransient<OlxQueryString>();
+            services.AddTransient<AdresowoQueryString>();
+            services.AddTransient<DomiportaQueryString>();
+            services.AddTransient<GratkaQueryString>();
+            services.AddTransient<MorizonQueryString>();
+            services.AddTransient<GumtreeQueryString>();
 
-            services.AddTransient<Func<SiteType, ISite>>(sp => key =>
+            services.AddTransient<Func<SiteType, IQueryString>>(sp => key =>
             {
                 switch (key)
                 {
                     case SiteType.OtoDom:
-                        return sp.GetService<OtoDomSite>();
+                        return sp.GetService<OtoDomQueryString>();
                     case SiteType.Olx:
-                        return sp.GetService<OlxSite>();
+                        return sp.GetService<OlxQueryString>();
                     case SiteType.Adresowo:
-                        return sp.GetService<AdresowoSite>();
+                        return sp.GetService<AdresowoQueryString>();
                     case SiteType.DomiPorta:
-                        return sp.GetService<DomiportaSite>();
+                        return sp.GetService<DomiportaQueryString>();
                     case SiteType.Gratka:
-                        return sp.GetService<GratkaSite>();
+                        return sp.GetService<GratkaQueryString>();
                     case SiteType.Morizon:
-                        return sp.GetService<MorizonSite>();
+                        return sp.GetService<MorizonQueryString>();
                     case SiteType.Gumtree:
-                        return sp.GetService<GumtreeSite>();
+                        return sp.GetService<GumtreeQueryString>();
+                    default:
+                        throw new KeyNotFoundException();
+                }
+            });
+            #endregion
+
+            #region Pages
+            services.AddTransient<OtoDomPages>();
+            services.AddTransient<OlxPages>();
+            services.AddTransient<AdresowoPages>();
+            services.AddTransient<DomiportaPages>();
+            services.AddTransient<GratkaPages>();
+            services.AddTransient<MorizonPages>();
+            services.AddTransient<GumtreePages>();
+
+            services.AddTransient<Func<SiteType, IPages>>(sp => key =>
+            {
+                switch (key)
+                {
+                    case SiteType.OtoDom:
+                        return sp.GetService<OtoDomPages>();
+                    case SiteType.Olx:
+                        return sp.GetService<OlxPages>();
+                    case SiteType.Adresowo:
+                        return sp.GetService<AdresowoPages>();
+                    case SiteType.DomiPorta:
+                        return sp.GetService<DomiportaPages>();
+                    case SiteType.Gratka:
+                        return sp.GetService<GratkaPages>();
+                    case SiteType.Morizon:
+                        return sp.GetService<MorizonPages>();
+                    case SiteType.Gumtree:
+                        return sp.GetService<GumtreePages>();
+                    default:
+                        throw new KeyNotFoundException();
+                }
+            });
+            #endregion
+
+            #region Sites
+            services.AddTransient<OtoDom>();
+            services.AddTransient<Olx>();
+            services.AddTransient<Adresowo>();
+            services.AddTransient<Domiporta>();
+            services.AddTransient<Gratka>();
+            services.AddTransient<Morizon>();
+            services.AddTransient<Gumtree>();
+
+            services.AddTransient<Func<SiteType, ISiteToScrapp>>(sp => key =>
+            {
+                switch (key)
+                {
+                    case SiteType.OtoDom:
+                        return sp.GetService<OtoDom>();
+                    case SiteType.Olx:
+                        return sp.GetService<Olx>();
+                    case SiteType.Adresowo:
+                        return sp.GetService<Adresowo>();
+                    case SiteType.DomiPorta:
+                        return sp.GetService<Domiporta>();
+                    case SiteType.Gratka:
+                        return sp.GetService<Gratka>();
+                    case SiteType.Morizon:
+                        return sp.GetService<Morizon>();
+                    case SiteType.Gumtree:
+                        return sp.GetService<Gumtree>();
                     default:
                         throw new KeyNotFoundException();
                 }
@@ -98,14 +166,14 @@ namespace Ref.App.DI
 
             #region App
             services.AddTransient<IAppProvider>(
-                s => new AppProvider(
-                    configurationRoot["app:sender"],
-                    configurationRoot["app:replyto"],
-                    configurationRoot["app:binpath"],
-                    configurationRoot["app:pausetime"],
-                    configurationRoot["app:sites"],
-                    appId)
-                );
+            s => new AppProvider(
+                configurationRoot["app:sender"],
+                configurationRoot["app:replyto"],
+                configurationRoot["app:bcc"],
+                configurationRoot["app:pausetime"],
+                configurationRoot["app:sites"],
+                appId)
+            );
             #endregion
 
             services.AddTransient<RefService>();

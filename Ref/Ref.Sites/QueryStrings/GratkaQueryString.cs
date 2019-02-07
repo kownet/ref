@@ -1,17 +1,11 @@
 ﻿using Ref.Data.Models;
+using Ref.Sites.Helpers;
 
-namespace Ref.Sites.Helpers.QueryStrings
+namespace Ref.Sites.QueryStrings
 {
     public class GratkaQueryString : IQueryString
     {
-        private readonly Filter _filter;
-
-        public GratkaQueryString(Filter filter)
-        {
-            _filter = filter;
-        }
-
-        public string Get()
+        public string Get(Filter _filter)
         {
             var type = FilterResolver.Type(SiteType.Gratka, _filter);
             var deal = FilterResolver.Deal(SiteType.Gratka, _filter);

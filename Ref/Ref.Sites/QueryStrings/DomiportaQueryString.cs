@@ -1,17 +1,11 @@
 ﻿using Ref.Data.Models;
+using Ref.Sites.Helpers;
 
-namespace Ref.Sites.Helpers.QueryStrings
+namespace Ref.Sites.QueryStrings
 {
     public class DomiportaQueryString : IQueryString
     {
-        private readonly Filter _filter;
-
-        public DomiportaQueryString(Filter filter)
-        {
-            _filter = filter;
-        }
-
-        public string Get()
+        public string Get(Filter _filter)
         {
             var type = FilterResolver.Type(SiteType.DomiPorta, _filter);
             var deal = FilterResolver.Deal(SiteType.DomiPorta, _filter);

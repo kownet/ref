@@ -10,5 +10,8 @@
         public string Area { get; set; }
         public string PricePerMeter { get; set; }
         public SiteType SiteType { get; set; }
+
+        public bool IsValid() =>
+            !string.IsNullOrWhiteSpace(Id) && !string.IsNullOrWhiteSpace(Url);
     }
 }

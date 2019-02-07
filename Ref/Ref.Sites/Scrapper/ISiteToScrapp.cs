@@ -2,9 +2,9 @@
 using Ref.Sites.Helpers;
 using System.Collections.Generic;
 
-namespace Ref.Sites
+namespace Ref.Sites.Scrapper
 {
-    public interface ISite
+    public interface ISiteToScrapp
     {
         SiteResponse Search(IEnumerable<Filter> filterProvider);
     }

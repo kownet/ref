@@ -7,7 +7,7 @@ namespace Ref.Shared.Providers
     {
         string Sender();
         string ReplyTo();
-        string BinPath();
+        string Bcc();
         int PauseTime();
         IEnumerable<int> Sites();
         string AppId();
@@ -17,7 +17,7 @@ namespace Ref.Shared.Providers
     {
         private readonly string _sender;
         private readonly string _replyto;
-        private readonly string _binpath;
+        private readonly string _bcc;
         private readonly string _pausetime;
         private readonly string _sites;
         private readonly string _appId;
@@ -25,14 +25,14 @@ namespace Ref.Shared.Providers
         public AppProvider(
             string sender,
             string replyto,
-            string binpAth,
+            string bcc,
             string pausetime,
             string sites,
             string appId)
         {
             _sender = sender;
             _replyto = replyto;
-            _binpath = binpAth;
+            _bcc = bcc;
             _pausetime = pausetime;
             _sites = sites;
             _appId = appId;
@@ -40,7 +40,7 @@ namespace Ref.Shared.Providers
 
         public string Sender() => _sender;
         public string ReplyTo() => _replyto;
-        public string BinPath() => _binpath;
+        public string Bcc() => _bcc;
         public int PauseTime() => int.Parse(_pausetime);
         public IEnumerable<int> Sites() => _sites.Split(",").Select(int.Parse).ToList();
         public string AppId() => _appId;
