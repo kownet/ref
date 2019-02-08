@@ -154,7 +154,7 @@ namespace Ref.Sites.Helpers
                     {
                         switch (filter.Market)
                         {
-                            case MarketType.Primary: return ""; // TODO: nowe-Type()
+                            case MarketType.Primary: return "";
                             case MarketType.Secondary: return "secondary";
                             default: return string.Empty;
                         };
@@ -223,6 +223,15 @@ namespace Ref.Sites.Helpers
             switch (filter.Location)
             {
                 case "warszawa": return "v1c9073l3200008a1dwp";
+                case "kraków": return "v1c9073l3200208a1dwp";
+                case "legnica": return "v1c9073l3200096a1dwp";
+                case "opole": return "v1c9073l3200234a1dwp";
+                case "poznań": return "v1c9073l3200366a1dwp";
+                case "puławy": return "v1c9073l3200150a1dwp";
+                case "płock": return "v1c9073l3200071a1dwp";
+                case "rzeszów": return "v1c9073l3200252a1dwp";
+                case "wrocław": return "v1c9073l3200114a1dwp";
+                case "łódź": return "v1c9073l3200183a1dwp";
                 default: return string.Empty;
             }
         }

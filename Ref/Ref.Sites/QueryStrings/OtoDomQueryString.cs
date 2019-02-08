@@ -1,4 +1,5 @@
 ﻿using Ref.Data.Models;
+using Ref.Shared.Extensions;
 using Ref.Sites.Helpers;
 
 namespace Ref.Sites.QueryStrings
@@ -10,6 +11,10 @@ namespace Ref.Sites.QueryStrings
             var type = FilterResolver.Type(SiteType.OtoDom, _filter);
             var deal = FilterResolver.Deal(SiteType.OtoDom, _filter);
             var market = FilterResolver.Market(SiteType.OtoDom, _filter);
+
+            type = _filter.Market == MarketType.Secondary
+                ? $"{type}"
+                : $"nowe-{type}";
 
             var result =
                 $"https://www.otodom.pl/{deal}/{type}/{_filter.Location}/?";
@@ -30,10 +35,13 @@ namespace Ref.Sites.QueryStrings
 
             result = result + $"{divider}created_since%5D={_filter.Newest}&";
 
-            if (!string.IsNullOrWhiteSpace(market))
-                result = result + $"{divider}filter_enum_market%5D%5B0%5D={market}&";
+            if(_filter.Deal == DealType.Sale)
+            {
+                if (!string.IsNullOrWhiteSpace(market))
+                    result = result + $"{divider}filter_enum_market%5D%5B0%5D={market}&";
+            }
 
-            return result;
+            return result.RemoveLastIf("&");
         }
     }
 }

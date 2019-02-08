@@ -7,7 +7,7 @@ namespace Ref.Sites.Helpers
 {
     public static class HAPExtensions
     {
-        public static string ByClass(this HtmlNode node, string classId, string regex = @"[^a-zA-Z0-9łŁęĘąĄćĆŹóÓńŃśŚ ,.-]")
+        public static string ByClass(this HtmlNode node, string classId, string regex = @"[^a-zA-Z0-9łŁęĘąĄćĆŹźóÓńŃśŚŻż ,.-]")
         {
             var header = node.CssSelect($".{classId}").FirstOrDefault();
 

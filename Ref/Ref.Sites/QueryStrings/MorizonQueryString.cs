@@ -11,8 +11,15 @@ namespace Ref.Sites.QueryStrings
             var deal = FilterResolver.Deal(SiteType.Morizon, _filter);
             var market = FilterResolver.Market(SiteType.Morizon, _filter);
 
+            var domain = "https://www.morizon.pl";
+
+            if(_filter.Deal == DealType.Rent)
+            {
+                domain = $"{domain}/do-wynajecia";
+            }
+
             var result =
-                $"https://www.morizon.pl/{type}/{_filter.Location}/?";
+                $"{domain}/{type}/{_filter.Location}/?";
 
             var divider = "ps%5B";
 

@@ -13,7 +13,7 @@
                 ? value.Remove(value.Length - 1).Trim()
                 : string.Empty;
             }
-            return string.Empty;            
+            return string.Empty;
         }
     }
 }

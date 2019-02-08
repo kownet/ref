@@ -1,4 +1,5 @@
 ﻿using Ref.Data.Models;
+using Ref.Shared.Extensions;
 using Ref.Sites.Helpers;
 
 namespace Ref.Sites.QueryStrings
@@ -28,15 +29,18 @@ namespace Ref.Sites.QueryStrings
             if (_filter.FlatAreaTo != 0)
                 result = result + $"{divider}filter_float_m%3Ato%5D={_filter.FlatAreaTo}&";
 
-            if (!string.IsNullOrWhiteSpace(market))
-                result = result + $"{divider}filter_enum_market%5D%5B0%5D={market}&";
+            if (_filter.Deal == DealType.Sale)
+            {
+                if (!string.IsNullOrWhiteSpace(market))
+                    result = result + $"{divider}filter_enum_market%5D%5B0%5D={market}&";
+            }
 
             if (_filter.Newest == 1)
                 result = result + $"{divider}Border%5D=created_at%3Adesc&";
 
             result = result + $"{divider}private_business%5D=private&";
 
-            return result;
+            return result.RemoveLastIf("&");
         }
     }
 }

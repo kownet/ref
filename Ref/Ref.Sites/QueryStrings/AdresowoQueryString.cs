@@ -1,5 +1,6 @@
 ﻿using Ref.Data.Models;
 using Ref.Sites.Helpers;
+using System;
 
 namespace Ref.Sites.QueryStrings
 {
@@ -15,10 +16,10 @@ namespace Ref.Sites.QueryStrings
                 $"https://adresowo.pl/{type}/{_filter.Location}/";
 
             if (_filter.PriceFrom != 0)
-                result = result + $"p{_filter.PriceFrom / 10000}"; /// TODO: price calculate
+                result = result + $"p{FormatPrice(_filter.PriceFrom)}";
 
             if (_filter.PriceTo != 0)
-                result = result + $"-{_filter.PriceTo / 10000}_";
+                result = result + $"-{FormatPrice(_filter.PriceTo)}_";
 
             if (_filter.FlatAreaFrom != 0)
                 result = result + $"a{_filter.FlatAreaFrom}";
@@ -33,6 +34,25 @@ namespace Ref.Sites.QueryStrings
                 result = result + $"_l";
 
             return result;
+        }
+
+        private static int FormatPrice(int price)
+        {
+            if (price <= 10000)
+                return 1;
+            else if (price > 10000 && price < 100000)
+            {
+                int i = Math.Abs(price);
+                while (i >= 10)
+                    i /= 10;
+
+                return i;
+            }
+            else if (price >= 100000 && price < 1000000)
+                return price / 10000;
+            else if (price >= 1000000)
+                return price / 10000;
+            else return 0;
         }
     }
 }
