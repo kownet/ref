@@ -1,4 +1,5 @@
-﻿using Ref.Data.Models;
+﻿using HtmlAgilityPack;
+using Ref.Data.Models;
 using Ref.Shared.Extensions;
 using Ref.Shared.Providers;
 using Ref.Sites.Helpers;
@@ -8,6 +9,7 @@ using ScrapySharp.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Ref.Sites.Scrapper
 {
@@ -31,7 +33,17 @@ namespace Ref.Sites.Scrapper
 
             var newest = filter.Newest == 1 ? "od" : string.Empty;
 
-            var doc = Scrapper.Load(searchQuery).DocumentNode;
+            var web = new HtmlWeb()
+            {
+                AutoDetectEncoding = false,
+                OverrideEncoding = Encoding.GetEncoding("iso-8859-2")
+            };
+
+            var docd = web.Load(searchQuery);
+
+            docd.OptionDefaultStreamEncoding = Encoding.UTF8;
+
+            var doc = docd.DocumentNode;
 
             if (doc.InnerHtml.Contains("jest pusta"))
             {
@@ -46,7 +58,11 @@ namespace Ref.Sites.Scrapper
 
             for (int i = 1; i <= pages; i++)
             {
-                doc = Scrapper.Load($"{searchQuery}{i}{newest}").DocumentNode;
+                docd = web.Load($"{searchQuery}{i}{newest}");
+
+                docd.OptionDefaultStreamEncoding = Encoding.UTF8;
+
+                doc = docd.DocumentNode;
 
                 var listing = doc.CssSelect(".offer-list");
 
@@ -71,7 +87,7 @@ namespace Ref.Sites.Scrapper
                                 ad.Url = $"https://adresowo.pl/o/{ad.Id}";
 
                                 ad.Header = article.ByClass("address");
-                                ad.Price = article.ByClass("price", @"[^0-9 ,.-]");
+                                ad.Price = article.ByClass("price", @"[^0-9,.-]");
                                 ad.PricePerMeter = article.ByClass("price-per-unit", @"[^0-9 ,.-]").RemoveLastIf("2"); 
 
                                 if (ad.IsValid())

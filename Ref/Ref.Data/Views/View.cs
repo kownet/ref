@@ -76,7 +76,7 @@ namespace Ref.Data.Views
                         var msgRaw = $"{element.Price} - {element.Url} - {element.Header}";
                         sbRaw.AppendLine(msgRaw);
 
-                        var msgHtml = $"{element.Price} - <a href=\"{element.Url}\">{element.Header}</a><br>";
+                        var msgHtml = $"{element.Price} [zł] - <a href=\"{element.Url}\">{element.Header}</a><br>";
                         sbHtml.AppendLine(msgHtml);
                     }
                 }

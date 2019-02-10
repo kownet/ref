@@ -18,7 +18,7 @@ namespace Ref.Sites.QueryStrings
             var page = 1;
 
             var result =
-                $"https://www.gumtree.pl/{type}{deal}/{_filter.Location}/{houseOrFlat}/{code}{page}?";
+                $"https://www.gumtree.pl/{type}{deal}/{_filter.LocationRaw}/{houseOrFlat}/{code}{page}?";
 
             var pFrom = _filter.PriceFrom == 0 ? string.Empty : _filter.PriceFrom.ToString();
             var pTo = _filter.PriceTo == 0 ? string.Empty : _filter.PriceTo.ToString();

@@ -65,7 +65,7 @@ namespace Ref.Sites.Scrapper
                                     Id = article.ByAttribute("data-tracking-id"),
                                     Url = article.ByAttribute("data-url"),
                                     Header = article.ByClass("offer-item-title"),
-                                    Price = article.ByClass("offer-item-price", @"[^0-9 ,.-]"),
+                                    Price = article.ByClass("offer-item-price", @"[^0-9,.-]"),
                                     Rooms = article.ByClass("offer-item-rooms", @"[^0-9 ,.-]"),
                                     Area = article.ByClass("offer-item-area", @"[^0-9 ,.-]"),
                                     PricePerMeter = article.ByClass("offer-item-price-per-m", @"[^0-9 ,.-]").RemoveLastIf("2"),

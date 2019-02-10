@@ -8,6 +8,7 @@ using ScrapySharp.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 
 namespace Ref.Sites.Scrapper
 {
@@ -85,7 +86,7 @@ namespace Ref.Sites.Scrapper
                                 if (!(cnt is null))
                                 {
                                     ad.Url = $"https://www.domiporta.pl{cnt.ByAttribute("href")}";
-                                    ad.Header = cnt.ByAttribute("title");
+                                    ad.Header = HttpUtility.HtmlDecode(cnt.ByAttribute("title"));
                                 }
 
                                 if (ad.IsValid())

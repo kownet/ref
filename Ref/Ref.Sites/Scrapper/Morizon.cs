@@ -64,8 +64,8 @@ namespace Ref.Sites.Scrapper
                                 var ad = new Ad
                                 {
                                     Id = article.ByAttribute("data-id"),
-                                    Header = article.ByClass("single-result__title"),
-                                    Price = article.ByClass("single-result__price", @"[^0-9 ,.-]"),
+                                    Header = article.ByClass("single-result__title").Replace("nbsp", " "),
+                                    Price = article.ByClass("single-result__price", @"[^0-9,.-]"),
                                     PricePerMeter = article.ByClass("single-result__price--currency", @"[^0-9 ,.-]"),
                                     SiteType = SiteType.Morizon
                                 };

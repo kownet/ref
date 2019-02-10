@@ -13,7 +13,7 @@ namespace Ref.Sites.QueryStrings
             var market = FilterResolver.Market(SiteType.Olx, _filter);
 
             var result =
-                $"https://www.olx.pl/nieruchomosci/{type}/{deal}/{_filter.Location}/?";
+                $"https://www.olx.pl/nieruchomosci/{type}/{deal}/{_filter.LocationRaw}/?";
 
             var divider = "search%5B";
 

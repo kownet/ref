@@ -77,7 +77,7 @@ namespace Ref.Sites.Scrapper
 
                                 if(!(price is null))
                                 {
-                                    ad.Price = price.FirstChild != null ? price.FirstChild.InnerHtml.Trim() : string.Empty;
+                                    ad.Price = price.FirstChild != null ? price.FirstChild.InnerHtml.Trim().Replace(" ", string.Empty) : string.Empty;
                                 }
 
                                 if (ad.IsValid())

@@ -63,7 +63,7 @@ namespace Ref.Sites.Scrapper
                             var ad = new Ad
                             {
                                 SiteType = SiteType.Gumtree,
-                                Price = article.ByClass("amount", @"[^0-9 ,.-]")
+                                Price = article.ByClass("amount", @"[^0-9,.-]")
                             };
 
                             var link = article.CssSelect(".href-link").FirstOrDefault();

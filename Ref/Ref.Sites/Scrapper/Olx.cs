@@ -77,7 +77,7 @@ namespace Ref.Sites.Scrapper
                                     ad.Header = url.Replace("https://www.olx.pl/oferta/", string.Empty);
                                 }
 
-                                ad.Price = table.ByClass("price", @"[^0-9 ,.-]");
+                                ad.Price = table.ByClass("price", @"[^0-9,.-]");
                             }
 
                             if (ad.IsValid())

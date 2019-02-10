@@ -17,7 +17,7 @@ namespace Ref.Sites.QueryStrings
                 : $"nowe-{type}";
 
             var result =
-                $"https://www.otodom.pl/{deal}/{type}/{_filter.Location}/?";
+                $"https://www.otodom.pl/{deal}/{type}/{_filter.LocationRaw}/?";
 
             var divider = "search%5B";
 

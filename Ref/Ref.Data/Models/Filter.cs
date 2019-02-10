@@ -1,4 +1,6 @@
-﻿namespace Ref.Data.Models
+﻿using Ref.Shared.Extensions;
+
+namespace Ref.Data.Models
 {
     public class Filter
     {
@@ -12,5 +14,7 @@
         public int PriceTo { get; set; }
         public MarketType Market { get; set; }
         public int Newest { get; set; }
+
+        public string LocationRaw => Location.RemoveDiacritics();
     }
 }

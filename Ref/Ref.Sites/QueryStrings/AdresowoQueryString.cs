@@ -13,7 +13,7 @@ namespace Ref.Sites.QueryStrings
             var market = FilterResolver.Market(SiteType.Adresowo, _filter);
 
             var result =
-                $"https://adresowo.pl/{type}/{_filter.Location}/";
+                $"https://adresowo.pl/{type}/{_filter.LocationRaw}/";
 
             if (_filter.PriceFrom != 0)
                 result = result + $"p{FormatPrice(_filter.PriceFrom)}";

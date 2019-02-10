@@ -4,6 +4,7 @@ using Ref.App.Core;
 using Ref.App.DI;
 using System;
 using System.IO;
+using System.Text;
 
 namespace Ref.App
 {
@@ -14,6 +15,9 @@ namespace Ref.App
             if (args != null && args.Length > 0)
             {
                 var appId = args[0];
+
+                EncodingProvider provider = CodePagesEncodingProvider.Instance;
+                Encoding.RegisterProvider(provider);
 
                 NLog.LogManager.Configuration.Variables["fileName"] = $"ref-{appId}-{DateTime.UtcNow.ToString("ddMMyyyy")}.log";
                 NLog.LogManager.Configuration.Variables["archiveFileName"] = $"ref-{appId}-{DateTime.UtcNow.ToString("ddMMyyyy")}.log";

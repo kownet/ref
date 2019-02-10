@@ -12,7 +12,7 @@ namespace Ref.Sites.QueryStrings
             var market = FilterResolver.Market(SiteType.Gratka, _filter);
 
             var result =
-                $"https://gratka.pl/nieruchomosci/{type}/{_filter.Location}/{deal}?";
+                $"https://gratka.pl/nieruchomosci/{type}/{_filter.LocationRaw}/{deal}?";
 
             if (_filter.PriceFrom != 0)
                 result = result + $"cena-calkowita:min={_filter.PriceFrom}";

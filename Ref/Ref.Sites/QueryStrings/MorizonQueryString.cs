@@ -19,7 +19,7 @@ namespace Ref.Sites.QueryStrings
             }
 
             var result =
-                $"{domain}/{type}/{_filter.Location}/?";
+                $"{domain}/{type}/{_filter.LocationRaw}/?";
 
             var divider = "ps%5B";
 

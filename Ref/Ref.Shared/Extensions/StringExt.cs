@@ -1,4 +1,8 @@
-﻿namespace Ref.Shared.Extensions
+﻿using System.Globalization;
+using System.Linq;
+using System.Text;
+
+namespace Ref.Shared.Extensions
 {
     public static class StringExt
     {
@@ -14,6 +18,20 @@
                 : string.Empty;
             }
             return string.Empty;
+        }
+
+        public static string RemoveDiacritics(this string str)
+        {
+            if (null == str) return null;
+            var chars =
+                from c in str.Normalize(NormalizationForm.FormD).ToCharArray()
+                let uc = CharUnicodeInfo.GetUnicodeCategory(c)
+                where uc != UnicodeCategory.NonSpacingMark
+                select c;
+
+            var cleanStr = new string(chars.ToArray()).Normalize(NormalizationForm.FormC);
+
+            return cleanStr;
         }
     }
 }
