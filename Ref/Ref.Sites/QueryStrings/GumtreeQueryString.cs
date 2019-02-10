@@ -13,12 +13,14 @@ namespace Ref.Sites.QueryStrings
 
             var code = FilterResolver.Code(_filter);
 
-            var houseOrFlat = _filter.Type == 0 ? "mieszkanie" : "dom";
+            var houseOrFlat = _filter.Deal == DealType.Sale
+                ? (_filter.Type == PropertyType.Flat ? "mieszkanie/" : "dom/")
+                : string.Empty;
 
             var page = 1;
 
             var result =
-                $"https://www.gumtree.pl/{type}{deal}/{_filter.LocationRaw}/{houseOrFlat}/{code}{page}?";
+                $"https://www.gumtree.pl/{type}{deal}/{_filter.LocationRaw}/{houseOrFlat}{code}{page}?";
 
             var pFrom = _filter.PriceFrom == 0 ? string.Empty : _filter.PriceFrom.ToString();
             var pTo = _filter.PriceTo == 0 ? string.Empty : _filter.PriceTo.ToString();

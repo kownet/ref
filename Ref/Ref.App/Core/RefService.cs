@@ -93,16 +93,16 @@ namespace Ref.App.Core
                         {
                             var ntfe = View.ForEmail(newest, filterName);
 
-                            _emailNotification.Send(
-                                ntfe.Title,
-                                ntfe.RawMessage,
-                                ntfe.HtmlMessage,
-                                new string[] { $"{client.Name} <{client.Email}>" });
+                            //_emailNotification.Send(
+                            //    ntfe.Title,
+                            //    ntfe.RawMessage,
+                            //    ntfe.HtmlMessage,
+                            //    new string[] { $"{client.Name} <{client.Email}>" });
                         }
 
                         var ntfp = View.ForPushOver(newest, filterName);
 
-                        _pushOverNotification.Send(ntfp.Title, ntfp.Message);
+                        //_pushOverNotification.Send(ntfp.Title, ntfp.Message);
 
                         Thread.Sleep(_appProvider.PauseTime());
                     }

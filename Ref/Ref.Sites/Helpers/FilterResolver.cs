@@ -222,16 +222,26 @@ namespace Ref.Sites.Helpers
             /// TODO: cities!
             switch (filter.Location)
             {
-                case "warszawa": return "v1c9073l3200008a1dwp";
-                case "kraków": return "v1c9073l3200208a1dwp";
-                case "legnica": return "v1c9073l3200096a1dwp";
-                case "opole": return "v1c9073l3200234a1dwp";
-                case "poznań": return "v1c9073l3200366a1dwp";
-                case "puławy": return "v1c9073l3200150a1dwp";
-                case "płock": return "v1c9073l3200071a1dwp";
-                case "rzeszów": return "v1c9073l3200252a1dwp";
-                case "wrocław": return "v1c9073l3200114a1dwp";
-                case "łódź": return "v1c9073l3200183a1dwp";
+                case "warszawa":
+                    return "v1c9073l3200008a1dwp";
+                case "kraków":
+                    return filter.Deal == DealType.Sale ? "v1c9073l3200208a1dwp" : "v1c9008l3200208p";
+                case "legnica":
+                    return "v1c9073l3200096a1dwp";
+                case "opole":
+                    return filter.Deal == DealType.Sale ? "v1c9073l3200234a1dwp" : "v1c9008l3200234p";
+                case "poznań":
+                    return filter.Deal == DealType.Sale ? "v1c9073l3200366a1dwp" : "v1c9008l3200366p1";
+                case "puławy":
+                    return "v1c9073l3200150a1dwp";
+                case "płock":
+                    return "v1c9073l3200071a1dwp";
+                case "rzeszów":
+                    return "v1c9073l3200252a1dwp";
+                case "wrocław":
+                    return "v1c9073l3200114a1dwp";
+                case "łódź":
+                    return "v1c9073l3200183a1dwp";
                 default: return string.Empty;
             }
         }
