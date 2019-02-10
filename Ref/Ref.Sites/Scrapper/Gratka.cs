@@ -38,7 +38,8 @@ namespace Ref.Sites.Scrapper
                 return new SiteResponse
                 {
                     FilterName = filter.Name,
-                    Advertisements = result
+                    Advertisements = result,
+                    FilterDesc = filter.Description()
                 };
             }
 
@@ -91,7 +92,8 @@ namespace Ref.Sites.Scrapper
             return new SiteResponse
             {
                 FilterName = filter.Name,
-                Advertisements = result
+                Advertisements = result,
+                FilterDesc = filter.Description()
             };
         }
     }

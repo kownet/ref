@@ -61,6 +61,7 @@ namespace Ref.App.Core
                         var newestAll = new List<Ad>();
                         var newest = new List<Ad>();
                         var filterName = string.Empty;
+                        var filterDesc = string.Empty;
 
                         foreach (SiteType siteType in availableSites)
                         {
@@ -68,6 +69,7 @@ namespace Ref.App.Core
 
                             var newestFromSite = result.Advertisements;
                             filterName = result.FilterName;
+                            filterDesc = result.FilterDesc;
 
                             newestAll.AddRange(newestFromSite);
 
@@ -91,18 +93,18 @@ namespace Ref.App.Core
 
                         if (newest.AnyAndNotNull())
                         {
-                            var ntfe = View.ForEmail(newest, filterName);
+                            var ntfe = View.ForEmail(newest, filterName, filterDesc);
 
-                            //_emailNotification.Send(
-                            //    ntfe.Title,
-                            //    ntfe.RawMessage,
-                            //    ntfe.HtmlMessage,
-                            //    new string[] { $"{client.Name} <{client.Email}>" });
+                            _emailNotification.Send(
+                                ntfe.Title,
+                                ntfe.RawMessage,
+                                ntfe.HtmlMessage,
+                                new string[] { $"{client.Name} <{client.Email}>" });
+
+                            var ntfp = View.ForPushOver(newest, client.Email);
+
+                            _pushOverNotification.Send(ntfp.Title, ntfp.Message);
                         }
-
-                        var ntfp = View.ForPushOver(newest, filterName);
-
-                        //_pushOverNotification.Send(ntfp.Title, ntfp.Message);
 
                         Thread.Sleep(_appProvider.PauseTime());
                     }

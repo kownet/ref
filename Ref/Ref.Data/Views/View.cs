@@ -46,7 +46,7 @@ namespace Ref.Data.Views
             }
         }
 
-        public static EmailMessage ForEmail(IEnumerable<Ad> records, string title = "")
+        public static EmailMessage ForEmail(IEnumerable<Ad> records, string title = "", string filterDesc = "")
         {
             var header = string.IsNullOrWhiteSpace(title) ? "" : $" - {title}";
 
@@ -56,6 +56,12 @@ namespace Ref.Data.Views
                 var sbHtml = new StringBuilder();
 
                 var grouped = records.GroupBy(r => r.SiteType);
+
+                if(!string.IsNullOrWhiteSpace(filterDesc))
+                {
+                    sbRaw.AppendLine(filterDesc);
+                    sbHtml.AppendLine($"<i>{filterDesc}</i><br><br>");
+                }
 
                 foreach (var group in grouped)
                 {

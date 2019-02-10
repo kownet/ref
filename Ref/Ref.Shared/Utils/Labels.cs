@@ -11,5 +11,8 @@
 
         public static string RecordsFoundTitle => $"{App} Nowe ogłoszenia";
         public static string RecordsFoundPushoverContent => "linki do ogłoszeń przesłane będą w mailu.";
+
+        public static string FilterDescPrice => "Cena (zł)";
+        public static string FilterDescArea => "Powierzchnia (m2)";
     }
 }

@@ -12,5 +12,6 @@ namespace Ref.Sites.Helpers
 
         public IEnumerable<Ad> Advertisements { get; set; }
         public string FilterName { get; set; }
+        public string FilterDesc { get; set; }
     }
 }

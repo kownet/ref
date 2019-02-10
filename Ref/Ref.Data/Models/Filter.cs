@@ -1,4 +1,5 @@
 ﻿using Ref.Shared.Extensions;
+using Ref.Shared.Utils;
 
 namespace Ref.Data.Models
 {
@@ -16,5 +17,10 @@ namespace Ref.Data.Models
         public int Newest { get; set; }
 
         public string LocationRaw => Location.RemoveDiacritics();
+        public string Description() =>
+            $"{Type.GetDescription()} / {Deal.GetDescription()} / " +
+            $"{Market.GetDescription()} / {Location} / " +
+            $"{Labels.FilterDescPrice}: {PriceFrom} - {PriceTo} / " +
+            $"{Labels.FilterDescArea}: {FlatAreaFrom} - {FlatAreaTo}.";
     }
 }
