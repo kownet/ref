@@ -95,13 +95,13 @@ namespace Ref.App.Core
                         {
                             var ntfe = View.ForEmail(newest, filterName, filterDesc);
 
-                            //_emailNotification.Send(
-                            //    ntfe.Title,
-                            //    ntfe.RawMessage,
-                            //    ntfe.HtmlMessage,
-                            //    new string[] { $"{client.Name} <{client.Email}>" });
+                            _emailNotification.Send(
+                                ntfe.Title,
+                                ntfe.RawMessage,
+                                ntfe.HtmlMessage,
+                                new string[] { $"{client.Name} <{client.Email}>" });
 
-                            if(_appProvider.AdminNotification())
+                            if (_appProvider.AdminNotification())
                             {
                                 var ntfp = View.ForPushOver(newest, client.Email);
 
