@@ -11,6 +11,7 @@ namespace Ref.Shared.Providers
         int PauseTime();
         IEnumerable<int> Sites();
         string AppId();
+        bool AdminNotification();
     }
 
     public class AppProvider : IAppProvider
@@ -21,6 +22,7 @@ namespace Ref.Shared.Providers
         private readonly string _pausetime;
         private readonly string _sites;
         private readonly string _appId;
+        private readonly string _adminnotification;
 
         public AppProvider(
             string sender,
@@ -28,7 +30,8 @@ namespace Ref.Shared.Providers
             string bcc,
             string pausetime,
             string sites,
-            string appId)
+            string appId,
+            string adminnotification)
         {
             _sender = sender;
             _replyto = replyto;
@@ -36,6 +39,7 @@ namespace Ref.Shared.Providers
             _pausetime = pausetime;
             _sites = sites;
             _appId = appId;
+            _adminnotification = adminnotification;
         }
 
         public string Sender() => _sender;
@@ -44,5 +48,6 @@ namespace Ref.Shared.Providers
         public int PauseTime() => int.Parse(_pausetime);
         public IEnumerable<int> Sites() => _sites.Split(",").Select(int.Parse).ToList();
         public string AppId() => _appId;
+        public bool AdminNotification() => bool.Parse(_adminnotification);
     }
 }

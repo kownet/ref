@@ -30,7 +30,7 @@ namespace Ref.Sites.Scrapper
 
             var searchQuery = QueryStringProvider(SiteType.DomiPorta).Get(filter);
 
-            var doc = Scrapper.Load(searchQuery).DocumentNode;
+            var doc = ScrapThis(searchQuery);
 
             var noResult = doc.CssSelect(".alert__title ").FirstOrDefault();
 
@@ -48,7 +48,7 @@ namespace Ref.Sites.Scrapper
 
             for (int i = 1; i <= pages; i++)
             {
-                doc = Scrapper.Load($@"{searchQuery}&PageNumber={i}").DocumentNode;
+                doc = ScrapThis($@"{searchQuery}&PageNumber={i}");
 
                 var listing = doc.CssSelect(".listing").FirstOrDefault();
 

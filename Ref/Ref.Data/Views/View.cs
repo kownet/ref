@@ -57,7 +57,7 @@ namespace Ref.Data.Views
 
                 var grouped = records.GroupBy(r => r.SiteType);
 
-                if(!string.IsNullOrWhiteSpace(filterDesc))
+                if (!string.IsNullOrWhiteSpace(filterDesc))
                 {
                     sbRaw.AppendLine(filterDesc);
                     sbHtml.AppendLine($"<i>{filterDesc}</i><br><br>");
@@ -67,7 +67,7 @@ namespace Ref.Data.Views
                 {
                     var site = group.Key.ToString();
 
-                    var list = group.Select(g => g);
+                    var list = group.Select(g => g).OrderBy(a => a.Price);
 
                     var count = 0;
 

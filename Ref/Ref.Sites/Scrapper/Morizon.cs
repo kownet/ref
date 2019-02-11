@@ -30,7 +30,7 @@ namespace Ref.Sites.Scrapper
 
             var searchQuery = QueryStringProvider(SiteType.Morizon).Get(filter);
 
-            var doc = Scrapper.Load(searchQuery).DocumentNode;
+            var doc = ScrapThis(searchQuery);
 
             var noResult = doc.CssSelect(".message-title").FirstOrDefault();
 
@@ -50,7 +50,7 @@ namespace Ref.Sites.Scrapper
 
             for (int i = 1; i <= pages; i++)
             {
-                doc = Scrapper.Load($@"{searchQuery}&page={i}").DocumentNode;
+                doc = ScrapThis($@"{searchQuery}&page={i}");
 
                 var articles = doc.CssSelect(".row--property-list");
 

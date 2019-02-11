@@ -29,7 +29,7 @@ namespace Ref.Sites.Scrapper
 
             var searchQuery = QueryStringProvider(SiteType.Gratka).Get(filter);
 
-            var doc = Scrapper.Load(searchQuery).DocumentNode;
+            var doc = ScrapThis(searchQuery);
 
             var noResult = doc.CssSelect(".content__emptyListInfo").FirstOrDefault();
 
@@ -47,7 +47,7 @@ namespace Ref.Sites.Scrapper
 
             for (int i = 1; i <= pages; i++)
             {
-                doc = Scrapper.Load($@"{searchQuery}&page={i}").DocumentNode;
+                doc = ScrapThis($@"{searchQuery}&page={i}");
 
                 var listing = doc.CssSelect(".content__listing");
 

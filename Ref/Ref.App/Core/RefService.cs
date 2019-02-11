@@ -95,15 +95,18 @@ namespace Ref.App.Core
                         {
                             var ntfe = View.ForEmail(newest, filterName, filterDesc);
 
-                            _emailNotification.Send(
-                                ntfe.Title,
-                                ntfe.RawMessage,
-                                ntfe.HtmlMessage,
-                                new string[] { $"{client.Name} <{client.Email}>" });
+                            //_emailNotification.Send(
+                            //    ntfe.Title,
+                            //    ntfe.RawMessage,
+                            //    ntfe.HtmlMessage,
+                            //    new string[] { $"{client.Name} <{client.Email}>" });
 
-                            var ntfp = View.ForPushOver(newest, client.Email);
+                            if(_appProvider.AdminNotification())
+                            {
+                                var ntfp = View.ForPushOver(newest, client.Email);
 
-                            _pushOverNotification.Send(ntfp.Title, ntfp.Message);
+                                _pushOverNotification.Send(ntfp.Title, ntfp.Message);
+                            }
                         }
 
                         Thread.Sleep(_appProvider.PauseTime());

@@ -31,7 +31,7 @@ namespace Ref.Sites.Scrapper
 
             var code = FilterResolver.Code(filter);
 
-            var doc = Scrapper.Load(searchQuery).DocumentNode;
+            var doc = ScrapThis(searchQuery);
 
             int.TryParse(doc.ByClass("count", @"[^0-9]"), out int count);
 
@@ -51,7 +51,7 @@ namespace Ref.Sites.Scrapper
             {
                 var sq = searchQuery.Replace($"{code}1", $"page-{i}/{code}{i}");
 
-                doc = Scrapper.Load($@"{sq}").DocumentNode;
+                doc = ScrapThis($@"{sq}");
 
                 var listing = doc.CssSelect(".result-link");
 
