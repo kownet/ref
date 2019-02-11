@@ -173,7 +173,8 @@ namespace Ref.App.DI
                 configurationRoot["app:pausetime"],
                 configurationRoot["app:sites"],
                 appId,
-                configurationRoot["app:adminnotification"])
+                configurationRoot["app:adminnotification"],
+                configurationRoot["app:successtries"])
             );
             #endregion
 

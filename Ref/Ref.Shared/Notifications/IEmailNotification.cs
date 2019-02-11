@@ -2,6 +2,7 @@
 using Ref.Shared.Extensions;
 using Ref.Shared.Notifications.Payloads;
 using Ref.Shared.Providers;
+using Ref.Shared.Utils;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -10,9 +11,16 @@ using System.Threading.Tasks;
 
 namespace Ref.Shared.Notifications
 {
+    public class EmailResponse
+    {
+        public string Message { get; set; }
+
+        public bool IsSuccess => string.IsNullOrWhiteSpace(Message);
+    }
+
     public interface IEmailNotification
     {
-        void Send(string title, string rawMessage, string htmlMessage, string[] recipients);
+        EmailResponse Send(string title, string rawMessage, string htmlMessage, string[] recipients);
     }
 
     public class EmailNotification : IEmailNotification
@@ -28,7 +36,7 @@ namespace Ref.Shared.Notifications
             _appProvider = appProvider;
         }
 
-        public void Send(string title, string rawMessage, string htmlMessage, string[] recipients)
+        public EmailResponse Send(string title, string rawMessage, string htmlMessage, string[] recipients)
         {
             if (!string.IsNullOrWhiteSpace(title) &&
                 (!string.IsNullOrWhiteSpace(rawMessage) || !string.IsNullOrWhiteSpace(htmlMessage)) &&
@@ -74,10 +82,27 @@ namespace Ref.Shared.Notifications
 
                         var error = Task.Run(() => response.Content.ReadAsStringAsync()).Result;
 
-                        response.EnsureSuccessStatusCode();
+                        try
+                        {
+                            var status = response.EnsureSuccessStatusCode();
+                        }
+                        catch (Exception ex)
+                        {
+                            return new EmailResponse
+                            {
+                                Message = ex.Message
+                            };
+                        }
                     }
                 }
+
+                return new EmailResponse();
             }
+
+            return new EmailResponse
+            {
+                Message = Labels.EmptyEmailError
+            };
         }
     }
 }

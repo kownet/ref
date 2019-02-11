@@ -14,5 +14,7 @@
 
         public static string FilterDescPrice => "Cena (zł)";
         public static string FilterDescArea => "Powierzchnia (m2)";
+
+        public static string EmptyEmailError => "Błąd! Próba wysłania pustej wiadomości e-mail.";
     }
 }

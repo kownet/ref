@@ -47,78 +47,92 @@ namespace Ref.App.Core
 
         public void Crawl()
         {
-            try
+            var successTries = 0;
+
+            while(successTries < _appProvider.SuccessTries())
             {
-                var clients = _clientRepository.GetAll();
-                var availableSites = _appProvider.Sites().Select(s => (SiteType)s);
-
-                if (clients.AnyAndNotNull())
+                try
                 {
-                    foreach (var client in clients)
+                    var clients = _clientRepository.GetAll();
+                    var availableSites = _appProvider.Sites().Select(s => (SiteType)s);
+
+                    if (clients.AnyAndNotNull())
                     {
-                        var oldest = _adRepository.GetAll(client.Code);
-
-                        var newestAll = new List<Ad>();
-                        var newest = new List<Ad>();
-                        var filterName = string.Empty;
-                        var filterDesc = string.Empty;
-
-                        foreach (SiteType siteType in availableSites)
+                        foreach (var client in clients)
                         {
-                            var result = _siteAccessor(siteType).Search(client.Filters);
-
-                            var newestFromSite = result.Advertisements;
-                            filterName = result.FilterName;
-                            filterDesc = result.FilterDesc;
-
-                            newestAll.AddRange(newestFromSite);
-
-                            var newestFrom = newestFromSite
-                                .Where(p => oldest.Where(t => t.SiteType == siteType)
-                                .All(p2 => p2.Id != p.Id));
-
-                            newest.AddRange(newestFrom);
-
-                            _logger.LogTrace(
-                                $"From {siteType.ToString()} collected {newestFromSite.Count()} records," +
-                                $" {newestFrom.Count()} new. Client '{client.Name}', Filter '{result.FilterName}'.");
-
-                            Thread.Sleep(_appProvider.PauseTime());
-                        }
-
-                        if (newestAll.AnyAndNotNull())
-                        {
-                            _adRepository.SaveAll(client.Code, newestAll);
-                        }
-
-                        if (newest.AnyAndNotNull())
-                        {
-                            var ntfe = View.ForEmail(newest, filterName, filterDesc);
-
-                            _emailNotification.Send(
-                                ntfe.Title,
-                                ntfe.RawMessage,
-                                ntfe.HtmlMessage,
-                                new string[] { $"{client.Name} <{client.Email}>" });
-
-                            if (_appProvider.AdminNotification())
+                            if(client.IsWorkingTime)
                             {
-                                var ntfp = View.ForPushOver(newest, client.Email);
+                                var oldest = _adRepository.GetAll(client.Code);
 
-                                _pushOverNotification.Send(ntfp.Title, ntfp.Message);
+                                var newestAll = new List<Ad>();
+                                var newest = new List<Ad>();
+                                var filterName = string.Empty;
+                                var filterDesc = string.Empty;
+
+                                foreach (SiteType siteType in availableSites)
+                                {
+                                    var result = _siteAccessor(siteType).Search(client.Filters);
+
+                                    var newestFromSite = result.Advertisements;
+                                    filterName = result.FilterName;
+                                    filterDesc = result.FilterDesc;
+
+                                    newestAll.AddRange(newestFromSite);
+
+                                    var newestFrom = newestFromSite
+                                        .Where(p => oldest.Where(t => t.SiteType == siteType)
+                                        .All(p2 => p2.Id != p.Id));
+
+                                    newest.AddRange(newestFrom);
+
+                                    _logger.LogTrace(
+                                        $"From {siteType.ToString()} collected {newestFromSite.Count()} records," +
+                                        $" {newestFrom.Count()} new. Client '{client.Name}', Filter '{result.FilterName}'.");
+
+                                    Thread.Sleep(_appProvider.PauseTime());
+                                }
+
+                                if (newestAll.AnyAndNotNull())
+                                {
+                                    _adRepository.SaveAll(client.Code, newestAll);
+                                }
+
+                                if (newest.AnyAndNotNull())
+                                {
+                                    var ntfe = View.ForEmail(newest, filterName, filterDesc);
+
+                                    _emailNotification.Send(
+                                        ntfe.Title,
+                                        ntfe.RawMessage,
+                                        ntfe.HtmlMessage,
+                                        new string[] { $"{client.Name} <{client.Email}>" });
+
+                                    if (_appProvider.AdminNotification())
+                                    {
+                                        var ntfp = View.ForPushOver(newest, client.Email);
+
+                                        _pushOverNotification.Send(ntfp.Title, ntfp.Message);
+                                    }
+                                }
+
+                                Thread.Sleep(_appProvider.PauseTime());
                             }
                         }
-
-                        Thread.Sleep(_appProvider.PauseTime());
                     }
-                }
-            }
-            catch (Exception ex)
-            {
-                var msgException = $"Message: {ex.GetFullMessage()}, StackTrace: {ex.StackTrace}";
 
-                _logger.LogError(msgException);
-                _pushOverNotification.Send($"[{_appProvider.AppId()}]{Labels.ErrorMsgTitle}", ex.GetFullMessage());
+                    successTries = _appProvider.SuccessTries();
+                }
+                catch (Exception ex)
+                {
+                    successTries++;
+
+                    var msgException = $"[no. {successTries}] Message: {ex.GetFullMessage()}, StackTrace: {ex.StackTrace}";
+
+                    _logger.LogError(msgException);
+                    _pushOverNotification.Send($"[{_appProvider.AppId()}]{Labels.ErrorMsgTitle}", ex.GetFullMessage());
+
+                    Thread.Sleep(5 * 1000);
+                }
             }
         }
     }
