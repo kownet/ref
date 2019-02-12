@@ -22,7 +22,7 @@ namespace Ref.App.Core
         private readonly IAppProvider _appProvider;
 
         private readonly IAdRepository _adRepository;
-        private readonly IClientRepository _clientRepository;
+        private readonly IUserRepository _clientRepository;
 
         private readonly IPushOverNotification _pushOverNotification;
         private readonly IEmailNotification _emailNotification;
@@ -32,7 +32,7 @@ namespace Ref.App.Core
             Func<SiteType, ISiteToScrapp> siteAccessor,
             IAppProvider appProvider,
             IAdRepository adRepository,
-            IClientRepository clientRepository,
+            IUserRepository clientRepository,
             IPushOverNotification pushOverNotification,
             IEmailNotification emailNotification)
         {

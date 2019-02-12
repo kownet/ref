@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Ref.Data.Models
 {
-    public class Client
+    public class User
     {
-        public Client()
+        public User()
         {
             Filters = new HashSet<Filter>();
         }

@@ -7,23 +7,23 @@ using System.IO;
 
 namespace Ref.Data.Repositories
 {
-    public interface IClientRepository : IRepository
+    public interface IUserRepository : IRepository
     {
-        IEnumerable<Client> GetAll();
+        IEnumerable<User> GetAll();
     }
 
-    public class ClientJsonRepository : IClientRepository
+    public class UserJsonRepository : IUserRepository
     {
         private readonly IStorageProvider _storageProvider;
 
-        public ClientJsonRepository(IStorageProvider storageProvider)
+        public UserJsonRepository(IStorageProvider storageProvider)
         {
             _storageProvider = storageProvider;
         }
 
-        public IEnumerable<Client> GetAll()
+        public IEnumerable<User> GetAll()
         {
-            var result = new List<Client>();
+            var result = new List<User>();
 
             var files = Directory.GetFiles(_storageProvider.ClientsPath(), "*.json", SearchOption.TopDirectoryOnly);
 
@@ -35,7 +35,7 @@ namespace Ref.Data.Repositories
 
                     if (!string.IsNullOrWhiteSpace(clientRaw))
                     {
-                        var clientEntity = JsonConvert.DeserializeObject<Client>(clientRaw);
+                        var clientEntity = JsonConvert.DeserializeObject<User>(clientRaw);
 
                         if (clientEntity != null)
                         {
