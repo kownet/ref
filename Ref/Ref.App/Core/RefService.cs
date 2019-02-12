@@ -53,7 +53,10 @@ namespace Ref.App.Core
             {
                 try
                 {
-                    var clients = _clientRepository.GetAll().Where(c => c.IsWorkingTime);
+                    var clients = _clientRepository.GetAll()
+                        .Where(c => c.IsWorkingTime)
+                        .Where(c => c.IsActive);
+
                     var availableSites = _appProvider.Sites().Select(s => (SiteType)s);
 
                     if (clients.AnyAndNotNull())

@@ -15,6 +15,7 @@ namespace Ref.Data.Models
         public string Name { get; set; }
         public string Email { get; set; }
         public bool Notification { get; set; }
+        public bool IsActive { get; set; }
 
         public IEnumerable<Filter> Filters { get; set; }
 
