@@ -14,13 +14,14 @@ namespace Ref.Data.Models
         public string Code { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
+        public bool Notification { get; set; }
 
         public IEnumerable<Filter> Filters { get; set; }
 
         public Sleep Sleep { get; set; }
 
         public bool IsWorkingTime =>
-            Sleep.IsActive && Sleep.SleepFrom.HasValue && Sleep.SleepTo.HasValue
+            Sleep.IsActive || (Sleep.SleepFrom.HasValue && Sleep.SleepTo.HasValue)
             ? (Sleep.SleepFrom.Value > DateTime.Now.TimeOfDay && Sleep.SleepTo.Value < DateTime.Now.TimeOfDay)
             : false;
     }

@@ -1,12 +1,14 @@
 ﻿using HtmlAgilityPack;
 using Ref.Data.Models;
 using Ref.Shared.Providers;
+using Ref.Shared.Utils;
 using Ref.Sites.Pages;
 using Ref.Sites.QueryStrings;
 using System;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading;
 
 namespace Ref.Sites.Scrapper
 {
@@ -26,11 +28,15 @@ namespace Ref.Sites.Scrapper
             QueryStringProvider = queryStringProvider;
         }
 
-        protected HtmlNode ScrapThis(string url, int timeout = 30000, string specialEncoding = "")
+        protected HtmlNode ScrapThis(string url, string specialEncoding = "")
         {
+            Thread.Sleep(AppProvider.PauseTime());
+
             var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
 
-            httpWebRequest.Timeout = timeout;
+            httpWebRequest.Timeout = AppProvider.Timeout();
+            httpWebRequest.UserAgent = new UserAgents().GetRandom();
+            httpWebRequest.Referer = AppProvider.Address();
 
             using (HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse())
             {

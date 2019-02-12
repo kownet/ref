@@ -5,6 +5,10 @@
         public static string App => "[REF]";
 
         public static string ErrorMsgTitle => $"{App} Error";
+        public static string BannedMsgTitle => $"{App} Banned";
+        public static string BannedMsg(string site) => $"Zablokowano dostęp na: {site}.";
+
+        public static string ErrorEmailMsg(string client) => $"Nie wysłano wiadomości do: {client}";
 
         public static string NoNewRecordsMsgTitle => $"{App} Brak nowych ogłoszeń";
         public static string NoNewRecordsMsgContent => "Może przy następnym sprawdzaniu coś się pojawi.";

@@ -31,7 +31,7 @@ namespace Ref.Sites.Scrapper
 
             var newest = filter.Newest == 1 ? "od" : string.Empty;
 
-            var doc = ScrapThis(searchQuery, 30000, "iso-8859-2");
+            var doc = ScrapThis(searchQuery, "iso-8859-2");
 
             if (doc.InnerHtml.Contains("jest pusta"))
             {
@@ -47,7 +47,7 @@ namespace Ref.Sites.Scrapper
 
             for (int i = 1; i <= pages; i++)
             {
-                doc = ScrapThis($"{searchQuery}{i}{newest}", 30000, "iso-8859-2");
+                doc = ScrapThis($"{searchQuery}{i}{newest}", "iso-8859-2");
 
                 var listing = doc.CssSelect(".offer-list");
 

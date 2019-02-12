@@ -43,6 +43,19 @@ namespace Ref.Sites.Scrapper
                 };
             }
 
+            var banned = doc.CssSelect(".message").FirstOrDefault();
+
+            if (banned != null)
+            {
+                return new SiteResponse
+                {
+                    FilterName = filter.Name,
+                    Advertisements = result,
+                    FilterDesc = filter.Description(),
+                    WeAreBanned = true
+                };
+            }
+
             int pages = PageProvider(SiteType.Olx).Get(doc);
 
             for (int i = 1; i <= pages; i++)

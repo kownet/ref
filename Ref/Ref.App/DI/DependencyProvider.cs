@@ -167,10 +167,12 @@ namespace Ref.App.DI
             #region App
             services.AddTransient<IAppProvider>(
             s => new AppProvider(
+                configurationRoot["app:address"],
                 configurationRoot["app:sender"],
                 configurationRoot["app:replyto"],
                 configurationRoot["app:bcc"],
                 configurationRoot["app:pausetime"],
+                configurationRoot["app:timeout"],
                 configurationRoot["app:sites"],
                 appId,
                 configurationRoot["app:adminnotification"],
