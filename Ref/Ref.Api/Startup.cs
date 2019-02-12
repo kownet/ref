@@ -6,7 +6,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Ref.Api.Helpers;
+using Ref.Data.Repositories;
 using Ref.Services.Contracts;
+using Ref.Shared.Providers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -67,6 +69,10 @@ namespace Ref.Api
             });
 
             // configure DI for application services
+            services.AddScoped<IStorageProvider>(s => new StorageProvider(
+                    "C:\\temp\\ref-test",
+                    "C:\\temp\\ref-clients"));
+            services.AddScoped<IUserRepository, UserJsonRepository>();
             services.AddScoped<IUserService, UserService>();
         }
 

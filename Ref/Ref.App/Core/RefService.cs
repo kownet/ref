@@ -10,6 +10,7 @@ using Ref.Sites.Scrapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 
 namespace Ref.App.Core
@@ -95,7 +96,7 @@ namespace Ref.App.Core
 
                                 _logger.LogTrace(
                                     $"From {siteType.ToString()} collected {newestFromSite.Count()} records," +
-                                    $" {newestFrom.Count()} new. Client '{client.Name}', Filter '{result.FilterName}'.");
+                                    $" {newestFrom.Count()} new. Client '{client.Name}'.");
                             }
 
                             if (newestAll.AnyAndNotNull())
@@ -136,7 +137,6 @@ namespace Ref.App.Core
                             }
 
                             Thread.Sleep(_appProvider.PauseTime());
-
                         }
                     }
 
