@@ -82,7 +82,9 @@ namespace Ref.App.Core
                                         Labels.BannedMsg(siteType.ToString()));
                                 }
 
-                                var newestFromSite = result.Advertisements;
+                                var newestFromSite = result.Advertisements
+                                    .DistinctBy(p => p.Header);
+
                                 filterName = result.FilterName;
                                 filterDesc = result.FilterDesc;
 

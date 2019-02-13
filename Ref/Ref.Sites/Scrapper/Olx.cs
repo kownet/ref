@@ -88,7 +88,7 @@ namespace Ref.Sites.Scrapper
                                     var url = link.ByAttribute("href");
 
                                     ad.Url = url;
-                                    ad.Header = url.Replace("https://www.olx.pl/oferta/", string.Empty);
+                                    ad.Header = Parse(url);
                                 }
 
                                 ad.Price = table.ByClass("price", @"[^0-9,.-]");
@@ -106,6 +106,36 @@ namespace Ref.Sites.Scrapper
                 Advertisements = result,
                 FilterDesc = filter.Description()
             };
+        }
+
+        private readonly string _olxBanner = "https://www.olx.pl/oferta/";
+        private readonly string _otodomBanner = "https://www.otodom.pl/oferta/";
+
+        private string Parse(string header)
+        {
+            if (header.Contains(_olxBanner))
+            {
+                var link = header.Replace(_olxBanner, string.Empty);
+
+                var split = link.Split('-');
+
+                Array.Resize(ref split, split.Length - 2);
+
+                return string.Join(" ", split).FirstCharToUpper();
+            }
+
+            if (header.Contains(_otodomBanner))
+            {
+                var link = header.Replace(_otodomBanner, string.Empty);
+
+                var split = link.Split('-');
+
+                Array.Resize(ref split, split.Length - 1);
+
+                return string.Join(" ", split).FirstCharToUpper();
+            }
+
+            else return string.Empty;
         }
     }
 }
