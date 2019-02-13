@@ -28,5 +28,7 @@ namespace Ref.Data.Models
             Sleep.IsActive || (Sleep.SleepFrom.HasValue && Sleep.SleepTo.HasValue)
             ? (Sleep.SleepFrom.Value > DateTime.Now.TimeOfDay && Sleep.SleepTo.Value < DateTime.Now.TimeOfDay)
             : false;
+
+        public bool IsChecked { get; set; }
     }
 }

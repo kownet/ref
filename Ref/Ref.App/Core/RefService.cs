@@ -49,20 +49,22 @@ namespace Ref.App.Core
         {
             var successTries = 0;
 
+            var clients = _clientRepository.GetAll()
+                .Where(c => c.IsWorkingTime)
+                .Where(c => c.IsActive);
+
+            var availableSites = _appProvider.Sites().Select(s => (SiteType)s);
+
             while (successTries < _appProvider.SuccessTries())
             {
                 try
                 {
-                    var clients = _clientRepository.GetAll()
-                        .Where(c => c.IsWorkingTime)
-                        .Where(c => c.IsActive);
-
-                    var availableSites = _appProvider.Sites().Select(s => (SiteType)s);
-
                     if (clients.AnyAndNotNull())
                     {
-                        foreach (var client in clients)
+                        foreach (var client in clients.Where(c => !c.IsChecked))
                         {
+                            if (client.Id == 1) throw new Exception("test");
+
                             var oldest = _adRepository.GetAll(client.Code);
 
                             var newestAll = new List<Ad>();
@@ -137,6 +139,8 @@ namespace Ref.App.Core
                                 }
                             }
 
+                            client.IsChecked = true;
+
                             Thread.Sleep(_appProvider.PauseTime());
                         }
                     }
@@ -147,10 +151,15 @@ namespace Ref.App.Core
                 {
                     successTries++;
 
-                    var msgException = $"[no. {successTries}] Message: {ex.GetFullMessage()}, StackTrace: {ex.StackTrace}";
+                    var msgHeader = $"[no. {successTries}]";
+
+                    var msgException = $"{msgHeader} Message: {ex.GetFullMessage()}, StackTrace: {ex.StackTrace}";
 
                     _logger.LogError(msgException);
-                    _pushOverNotification.Send($"[{_appProvider.AppId()}]{Labels.ErrorMsgTitle}", ex.GetFullMessage());
+
+                    _pushOverNotification.Send(
+                        $"[{_appProvider.AppId()}]{Labels.ErrorMsgTitle}",
+                        $"{msgHeader} {ex.GetFullMessage()}");
 
                     Thread.Sleep(5 * 1000);
                 }
