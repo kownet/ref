@@ -17,8 +17,8 @@ namespace Ref.Data.Models
         public bool Notification { get; set; }
         public bool IsActive { get; set; }
 
-        public byte[] PasswordHash { get; set; }
-        public byte[] PasswordSalt { get; set; }
+        public string PasswordHash { get; set; }
+        public string PasswordSalt { get; set; }
 
         public IEnumerable<Filter> Filters { get; set; }
 

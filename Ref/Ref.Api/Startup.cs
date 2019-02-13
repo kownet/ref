@@ -69,15 +69,19 @@ namespace Ref.Api
             });
 
             // configure DI for application services
-            services.AddScoped<IStorageProvider>(s => new StorageProvider(
-                    "C:\\temp\\ref-test",
-                    "C:\\temp\\ref-clients"));
-            services.AddScoped<IUserRepository, UserJsonRepository>();
+            //services.AddScoped<IStorageProvider>(s => new StorageProvider(
+            //        "C:\\temp\\ref-test",
+            //        "C:\\temp\\ref-clients"));
+            services.AddScoped<IUserRepository, UserInMemoryRepository>();
             services.AddScoped<IUserService, UserService>();
+
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
             app.UseCors(x => x
                 .AllowAnyOrigin()
                 .AllowAnyMethod()

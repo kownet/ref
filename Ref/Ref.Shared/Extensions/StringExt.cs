@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Ref.Shared.Extensions
 {
@@ -141,6 +143,11 @@ namespace Ref.Shared.Extensions
             var arr = input.ToCharArray();
             arr[0] = char.ToUpperInvariant(arr[0]);
             return new string(arr);
+        }
+
+        public static byte[] ToBytes(this string input)
+        {
+            return input.Split('-').Select(ch => Convert.ToByte(ch, 16)).ToArray();
         }
     }
 }

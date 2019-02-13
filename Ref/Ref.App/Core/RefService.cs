@@ -10,7 +10,6 @@ using Ref.Sites.Scrapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 
 namespace Ref.App.Core
@@ -75,10 +74,10 @@ namespace Ref.App.Core
                             {
                                 var result = _siteAccessor(siteType).Search(client.Filters);
 
-                                if(result.WeAreBanned)
+                                if (result.WeAreBanned)
                                 {
                                     _pushOverNotification.Send(
-                                        Labels.BannedMsgTitle, 
+                                        Labels.BannedMsgTitle,
                                         Labels.BannedMsg(siteType.ToString()));
                                 }
 
@@ -108,7 +107,7 @@ namespace Ref.App.Core
 
                             if (newest.AnyAndNotNull())
                             {
-                                if(client.Notification)
+                                if (client.Notification)
                                 {
                                     var ntfe = View.ForEmail(newest, filterName, filterDesc);
 

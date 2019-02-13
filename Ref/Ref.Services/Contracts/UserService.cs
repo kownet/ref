@@ -1,5 +1,6 @@
 ﻿using Ref.Data.Models;
 using Ref.Data.Repositories;
+using Ref.Shared.Extensions;
 using Ref.Shared.Utils;
 using System;
 using System.Collections.Generic;
@@ -42,8 +43,11 @@ namespace Ref.Services.Contracts
             if (user == null)
                 return null;
 
+            var passHash = user.PasswordHash.ToBytes();
+            var passSalt = user.PasswordSalt.ToBytes();
+
             // check if password is correct
-            if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
+            if (!VerifyPasswordHash(password, passHash, passSalt))
                 return null;
 
             // authentication successful
@@ -62,11 +66,10 @@ namespace Ref.Services.Contracts
             if (_userRepository.GetAll().Any(x => x.Email == user.Email))
                 throw new AppException("Username \"" + user.Email + "\" is already taken");
 
-            byte[] passwordSalt;
-            CreatePasswordHash(password, out byte[] passwordHash, out passwordSalt);
+            CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
 
-            user.PasswordHash = passwordHash;
-            user.PasswordSalt = passwordSalt;
+            user.PasswordHash = BitConverter.ToString(passwordHash);
+            user.PasswordSalt = BitConverter.ToString(passwordSalt);
 
             _userRepository.Create(user);
 
@@ -93,11 +96,10 @@ namespace Ref.Services.Contracts
             // update password if it was entered
             if (!string.IsNullOrWhiteSpace(password))
             {
-                byte[] passwordHash, passwordSalt;
-                CreatePasswordHash(password, out passwordHash, out passwordSalt);
+                CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
 
-                user.PasswordHash = passwordHash;
-                user.PasswordSalt = passwordSalt;
+                user.PasswordHash = BitConverter.ToString(passwordHash);
+                user.PasswordSalt = BitConverter.ToString(passwordSalt);
             }
 
             _userRepository.Update(user);
