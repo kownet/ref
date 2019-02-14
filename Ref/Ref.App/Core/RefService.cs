@@ -63,8 +63,6 @@ namespace Ref.App.Core
                     {
                         foreach (var client in clients.Where(c => !c.IsChecked))
                         {
-                            if (client.Id == 1) throw new Exception("test");
-
                             var oldest = _adRepository.GetAll(client.Code);
 
                             var newestAll = new List<Ad>();

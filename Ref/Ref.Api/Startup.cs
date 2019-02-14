@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -6,9 +7,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Ref.Api.Helpers;
+using Ref.Data.Db;
 using Ref.Data.Repositories;
 using Ref.Services.Contracts;
+using Ref.Services.Features.Commands.Users;
 using Ref.Shared.Providers;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -32,6 +36,8 @@ namespace Ref.Api
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
 
+            services.AddMediatR(typeof(Register).GetTypeInfo().Assembly);
+
             // configure jwt authentication
             var appSettings = appSettingsSection.Get<AppSettings>();
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
@@ -46,9 +52,9 @@ namespace Ref.Api
                 {
                     OnTokenValidated = context =>
                     {
-                        var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
+                        var userService = context.HttpContext.RequestServices.GetRequiredService<IUserRepository>();
                         var userId = int.Parse(context.Principal.Identity.Name);
-                        var user = userService.GetById(userId);
+                        var user = userService.GetAsync(userId).Result;
                         if (user == null)
                         {
                             // return unauthorized if user no longer exists
@@ -68,12 +74,12 @@ namespace Ref.Api
                 };
             });
 
-            // configure DI for application services
-            //services.AddScoped<IStorageProvider>(s => new StorageProvider(
-            //        "C:\\temp\\ref-test",
-            //        "C:\\temp\\ref-clients"));
-            services.AddScoped<IUserRepository, UserInMemoryRepository>();
-            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IDbAccess>(
+                db => new DbAccess(Configuration.GetConnectionString("RefDb")));
+
+            services.AddTransient<IUserRepository, UserRepository>();
+
+            services.AddScoped<IPasswordProvider, PasswordProvider>();
 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }

@@ -1,0 +1,34 @@
+﻿using System.Data;
+using System.Data.SqlClient;
+
+namespace Ref.Data.Db
+{
+    public interface IDbAccess
+    {
+        IDbConnection GetConnection();
+    }
+
+    public class DbAccess : IDbAccess
+    {
+        private readonly string _connectionString;
+        private IDbConnection _connection;
+
+        public DbAccess(string connectionString)
+        {
+            _connectionString = connectionString;
+        }
+
+        public IDbConnection GetConnection()
+        {
+            if (_connection == null)
+            {
+                _connection = new SqlConnection(_connectionString);
+            }
+            if (_connection.State != ConnectionState.Open)
+            {
+                _connection.Open();
+            }
+            return _connection;
+        }
+    }
+}
