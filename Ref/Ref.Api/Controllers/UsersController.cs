@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Ref.Api.Helpers;
 using Ref.Services.Features.Commands.Users;
+using Ref.Services.Features.Queries.Users;
 using System.Threading.Tasks;
 
 namespace Ref.Api.Controllers
@@ -39,6 +40,20 @@ namespace Ref.Api.Controllers
             cmd.SigningToken = Settings.Secret;
 
             var result = await Mediator.Send(cmd);
+
+            if (result.Succeed)
+                return Ok(result);
+            else
+                return BadRequest(result.Message);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            if (id != UserId)
+                return Forbid();
+
+            var result = await Mediator.Send(new ById.Query(UserId));
 
             if (result.Succeed)
                 return Ok(result);

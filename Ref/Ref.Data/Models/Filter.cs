@@ -5,6 +5,9 @@ namespace Ref.Data.Models
 {
     public class Filter
     {
+        public int Id { get; set; }
+        public int UserId { get; set; }
+
         public string Name { get; set; }
         public PropertyType Type { get; set; }
         public DealType Deal { get; set; }

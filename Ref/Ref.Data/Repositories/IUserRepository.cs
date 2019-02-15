@@ -34,7 +34,7 @@ namespace Ref.Data.Repositories
 
         public async Task<int> Create(User user)
         {
-            using (var c = _dbAccess.GetConnection())
+            using (var c = _dbAccess.Connection)
             {
                 return await c.ExecuteAsync(
                     @"INSERT INTO Users (Email, PasswordHash, PasswordSalt) VALUES(@Email, @PasswordHash, @PasswordSalt);
@@ -50,12 +50,12 @@ namespace Ref.Data.Repositories
 
         public void Delete(int id)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public async Task<IQueryable<User>> FindByAsync(Expression<Func<User, bool>> predicate)
         {
-            using (var c = _dbAccess.GetConnection())
+            using (var c = _dbAccess.Connection)
             {
                 var result = (await c.QueryAsync<User>(
                     @"SELECT Id, Email, PasswordHash, PasswordSalt FROM Users")).AsQueryable();
@@ -66,7 +66,7 @@ namespace Ref.Data.Repositories
 
         public async Task<User> GetAsync(int userId)
         {
-            using (var c = _dbAccess.GetConnection())
+            using (var c = _dbAccess.Connection)
             {
                 return await c.QuerySingleOrDefaultAsync<User>(
                     @"SELECT Id, Email, PasswordHash, PasswordSalt FROM Users WHERE Id = @Id",
@@ -80,6 +80,10 @@ namespace Ref.Data.Repositories
         public IEnumerable<User> GetAll()
         {
             throw new NotImplementedException();
+            //using (var c = _dbAccess.GetConnection())
+            //{
+            //    return await c.QueryAsync<User>(@"SELECT Id, Email, PasswordHash, PasswordSalt FROM Users");
+            //}
         }
 
         public void Update(User user, string password = null)
@@ -104,7 +108,7 @@ namespace Ref.Data.Repositories
 
         public void Delete(int id)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public Task<IQueryable<User>> FindByAsync(Expression<Func<User, bool>> predicate)

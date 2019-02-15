@@ -5,7 +5,8 @@ namespace Ref.Data.Db
 {
     public interface IDbAccess
     {
-        IDbConnection GetConnection();
+        IDbConnection Connection { get; }
+        void CloseConnection();
     }
 
     public class DbAccess : IDbAccess
@@ -18,17 +19,31 @@ namespace Ref.Data.Db
             _connectionString = connectionString;
         }
 
-        public IDbConnection GetConnection()
+        public void CloseConnection()
         {
-            if (_connection == null)
+            if (_connection != null && _connection.State == ConnectionState.Open)
             {
-                _connection = new SqlConnection(_connectionString);
+                _connection.Close();
             }
-            if (_connection.State != ConnectionState.Open)
+        }
+
+        public IDbConnection Connection
+        {
+            get
             {
-                _connection.Open();
+                if (_connection == null)
+                {
+                    _connection = new SqlConnection(_connectionString);
+                }
+                if (_connection.State != ConnectionState.Open)
+                {
+                    if(string.IsNullOrWhiteSpace(_connection.ConnectionString))
+                        _connection.ConnectionString = _connectionString;
+
+                    _connection.Open();
+                }
+                return _connection;
             }
-            return _connection;
         }
     }
 }

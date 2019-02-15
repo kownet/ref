@@ -11,10 +11,8 @@ using Ref.Data.Db;
 using Ref.Data.Repositories;
 using Ref.Services.Contracts;
 using Ref.Services.Features.Commands.Users;
-using Ref.Shared.Providers;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Ref.Api
 {
@@ -50,17 +48,16 @@ namespace Ref.Api
             {
                 x.Events = new JwtBearerEvents
                 {
-                    OnTokenValidated = context =>
+                    OnTokenValidated = async context =>
                     {
                         var userService = context.HttpContext.RequestServices.GetRequiredService<IUserRepository>();
                         var userId = int.Parse(context.Principal.Identity.Name);
-                        var user = userService.GetAsync(userId).Result;
+                        var user = await userService.GetAsync(userId);
                         if (user == null)
                         {
                             // return unauthorized if user no longer exists
                             context.Fail("Unauthorized");
                         }
-                        return Task.CompletedTask;
                     }
                 };
                 x.RequireHttpsMetadata = false;
@@ -78,6 +75,7 @@ namespace Ref.Api
                 db => new DbAccess(Configuration.GetConnectionString("RefDb")));
 
             services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<IFilterRepository, FilterRepository>();
 
             services.AddScoped<IPasswordProvider, PasswordProvider>();
 

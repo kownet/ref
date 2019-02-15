@@ -6,7 +6,7 @@ using Ref.Api.Helpers;
 namespace Ref.Api.Controllers
 {
     [ApiController]
-    public class BaseController : Controller
+    public abstract class BaseController : Controller
     {
         protected readonly IMediator Mediator;
         protected readonly AppSettings Settings;
@@ -17,6 +17,21 @@ namespace Ref.Api.Controllers
         {
             Mediator = mediator;
             Settings = appSettings.Value;
+        }
+
+        protected int UserId
+        {
+            get
+            {
+                int result = 0;
+
+                if (!string.IsNullOrWhiteSpace(User.Identity.Name))
+                {
+                    int.TryParse(User.Identity.Name, out result);
+                }
+
+                return result;
+            }
         }
     }
 }
