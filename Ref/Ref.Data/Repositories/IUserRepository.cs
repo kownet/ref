@@ -16,10 +16,11 @@ namespace Ref.Data.Repositories
     public interface IUserRepository : IRepository
     {
         IEnumerable<User> GetAll();
+        Task<IEnumerable<User>> GetAllAsync();
         Task<User> GetAsync(int userId);
-        Task<int> Create(User user);
-        void Update(User user, string password = null);
-        void Delete(int id);
+        Task<int> CreateAsync(User user);
+        Task<int> UpdateAsync(User user);
+        Task<int> DeleteAsync(int userId);
         Task<IQueryable<User>> FindByAsync(Expression<Func<User, bool>> predicate);
     }
 
@@ -32,25 +33,34 @@ namespace Ref.Data.Repositories
             _dbAccess = dbAccess;
         }
 
-        public async Task<int> Create(User user)
+        public async Task<int> CreateAsync(User user)
         {
             using (var c = _dbAccess.Connection)
             {
                 return await c.ExecuteAsync(
-                    @"INSERT INTO Users (Email, PasswordHash, PasswordSalt) VALUES(@Email, @PasswordHash, @PasswordSalt);
+                    @"INSERT INTO Users (Email, PasswordHash, PasswordSalt, Role) VALUES(@Email, @PasswordHash, @PasswordSalt, @Role);
                     SELECT CAST(SCOPE_IDENTITY() as int)",
                     new
                     {
                         user.Email,
                         user.PasswordHash,
-                        user.PasswordSalt
+                        user.PasswordSalt,
+                        user.Role
                     });
             }
         }
 
-        public void Delete(int id)
+        public async Task<int> DeleteAsync(int userId)
         {
-            throw new NotImplementedException();
+            using (var c = _dbAccess.Connection)
+            {
+                return await c.ExecuteAsync(
+                    @"DELETE FROM Users WHERE Id = @UserId",
+                    new
+                    {
+                        UserId = userId
+                    });
+            }
         }
 
         public async Task<IQueryable<User>> FindByAsync(Expression<Func<User, bool>> predicate)
@@ -58,7 +68,7 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 var result = (await c.QueryAsync<User>(
-                    @"SELECT Id, Email, PasswordHash, PasswordSalt FROM Users")).AsQueryable();
+                    @"SELECT Id, Email, PasswordHash, PasswordSalt, Role FROM Users")).AsQueryable();
 
                 return result.Where(predicate);
             }
@@ -69,7 +79,7 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 return await c.QuerySingleOrDefaultAsync<User>(
-                    @"SELECT Id, Email, PasswordHash, PasswordSalt FROM Users WHERE Id = @Id",
+                    @"SELECT Id, Email, PasswordHash, PasswordSalt, Role FROM Users WHERE Id = @Id",
                     new
                     {
                         Id = userId
@@ -77,18 +87,34 @@ namespace Ref.Data.Repositories
             }
         }
 
+        public async Task<IEnumerable<User>> GetAllAsync()
+        {
+            using (var c = _dbAccess.Connection)
+            {
+                return await c.QueryAsync<User>(@"SELECT Id, Email FROM Users");
+            }
+        }
+
         public IEnumerable<User> GetAll()
         {
             throw new NotImplementedException();
-            //using (var c = _dbAccess.GetConnection())
-            //{
-            //    return await c.QueryAsync<User>(@"SELECT Id, Email, PasswordHash, PasswordSalt FROM Users");
-            //}
         }
 
-        public void Update(User user, string password = null)
+        public async Task<int> UpdateAsync(User user)
         {
-            throw new NotImplementedException();
+            using (var c = _dbAccess.Connection)
+            {
+                return await c.ExecuteAsync(
+                    @"UPDATE Users SET Email = @Email, PasswordHash = @PasswordHash, PasswordSalt = @PasswordSalt, Role = @Role WHERE Id = @Id",
+                    new
+                    {
+                        user.Email,
+                        user.PasswordHash,
+                        user.PasswordSalt,
+                        user.Id,
+                        user.Role
+                    });
+            }
         }
     }
 
@@ -101,12 +127,12 @@ namespace Ref.Data.Repositories
             _storageProvider = storageProvider;
         }
 
-        public async Task<int> Create(User user)
+        public async Task<int> CreateAsync(User user)
         {
             return 0;
         }
 
-        public void Delete(int id)
+        public Task<int> DeleteAsync(int id)
         {
             throw new NotImplementedException();
         }
@@ -151,9 +177,14 @@ namespace Ref.Data.Repositories
             throw new NotImplementedException();
         }
 
-        public void Update(User user, string password = null)
+        public Task<int> UpdateAsync(User user)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
+        }
+
+        Task<IEnumerable<User>> IUserRepository.GetAllAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }

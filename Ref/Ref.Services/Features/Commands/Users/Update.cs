@@ -1,17 +1,19 @@
 ﻿using MediatR;
-using Ref.Data.Models;
 using Ref.Data.Repositories;
 using Ref.Services.Contracts;
 using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Ref.Services.Features.Commands.Users
 {
-    public class Register
+    public class Update
     {
         public class Cmd : IRequest<Result>
         {
+            public int Id { get; set; }
             public string Email { get; set; }
             public string Password { get; set; }
         }
@@ -20,8 +22,6 @@ namespace Ref.Services.Features.Commands.Users
         {
             public bool Succeed => string.IsNullOrWhiteSpace(Message);
             public string Message { get; set; }
-
-            public int UserId { get; set; }
         }
 
         public class Handler : IRequestHandler<Cmd, Result>
@@ -41,23 +41,29 @@ namespace Ref.Services.Features.Commands.Users
             {
                 try
                 {
-                    _passwordProvider.CreatePasswordHash(
-                        request.Password,
-                        out byte[] passwordHash,
-                        out byte[] passwordSalt);
+                    var entity = await _userRepository.GetAsync(request.Id);
 
-                    var result = await _userRepository.CreateAsync(new User
+                    if (entity is null)
                     {
-                        Email = request.Email,
-                        PasswordHash = passwordHash,
-                        PasswordSalt = passwordSalt,
-                        Role = Role.User
-                    });
+                        return new Result { Message = "No such filter" };
+                    }
 
-                    return new Result
+                    if(!string.IsNullOrWhiteSpace(request.Password))
                     {
-                        UserId = result
-                    };
+                        _passwordProvider.CreatePasswordHash(
+                            request.Password,
+                            out byte[] passwordHash,
+                            out byte[] passwordSalt);
+
+                        entity.PasswordHash = passwordHash;
+                        entity.PasswordSalt = passwordSalt;
+                    }
+
+                    entity.Email = request.Email;
+
+                    await _userRepository.UpdateAsync(entity);
+
+                    return new Result();
                 }
                 catch (Exception ex)
                 {

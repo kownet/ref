@@ -45,7 +45,7 @@ namespace Ref.Services.Features.Queries.Filters
                     {
                         Filters = request.UserId.HasValue
                         ? await _filterRepository.FindByAsync(f => f.UserId == request.UserId.Value)
-                        : await _filterRepository.GetAll()
+                        : await _filterRepository.GetAllAsync()
                     };
                 }
                 catch (Exception ex)

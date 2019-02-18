@@ -48,7 +48,7 @@ namespace Ref.Services.Features.Commands.Users
             {
                 var entity = (await _userRepository.FindByAsync(u => u.Email == request.Email)).FirstOrDefault();
 
-                if (entity == null)
+                if (entity is null)
                 {
                     return new Result
                     {
@@ -72,7 +72,8 @@ namespace Ref.Services.Features.Commands.Users
                 {
                     Subject = new ClaimsIdentity(new Claim[]
                     {
-                    new Claim(ClaimTypes.Name, entity.Id.ToString())
+                        new Claim(ClaimTypes.Name, entity.Id.ToString()),
+                        new Claim(ClaimTypes.Role, entity.Role)
                     }),
                     Expires = DateTime.UtcNow.AddDays(7),
                     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

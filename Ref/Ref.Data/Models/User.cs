@@ -20,6 +20,8 @@ namespace Ref.Data.Models
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
 
+        public string Role { get; set; }
+
         public IEnumerable<Filter> Filters { get; set; }
 
         public Sleep Sleep { get; set; }

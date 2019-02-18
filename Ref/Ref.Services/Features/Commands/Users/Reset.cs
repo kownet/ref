@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Ref.Data.Models;
 using Ref.Data.Repositories;
 using Ref.Services.Contracts;
 using System;
@@ -8,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Ref.Services.Features.Commands.Users
 {
-    public class Register
+    public class Reset
     {
         public class Cmd : IRequest<Result>
         {
-            public string Email { get; set; }
+            public int Id { get; set; }
             public string Password { get; set; }
         }
 
@@ -20,8 +19,6 @@ namespace Ref.Services.Features.Commands.Users
         {
             public bool Succeed => string.IsNullOrWhiteSpace(Message);
             public string Message { get; set; }
-
-            public int UserId { get; set; }
         }
 
         public class Handler : IRequestHandler<Cmd, Result>
@@ -41,23 +38,24 @@ namespace Ref.Services.Features.Commands.Users
             {
                 try
                 {
+                    var entity = await _userRepository.GetAsync(request.Id);
+
+                    if (entity is null)
+                    {
+                        return new Result { Message = "No such filter" };
+                    }
+
                     _passwordProvider.CreatePasswordHash(
-                        request.Password,
-                        out byte[] passwordHash,
-                        out byte[] passwordSalt);
+                            request.Password,
+                            out byte[] passwordHash,
+                            out byte[] passwordSalt);
 
-                    var result = await _userRepository.CreateAsync(new User
-                    {
-                        Email = request.Email,
-                        PasswordHash = passwordHash,
-                        PasswordSalt = passwordSalt,
-                        Role = Role.User
-                    });
+                    entity.PasswordHash = passwordHash;
+                    entity.PasswordSalt = passwordSalt;
 
-                    return new Result
-                    {
-                        UserId = result
-                    };
+                    await _userRepository.UpdateAsync(entity);
+
+                    return new Result();
                 }
                 catch (Exception ex)
                 {

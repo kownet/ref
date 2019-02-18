@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Ref.Api.Helpers;
+using Ref.Data.Models;
+using Ref.Services.Features.Commands.Filters;
 using Ref.Services.Features.Queries.Filters;
 using System.Threading.Tasks;
 
@@ -21,6 +23,7 @@ namespace Ref.Api.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> GetAll()
         {
             var result = await Mediator.Send(new All.Query());
@@ -50,6 +53,46 @@ namespace Ref.Api.Controllers
 
             if (result.Succeed)
                 return Ok(result.Filter);
+            else
+                return BadRequest(result.Message);
+        }
+
+        [HttpPost("create")]
+        public async Task<IActionResult> Create(Create.Cmd cmd)
+        {
+            cmd.UserId = UserId;
+
+            var result = await Mediator.Send(cmd);
+
+            if (result.Succeed)
+                return Ok();
+            else
+                return BadRequest(result.Message);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var cmd = new Delete.Cmd(id, UserId);
+
+            var result = await Mediator.Send(cmd);
+
+            if (result.Succeed)
+                return Ok();
+            else
+                return BadRequest(result.Message);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, Update.Cmd cmd)
+        {
+            cmd.Id = id;
+            cmd.UserId = UserId;
+
+            var result = await Mediator.Send(cmd);
+
+            if (result.Succeed)
+                return Ok();
             else
                 return BadRequest(result.Message);
         }

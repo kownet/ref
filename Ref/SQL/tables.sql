@@ -2,7 +2,8 @@ CREATE TABLE Users(
 	[Id] [int] PRIMARY KEY IDENTITY(1,1) NOT NULL,
 	[Email] nvarchar(128) NOT NULL,
 	[PasswordHash] binary(64) NOT NULL,
-	[PasswordSalt] binary(128) NOT NULL
+	[PasswordSalt] binary(128) NOT NULL,
+	[Role] nvarchar(32) NOT NULL
 )
 
 CREATE TABLE Filters(
@@ -16,5 +17,6 @@ CREATE TABLE Filters(
 	[FlatAreaTo] [int] NOT NULL,
 	[PriceTo] [int] NOT NULL,
 	[PriceFrom] [int] NOT NULL,
-	[Newest] [bit] NULL
+	[Newest] [bit] NULL,
+	[Name] nvarchar(128) NULL
 )
