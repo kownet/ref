@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Ref.App.Core
 {
@@ -23,6 +24,8 @@ namespace Ref.App.Core
 
         private readonly IAdRepository _adRepository;
         private readonly IUserRepository _clientRepository;
+        private readonly ICitiesRepository _citiesRepository;
+        private readonly IOfferRepository _offerRepository;
 
         private readonly IPushOverNotification _pushOverNotification;
         private readonly IEmailNotification _emailNotification;
@@ -33,6 +36,8 @@ namespace Ref.App.Core
             IAppProvider appProvider,
             IAdRepository adRepository,
             IUserRepository clientRepository,
+            ICitiesRepository citiesRepository,
+            IOfferRepository offerRepository,
             IPushOverNotification pushOverNotification,
             IEmailNotification emailNotification)
         {
@@ -41,127 +46,216 @@ namespace Ref.App.Core
             _appProvider = appProvider;
             _adRepository = adRepository;
             _clientRepository = clientRepository;
+            _citiesRepository = citiesRepository;
+            _offerRepository = offerRepository;
             _pushOverNotification = pushOverNotification;
             _emailNotification = emailNotification;
         }
 
-        public void Crawl()
+        public async Task<int> Crawl()
         {
             var successTries = 0;
 
-            var clients = _clientRepository.GetAll()
-                .Where(c => c.IsWorkingTime)
-                .Where(c => c.IsActive);
-
             var availableSites = _appProvider.Sites().Select(s => (SiteType)s);
 
-            while (successTries < _appProvider.SuccessTries())
+            #region Search per client filters from flat JSON files
+            if (_appProvider.Mode() == 0)
             {
-                try
+                var clients = _clientRepository.GetAll()
+                    .Where(c => c.IsWorkingTime)
+                    .Where(c => c.IsActive);
+
+                while (successTries < _appProvider.SuccessTries())
                 {
-                    if (clients.AnyAndNotNull())
+                    try
                     {
-                        foreach (var client in clients.Where(c => !c.IsChecked))
+                        if (clients.AnyAndNotNull())
                         {
-                            var oldest = _adRepository.GetAll(client.Code);
-
-                            var newestAll = new List<Ad>();
-                            var newest = new List<Ad>();
-                            var filterName = string.Empty;
-                            var filterDesc = string.Empty;
-
-                            foreach (SiteType siteType in availableSites)
+                            foreach (var client in clients.Where(c => !c.IsChecked))
                             {
-                                var result = _siteAccessor(siteType).Search(client.Filters);
+                                var oldest = _adRepository.GetAll(client.Code);
 
-                                if (result.WeAreBanned)
+                                var newestAll = new List<Ad>();
+                                var newest = new List<Ad>();
+                                var filterName = string.Empty;
+                                var filterDesc = string.Empty;
+
+                                foreach (SiteType siteType in availableSites)
                                 {
-                                    _pushOverNotification.Send(
-                                        Labels.BannedMsgTitle,
-                                        Labels.BannedMsg(siteType.ToString()));
-                                }
+                                    var result = _siteAccessor(siteType).Search(client.Filters);
 
-                                var newestFromSite = result.Advertisements
-                                    .DistinctBy(p => p.Header);
-
-                                filterName = result.FilterName;
-                                filterDesc = result.FilterDesc;
-
-                                newestAll.AddRange(newestFromSite);
-
-                                var newestFrom = newestFromSite
-                                    .Where(p => oldest.Where(t => t.SiteType == siteType)
-                                    .All(p2 => p2.Id != p.Id));
-
-                                newest.AddRange(newestFrom);
-
-                                _logger.LogTrace(
-                                    $"From {siteType.ToString()} collected {newestFromSite.Count()} records," +
-                                    $" {newestFrom.Count()} new. Client '{client.Name}'.");
-                            }
-
-                            if (newestAll.AnyAndNotNull())
-                            {
-                                _adRepository.SaveAll(client.Code, newestAll);
-                            }
-
-                            if (newest.AnyAndNotNull())
-                            {
-                                if (client.Notification)
-                                {
-                                    var ntfe = View.ForEmail(newest, filterName, filterDesc);
-
-                                    var email = _emailNotification.Send(
-                                        ntfe.Title,
-                                        ntfe.RawMessage,
-                                        ntfe.HtmlMessage,
-                                        new string[] { $"{client.Name} <{client.Email}>" });
-
-                                    if (email.IsSuccess)
-                                    {
-                                        _logger.LogTrace($"Email to: {client.Email} sent.");
-                                    }
-                                    else
+                                    if (result.WeAreBanned)
                                     {
                                         _pushOverNotification.Send(
-                                            Labels.ErrorMsgTitle,
-                                            Labels.ErrorEmailMsg(client.Email));
+                                            Labels.BannedMsgTitle,
+                                            Labels.BannedMsg(siteType.ToString()));
+                                    }
+
+                                    var newestFromSite = result.Advertisements
+                                        .DistinctBy(p => p.Header);
+
+                                    filterName = result.FilterName;
+                                    filterDesc = result.FilterDesc;
+
+                                    newestAll.AddRange(newestFromSite);
+
+                                    var newestFrom = newestFromSite
+                                        .Where(p => oldest.Where(t => t.SiteType == siteType)
+                                        .All(p2 => p2.Id != p.Id));
+
+                                    newest.AddRange(newestFrom);
+
+                                    _logger.LogTrace(
+                                        $"From {siteType.ToString()} collected {newestFromSite.Count()} records," +
+                                        $" {newestFrom.Count()} new. Client '{client.Name}'.");
+                                }
+
+                                if (newestAll.AnyAndNotNull())
+                                {
+                                    _adRepository.SaveAll(client.Code, newestAll);
+                                }
+
+                                if (newest.AnyAndNotNull())
+                                {
+                                    if (client.Notification)
+                                    {
+                                        var ntfe = View.ForEmail(newest, filterName, filterDesc);
+
+                                        var email = _emailNotification.Send(
+                                            ntfe.Title,
+                                            ntfe.RawMessage,
+                                            ntfe.HtmlMessage,
+                                            new string[] { $"{client.Name} <{client.Email}>" });
+
+                                        if (email.IsSuccess)
+                                        {
+                                            _logger.LogTrace($"Email to: {client.Email} sent.");
+                                        }
+                                        else
+                                        {
+                                            _pushOverNotification.Send(
+                                                Labels.ErrorMsgTitle,
+                                                Labels.ErrorEmailMsg(client.Email));
+                                        }
+                                    }
+
+                                    if (_appProvider.AdminNotification())
+                                    {
+                                        var ntfp = View.ForPushOver(newest, client.Email);
+
+                                        _pushOverNotification.Send(ntfp.Title, ntfp.Message);
                                     }
                                 }
 
-                                if (_appProvider.AdminNotification())
-                                {
-                                    var ntfp = View.ForPushOver(newest, client.Email);
+                                client.IsChecked = true;
 
-                                    _pushOverNotification.Send(ntfp.Title, ntfp.Message);
-                                }
+                                Thread.Sleep(_appProvider.PauseTime());
                             }
-
-                            client.IsChecked = true;
-
-                            Thread.Sleep(_appProvider.PauseTime());
                         }
+
+                        successTries = _appProvider.SuccessTries();
                     }
+                    catch (Exception ex)
+                    {
+                        successTries++;
 
-                    successTries = _appProvider.SuccessTries();
-                }
-                catch (Exception ex)
-                {
-                    successTries++;
+                        var msgHeader = $"[no. {successTries}]";
 
-                    var msgHeader = $"[no. {successTries}]";
+                        var msgException = $"{msgHeader} Message: {ex.GetFullMessage()}, StackTrace: {ex.StackTrace}";
 
-                    var msgException = $"{msgHeader} Message: {ex.GetFullMessage()}, StackTrace: {ex.StackTrace}";
+                        _logger.LogError(msgException);
 
-                    _logger.LogError(msgException);
+                        _pushOverNotification.Send(
+                            $"[{_appProvider.AppId()}]{Labels.ErrorMsgTitle}",
+                            $"{msgHeader} {ex.GetFullMessage()}");
 
-                    _pushOverNotification.Send(
-                        $"[{_appProvider.AppId()}]{Labels.ErrorMsgTitle}",
-                        $"{msgHeader} {ex.GetFullMessage()}");
-
-                    Thread.Sleep(5 * 1000);
+                        Thread.Sleep(5 * 1000);
+                    }
                 }
             }
+            #endregion
+
+            #region Search per city from DB table
+            if (_appProvider.Mode() == 1)
+            {
+                var cities = await _citiesRepository.GetAllAsync();
+                var dealTypes = (DealType[])Enum.GetValues(typeof(DealType));
+
+                while (successTries < _appProvider.SuccessTries())
+                {
+                    try
+                    {
+                        if (cities.AnyAndNotNull())
+                        {
+                            foreach (var city in cities)
+                            {
+                                foreach (SiteType siteType in availableSites)
+                                {
+                                    foreach (DealType dealType in dealTypes)
+                                    {
+                                        var newestAll = new List<Offer>();
+                                        var newest = new List<Offer>();
+
+                                        var oldest = await _offerRepository
+                                            .FindByAsync(c =>
+                                                c.CityId == city.Id &&
+                                                c.SiteType == siteType &&
+                                                c.DealType == dealType);
+
+                                        var result = _siteAccessor(siteType).Scrapp(city, dealType);
+
+                                        if (result.WeAreBanned)
+                                        {
+                                            _pushOverNotification.Send(
+                                                Labels.BannedMsgTitle,
+                                                Labels.BannedMsg(siteType.ToString()));
+                                        }
+
+                                        var newestFromCriteria = result.Offers
+                                            .DistinctBy(p => p.Header);
+
+                                        newestAll.AddRange(newestFromCriteria);
+
+                                        var newestFrom = newestFromCriteria
+                                            .Where(p => oldest.Where(t =>
+                                                t.SiteType == siteType &&
+                                                t.DealType == dealType)
+                                            .All(p2 => p2.Id != p.Id));
+
+                                        newest.AddRange(newestFrom);
+
+                                        _logger.LogTrace(
+                                            $"Site {siteType.ToString()}, Deal {dealType.ToString()} " +
+                                            $"collected {newestFromCriteria.Count()} records," +
+                                            $" {newestFrom.Count()} new.");
+                                    }
+                                }
+                            }
+                        }
+
+                        successTries = _appProvider.SuccessTries();
+                    }
+                    catch (Exception ex)
+                    {
+                        successTries++;
+
+                        var msgHeader = $"[no. {successTries}]";
+
+                        var msgException = $"{msgHeader} Message: {ex.GetFullMessage()}, StackTrace: {ex.StackTrace}";
+
+                        _logger.LogError(msgException);
+
+                        _pushOverNotification.Send(
+                            $"[{_appProvider.AppId()}]{Labels.ErrorMsgTitle}",
+                            $"{msgHeader} {ex.GetFullMessage()}");
+
+                        Thread.Sleep(5 * 1000);
+                    }
+                }
+            }
+            #endregion
+
+            return 0;
         }
     }
 }

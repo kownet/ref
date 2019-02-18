@@ -5,12 +5,13 @@ using Ref.App.DI;
 using System;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Ref.App
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task<int> Main(string[] args)
         {
             if (args != null && args.Length > 0)
             {
@@ -30,8 +31,10 @@ namespace Ref.App
 
                 var servicesProvider = DependencyProvider.Get(configuration, appId);
 
-                servicesProvider.GetRequiredService<RefService>().Crawl();
+                await servicesProvider.GetRequiredService<RefService>().Crawl();
             }
+
+            return 0;
 
             NLog.LogManager.Shutdown();
         }

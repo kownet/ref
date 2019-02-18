@@ -1,11 +1,17 @@
 ﻿using Ref.Data.Models;
 using Ref.Shared.Extensions;
 using Ref.Sites.Helpers;
+using System;
 
 namespace Ref.Sites.QueryStrings
 {
     public class OlxQueryString : IQueryString
     {
+        public string Get(City city, DealType dealType)
+        {
+            throw new NotImplementedException();
+        }
+
         public string Get(Filter _filter)
         {
             var type = FilterResolver.Type(SiteType.Olx, _filter);

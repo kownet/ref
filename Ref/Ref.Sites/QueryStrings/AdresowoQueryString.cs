@@ -6,6 +6,11 @@ namespace Ref.Sites.QueryStrings
 {
     public class AdresowoQueryString : IQueryString
     {
+        public string Get(City city, DealType dealType)
+        {
+            throw new NotImplementedException();
+        }
+
         public string Get(Filter _filter)
         {
             var type = FilterResolver.Type(SiteType.Adresowo, _filter);

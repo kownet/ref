@@ -20,3 +20,23 @@ CREATE TABLE Filters(
 	[Newest] [bit] NULL,
 	[Name] nvarchar(128) NULL
 )
+
+CREATE TABLE Cities(
+	[Id] [int] PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	[Name] nvarchar(256) NOT NULL,
+	[NameRaw] nvarchar(256) NOT NULL,
+	[GtCodeSale] nvarchar(128) NOT NULL,
+	[GtCodeRent] nvarchar(128) NOT NULL
+)
+
+CREATE TABLE Offers(
+	[Id] [int] PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	[CityId] [int] REFERENCES Cities(Id),
+	[SiteOfferId] nvarchar(128) NOT NULL,
+	[SiteType] [int] NOT NULL,
+	[DealType] int NOT NULL,
+	[Url] nvarchar(255) NOT NULL,
+	[Header] nvarchar(255) NOT NULL,
+	[Price] [int] NOT NULL,
+	[DateAdded] datetime NOT NULL
+)

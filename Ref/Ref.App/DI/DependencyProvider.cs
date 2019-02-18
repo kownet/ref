@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using Ref.App.Core;
+using Ref.Data.Db;
 using Ref.Data.Models;
 using Ref.Data.Repositories;
 using Ref.Shared.Notifications;
@@ -39,6 +40,10 @@ namespace Ref.App.DI
                     configurationRoot["storages:file_json:result"],
                     configurationRoot["storages:file_json:clients"])
                 );
+
+            services.AddTransient<IDbAccess>(
+                s => new DbAccess(configurationRoot["storages:mssql:cs"])
+                );
             #endregion
 
             #region Notifications
@@ -63,6 +68,8 @@ namespace Ref.App.DI
             #region Repositories
             services.AddTransient<IUserRepository, UserJsonRepository>();
             services.AddTransient<IAdRepository, AdJsonRepository>();
+            services.AddTransient<ICitiesRepository, CitiesRepository>();
+            services.AddTransient<IOfferRepository, OfferRepository>();
             #endregion
 
             #region QueryStrings
@@ -176,7 +183,8 @@ namespace Ref.App.DI
                 configurationRoot["app:sites"],
                 appId,
                 configurationRoot["app:adminnotification"],
-                configurationRoot["app:successtries"])
+                configurationRoot["app:successtries"],
+                configurationRoot["app:mode"])
             );
             #endregion
 

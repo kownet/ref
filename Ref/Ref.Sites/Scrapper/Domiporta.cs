@@ -22,6 +22,18 @@ namespace Ref.Sites.Scrapper
         {
         }
 
+        public ScrappResponse Scrapp(City city, DealType dealType)
+        {
+            var result = new List<Offer>();
+
+            var searchQuery = QueryStringProvider(SiteType.DomiPorta).Get(city, dealType);
+
+            return new ScrappResponse
+            {
+                Offers = result
+            };
+        }
+
         public SiteResponse Search(IEnumerable<Filter> filterProvider)
         {
             var filter = filterProvider.First();

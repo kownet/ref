@@ -1,10 +1,16 @@
 ﻿using Ref.Data.Models;
 using Ref.Sites.Helpers;
+using System;
 
 namespace Ref.Sites.QueryStrings
 {
     public class DomiportaQueryString : IQueryString
     {
+        public string Get(City city, DealType dealType)
+        {
+            throw new NotImplementedException();
+        }
+
         public string Get(Filter _filter)
         {
             var type = FilterResolver.Type(SiteType.DomiPorta, _filter);

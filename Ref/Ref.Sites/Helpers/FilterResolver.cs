@@ -223,7 +223,7 @@ namespace Ref.Sites.Helpers
             switch (filter.Location)
             {
                 case "warszawa":
-                    return "v1c9073l3200008a1dwp";
+                    return filter.Deal == DealType.Sale ? "v1c9073l3200008a1dwp" : "v1c9008l3200008a1dwp";
                 case "kraków":
                     return filter.Deal == DealType.Sale ? "v1c9073l3200208a1dwp" : "v1c9008l3200208p";
                 case "legnica":
@@ -231,7 +231,7 @@ namespace Ref.Sites.Helpers
                 case "opole":
                     return filter.Deal == DealType.Sale ? "v1c9073l3200234a1dwp" : "v1c9008l3200234p";
                 case "poznań":
-                    return filter.Deal == DealType.Sale ? "v1c9073l3200366a1dwp" : "v1c9008l3200366p1";
+                    return filter.Deal == DealType.Sale ? "v1c9073l3200366a1dwp" : "v1c9008l3200366a1dwp";
                 case "puławy":
                     return "v1c9073l3200150a1dwp";
                 case "płock":
