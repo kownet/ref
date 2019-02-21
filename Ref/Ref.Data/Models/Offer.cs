@@ -13,5 +13,8 @@ namespace Ref.Data.Models
         public string Header { get; set; }
         public int Price { get; set; }
         public DateTime DateAdded { get; set; }
+
+        public bool IsValidToAdd() =>
+            !string.IsNullOrWhiteSpace(SiteOfferId) && !string.IsNullOrWhiteSpace(Url);
     }
 }

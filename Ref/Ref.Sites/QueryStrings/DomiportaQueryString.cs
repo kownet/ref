@@ -8,7 +8,18 @@ namespace Ref.Sites.QueryStrings
     {
         public string Get(City city, DealType dealType)
         {
-            throw new NotImplementedException();
+            var type = "mieszkanie";
+            var deal = dealType == DealType.Sale ? "sprzedam" : "wynajme";
+            var market = "Wtorny";
+
+            var result =
+                $"https://www.domiporta.pl/{type}/{deal}?Localization={city.NameRaw}";
+
+            result = result + $"&Rynek={market}";
+
+            result = result + $"&SortingOrder=InsertionDate";
+
+            return result;
         }
 
         public string Get(Filter _filter)

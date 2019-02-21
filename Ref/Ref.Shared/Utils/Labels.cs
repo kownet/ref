@@ -8,6 +8,9 @@
         public static string BannedMsgTitle => $"{App} Banned";
         public static string BannedMsg(string site) => $"Zablokowano dostęp na: {site}.";
 
+        public static string NoRecordsMsgTitle => $"{App} Pusto";
+        public static string NoRecordsMsg(string site) => $"Brak wyników na: {site}.";
+
         public static string ErrorEmailMsg(string client) => $"Nie wysłano wiadomości do: {client}";
 
         public static string NoNewRecordsMsgTitle => $"{App} Brak nowych ogłoszeń";

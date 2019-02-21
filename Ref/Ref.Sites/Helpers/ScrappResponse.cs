@@ -13,5 +13,6 @@ namespace Ref.Sites.Helpers
         public IEnumerable<Offer> Offers { get; set; }
 
         public bool WeAreBanned { get; set; }
+        public bool ThereAreNoRecords { get; set; }
     }
 }

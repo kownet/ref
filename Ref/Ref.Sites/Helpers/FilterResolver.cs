@@ -239,7 +239,7 @@ namespace Ref.Sites.Helpers
                 case "rzeszów":
                     return "v1c9073l3200252a1dwp";
                 case "wrocław":
-                    return "v1c9073l3200114a1dwp";
+                    return filter.Deal == DealType.Sale ? "v1c9073l3200114a1dwp" : "v1c9008l3200114p";
                 case "łódź":
                     return "v1c9073l3200183a1dwp";
                 default: return string.Empty;

@@ -1,6 +1,5 @@
 ﻿using Ref.Data.Models;
 using Ref.Sites.Helpers;
-using System;
 
 namespace Ref.Sites.QueryStrings
 {
@@ -8,7 +7,21 @@ namespace Ref.Sites.QueryStrings
     {
         public string Get(City city, DealType dealType)
         {
-            throw new NotImplementedException();
+            var type = "s-mieszkania-i-domy";
+            var deal = dealType == DealType.Sale ? "-sprzedam-i-kupie" : "-do-wynajecia";
+
+            var code = dealType == DealType.Sale ? city.GtCodeSale : city.GtCodeRent;
+
+            var houseOrFlat = dealType == DealType.Sale ? "mieszkanie/" : string.Empty;
+
+            var page = 1;
+
+            var result =
+                $"https://www.gumtree.pl/{type}{deal}/{city.NameRaw}/{houseOrFlat}{code}{page}?";
+
+            result = result + $"&sort=dt&order=desc";
+
+            return result;
         }
 
         public string Get(Filter _filter)

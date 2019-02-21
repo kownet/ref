@@ -1,4 +1,5 @@
-﻿using Ref.Data.Models;
+﻿using HtmlAgilityPack;
+using Ref.Data.Models;
 using Ref.Shared.Extensions;
 using Ref.Shared.Providers;
 using Ref.Sites.Helpers;
@@ -23,9 +24,35 @@ namespace Ref.Sites.Scrapper
 
         public ScrappResponse Scrapp(City city, DealType dealType)
         {
-            var result = new List<Offer>();
+            if(dealType == DealType.Rent)
+            {
+                return new ScrappResponse
+                {
+                    Offers = new List<Offer>(),
+                    ThereAreNoRecords = true
+                };
+            }
 
             var searchQuery = QueryStringProvider(SiteType.Adresowo).Get(city, dealType);
+
+            var doc = ScrapThis(searchQuery, "iso-8859-2");
+
+            if (doc.InnerHtml.Contains("jest pusta"))
+            {
+                return new ScrappResponse
+                {
+                    Offers = new List<Offer>(),
+                    ThereAreNoRecords = true
+                };
+            }
+
+            int pages = PageProvider(SiteType.Adresowo).Get(doc);
+
+            var result = Crawl(pages, searchQuery, doc);
+
+            result.Change(o => o.SiteType = SiteType.Adresowo);
+            result.Change(o => o.DealType = dealType);
+            result.Change(o => o.CityId = city.Id);
 
             return new ScrappResponse
             {
@@ -40,8 +67,6 @@ namespace Ref.Sites.Scrapper
             var result = new List<Ad>();
 
             var searchQuery = QueryStringProvider(SiteType.Adresowo).Get(filter);
-
-            var newest = filter.Newest == 1 ? "od" : string.Empty;
 
             var doc = ScrapThis(searchQuery, "iso-8859-2");
 
@@ -59,7 +84,7 @@ namespace Ref.Sites.Scrapper
 
             for (int i = 1; i <= pages; i++)
             {
-                doc = ScrapThis($"{searchQuery}{i}{newest}", "iso-8859-2");
+                doc = ScrapThis($"{searchQuery}{i}", "iso-8859-2");
 
                 var listing = doc.CssSelect(".offer-list");
 
@@ -101,6 +126,55 @@ namespace Ref.Sites.Scrapper
                 Advertisements = result,
                 FilterDesc = filter.Description()
             };
+        }
+
+        private List<Offer> Crawl(int pages, string searchQuery, HtmlNode doc)
+        {
+            var result = new List<Offer>();
+
+            for (int i = 1; i <= pages; i++)
+            {
+                doc = ScrapThis($"{searchQuery}{i}", "iso-8859-2");
+
+                var listing = doc.CssSelect(".offer-list");
+
+                if (!(listing is null))
+                {
+                    var articles = listing.CssSelect("tr");
+
+                    if (!(articles is null))
+                    {
+                        if (articles.AnyAndNotNull())
+                        {
+                            foreach (var article in articles)
+                            {
+                                var ad = new Offer
+                                {
+                                    SiteType = SiteType.Adresowo,
+                                    DateAdded = DateTime.Now
+                                };
+
+                                var id = article.ByAttribute("id");
+
+                                ad.SiteOfferId = !string.IsNullOrWhiteSpace(id) ? id.Remove(0, 1) : string.Empty;
+                                ad.Url = $"https://adresowo.pl/o/{ad.SiteOfferId}";
+
+                                ad.Header = article.ByClass("address");
+
+                                if (int.TryParse(article.ByClass("price", @"[^0-9,.-]"), out int price))
+                                {
+                                    ad.Price = price;
+                                }
+
+                                if (ad.IsValidToAdd())
+                                    result.Add(ad);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return result;
         }
     }
 }

@@ -9,7 +9,23 @@ namespace Ref.Sites.QueryStrings
     {
         public string Get(City city, DealType dealType)
         {
-            throw new NotImplementedException();
+            var type = "mieszkania";
+            var deal = dealType == DealType.Sale ? "sprzedaz" : "wynajem";
+            var market = "secondary";
+
+            var result =
+                $"https://www.olx.pl/nieruchomosci/{type}/{deal}/{city.NameRaw}/?";
+
+            var divider = "search%5B";
+
+            result = result + $"{divider}Border%5D=created_at%3Adesc&";
+
+            if (dealType == DealType.Sale)
+            {
+                result = result + $"{divider}filter_enum_market%5D%5B0%5D={market}&";
+            }
+
+            return result.RemoveLastIf("&");
         }
 
         public string Get(Filter _filter)

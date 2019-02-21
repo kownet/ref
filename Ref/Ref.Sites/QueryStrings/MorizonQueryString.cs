@@ -1,6 +1,5 @@
 ﻿using Ref.Data.Models;
 using Ref.Sites.Helpers;
-using System;
 
 namespace Ref.Sites.QueryStrings
 {
@@ -8,7 +7,28 @@ namespace Ref.Sites.QueryStrings
     {
         public string Get(City city, DealType dealType)
         {
-            throw new NotImplementedException();
+            var type = "mieszkania";
+            var deal = dealType == DealType.Sale ? "" : "do-wynajecia";
+            var market = "2";
+            var newest = 1;
+
+            var domain = "https://www.morizon.pl";
+
+            if (dealType == DealType.Rent)
+            {
+                domain = $"{domain}/do-wynajecia";
+            }
+
+            var result =
+                $"{domain}/{type}/{city.NameRaw}/?";
+
+            var divider = "ps%5B";
+
+            result = result + $"{divider}date_filter%5D={newest}&";
+
+            result = result + $"{divider}market_type%5D%5B0%5D={market}";
+
+            return result;
         }
 
         public string Get(Filter _filter)
@@ -19,7 +39,7 @@ namespace Ref.Sites.QueryStrings
 
             var domain = "https://www.morizon.pl";
 
-            if(_filter.Deal == DealType.Rent)
+            if (_filter.Deal == DealType.Rent)
             {
                 domain = $"{domain}/do-wynajecia";
             }

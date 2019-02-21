@@ -1,4 +1,5 @@
-﻿using Ref.Data.Models;
+﻿using HtmlAgilityPack;
+using Ref.Data.Models;
 using Ref.Shared.Extensions;
 using Ref.Shared.Providers;
 using Ref.Sites.Helpers;
@@ -23,9 +24,39 @@ namespace Ref.Sites.Scrapper
 
         public ScrappResponse Scrapp(City city, DealType dealType)
         {
-            var result = new List<Offer>();
-
             var searchQuery = QueryStringProvider(SiteType.Olx).Get(city, dealType);
+
+            var doc = ScrapThis(searchQuery);
+
+            var noResult = doc.CssSelect(".emptynew ").FirstOrDefault();
+
+            if (noResult != null)
+            {
+                return new ScrappResponse
+                {
+                    Offers = new List<Offer>(),
+                    ThereAreNoRecords = true
+                };
+            }
+
+            var banned = doc.CssSelect(".message").FirstOrDefault();
+
+            if (banned != null)
+            {
+                return new ScrappResponse
+                {
+                    Offers = new List<Offer>(),
+                    WeAreBanned = true
+                };
+            }
+
+            int pages = PageProvider(SiteType.Olx).Get(doc);
+
+            var result = Crawl(pages, searchQuery, doc);
+
+            result.Change(o => o.SiteType = SiteType.Olx);
+            result.Change(o => o.DealType = dealType);
+            result.Change(o => o.CityId = city.Id);
 
             return new ScrappResponse
             {
@@ -118,6 +149,59 @@ namespace Ref.Sites.Scrapper
                 Advertisements = result,
                 FilterDesc = filter.Description()
             };
+        }
+
+        private List<Offer> Crawl(int pages, string searchQuery, HtmlNode doc)
+        {
+            var result = new List<Offer>();
+
+            for (int i = 1; i <= pages; i++)
+            {
+                doc = ScrapThis($@"{searchQuery}page={i}");
+
+                var listing = doc.CssSelect(".offer-wrapper");
+
+                if (!(listing is null))
+                {
+                    if (listing.AnyAndNotNull())
+                    {
+                        foreach (var offer in listing)
+                        {
+                            var ad = new Offer
+                            {
+                                DateAdded = DateTime.Now
+                            };
+
+                            var table = offer.CssSelect("table").FirstOrDefault();
+
+                            if (!(table is null))
+                            {
+                                ad.SiteOfferId = table.ByAttribute("data-id");
+
+                                var link = table.CssSelect(".linkWithHash").FirstOrDefault();
+
+                                if (!(link is null))
+                                {
+                                    var url = link.ByAttribute("href");
+
+                                    ad.Url = url;
+                                    ad.Header = Parse(url);
+                                }
+
+                                if (int.TryParse(table.ByClass("price", @"[^0-9,.-]"), out int price))
+                                {
+                                    ad.Price = price;
+                                }
+                            }
+
+                            if (ad.IsValidToAdd())
+                                result.Add(ad);
+                        }
+                    }
+                }
+            }
+
+            return result;
         }
 
         private readonly string _olxBanner = "https://www.olx.pl/oferta/";

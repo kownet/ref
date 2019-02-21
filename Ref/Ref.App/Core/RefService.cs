@@ -193,9 +193,6 @@ namespace Ref.App.Core
                                 {
                                     foreach (DealType dealType in dealTypes)
                                     {
-                                        var newestAll = new List<Offer>();
-                                        var newest = new List<Offer>();
-
                                         var oldest = await _offerRepository
                                             .FindByAsync(c =>
                                                 c.CityId == city.Id &&
@@ -206,30 +203,46 @@ namespace Ref.App.Core
 
                                         if (result.WeAreBanned)
                                         {
+                                            _logger.LogError(Labels.BannedMsg(siteType.ToString()));
                                             _pushOverNotification.Send(
                                                 Labels.BannedMsgTitle,
                                                 Labels.BannedMsg(siteType.ToString()));
                                         }
 
+                                        if (result.ThereAreNoRecords)
+                                        {
+                                            _logger.LogError(Labels.NoRecordsMsg(siteType.ToString()));
+                                            _pushOverNotification.Send(
+                                                Labels.NoRecordsMsgTitle,
+                                                Labels.NoRecordsMsg(siteType.ToString()));
+                                        }
+
                                         var newestFromCriteria = result.Offers
                                             .DistinctBy(p => p.Header);
-
-                                        newestAll.AddRange(newestFromCriteria);
 
                                         var newestFrom = newestFromCriteria
                                             .Where(p => oldest.Where(t =>
                                                 t.SiteType == siteType &&
                                                 t.DealType == dealType)
-                                            .All(p2 => p2.Id != p.Id));
+                                            .All(p2 => p2.Id != p.Id))
+                                            .ToList();
 
-                                        newest.AddRange(newestFrom);
+                                        if(newestFrom.AnyAndNotNull())
+                                        {
+                                            _offerRepository.BulkInsert(newestFrom);
+                                        }
 
                                         _logger.LogTrace(
                                             $"Site {siteType.ToString()}, Deal {dealType.ToString()} " +
+                                            $"City {city.NameRaw} " +
                                             $"collected {newestFromCriteria.Count()} records," +
                                             $" {newestFrom.Count()} new.");
                                     }
+
+                                    Thread.Sleep(_appProvider.PauseTime());
                                 }
+
+                                Thread.Sleep(_appProvider.PauseTime());
                             }
                         }
 

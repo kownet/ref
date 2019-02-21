@@ -8,7 +8,18 @@ namespace Ref.Sites.QueryStrings
     {
         public string Get(City city, DealType dealType)
         {
-            throw new NotImplementedException();
+            var type = "mieszkania";
+            var deal = dealType == DealType.Sale ? "sprzedaz" : "wynajem";
+            var market = "wtorny";
+
+            var result =
+                $"https://gratka.pl/nieruchomosci/{type}/{city.NameRaw}/{deal}?";
+
+            result = result + $"&rynek={market}";
+
+            result = result + $"&data-dodania-search=ostatnich-24h&sort=newest";
+
+            return result;
         }
 
         public string Get(Filter _filter)

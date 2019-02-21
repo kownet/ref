@@ -8,7 +8,13 @@ namespace Ref.Sites.QueryStrings
     {
         public string Get(City city, DealType dealType)
         {
-            throw new NotImplementedException();
+            var type = "mieszkania";
+            var market = "fuz_lod";
+
+            var result =
+                $"https://adresowo.pl/{type}/{city.NameRaw}/{market}";
+
+            return result;
         }
 
         public string Get(Filter _filter)

@@ -1,7 +1,6 @@
 ﻿using Ref.Data.Models;
 using Ref.Shared.Extensions;
 using Ref.Sites.Helpers;
-using System;
 
 namespace Ref.Sites.QueryStrings
 {
@@ -9,7 +8,24 @@ namespace Ref.Sites.QueryStrings
     {
         public string Get(City city, DealType dealType)
         {
-            throw new NotImplementedException();
+            var type = "mieszkanie";
+            var deal = dealType == DealType.Sale ? "sprzedaz" : "wynajem";
+            var newest = 1; // from last 24hours
+            var market = "secondary";
+
+            var result =
+                $"https://www.otodom.pl/{deal}/{type}/{city.NameRaw}/?";
+
+            var divider = "search%5B";
+
+            result = result + $"{divider}created_since%5D={newest}&";
+
+            if (dealType == DealType.Sale)
+            {
+                result = result + $"{divider}filter_enum_market%5D%5B0%5D={market}&";
+            }
+
+            return result.RemoveLastIf("&");
         }
 
         public string Get(Filter _filter)
@@ -41,7 +57,7 @@ namespace Ref.Sites.QueryStrings
 
             result = result + $"{divider}created_since%5D={_filter.Newest}&";
 
-            if(_filter.Deal == DealType.Sale)
+            if (_filter.Deal == DealType.Sale)
             {
                 if (!string.IsNullOrWhiteSpace(market))
                     result = result + $"{divider}filter_enum_market%5D%5B0%5D={market}&";

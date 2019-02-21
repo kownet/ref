@@ -1,4 +1,5 @@
-﻿using Ref.Data.Models;
+﻿using HtmlAgilityPack;
+using Ref.Data.Models;
 using Ref.Shared.Extensions;
 using Ref.Shared.Providers;
 using Ref.Sites.Helpers;
@@ -23,9 +24,28 @@ namespace Ref.Sites.Scrapper
 
         public ScrappResponse Scrapp(City city, DealType dealType)
         {
-            var result = new List<Offer>();
-
             var searchQuery = QueryStringProvider(SiteType.Gratka).Get(city, dealType);
+
+            var doc = ScrapThis(searchQuery);
+
+            var noResult = doc.CssSelect(".content__emptyListInfo").FirstOrDefault();
+
+            if (noResult != null)
+            {
+                return new ScrappResponse
+                {
+                    Offers = new List<Offer>(),
+                    ThereAreNoRecords = true
+                };
+            }
+
+            int pages = PageProvider(SiteType.Gratka).Get(doc);
+
+            var result = Crawl(pages, searchQuery, doc);
+
+            result.Change(o => o.SiteType = SiteType.Gratka);
+            result.Change(o => o.DealType = dealType);
+            result.Change(o => o.CityId = city.Id);
 
             return new ScrappResponse
             {
@@ -107,6 +127,56 @@ namespace Ref.Sites.Scrapper
                 Advertisements = result,
                 FilterDesc = filter.Description()
             };
+        }
+
+        private List<Offer> Crawl(int pages, string searchQuery, HtmlNode doc)
+        {
+            var result = new List<Offer>();
+
+            for (int i = 1; i <= pages; i++)
+            {
+                doc = ScrapThis($@"{searchQuery}&page={i}");
+
+                var listing = doc.CssSelect(".content__listing");
+
+                if (!(listing is null))
+                {
+                    var articles = listing.CssSelect("article");
+
+                    if (!(articles is null))
+                    {
+                        if (articles.AnyAndNotNull())
+                        {
+                            foreach (var article in articles)
+                            {
+                                var ad = new Offer
+                                {
+                                    SiteOfferId = article.ByAttribute("id"),
+                                    Url = article.ByAttribute("data-href"),
+                                    DateAdded = DateTime.Now
+                                };
+
+                                ad.Header = article.ByClass("teaser__anchor");
+
+                                var price = article.CssSelect($".teaser__price").FirstOrDefault();
+
+                                if (!(price is null))
+                                {
+                                    if (int.TryParse(price.FirstChild != null ? price.FirstChild.InnerHtml.Trim().Replace(" ", string.Empty) : string.Empty, out int pricee))
+                                    {
+                                        ad.Price = pricee;
+                                    }
+                                }
+
+                                if (ad.IsValidToAdd())
+                                    result.Add(ad);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return result;
         }
     }
 }
