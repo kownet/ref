@@ -53,8 +53,8 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 return await c.ExecuteAsync(
-                    @"INSERT INTO Filters (UserId, Type, Deal, Market, Location, FlatAreaFrom, FlatAreaTo, PriceFrom, PriceTo, Newest)
-                        VALUES(@UserId, @Type, @Deal, @Market, @Location, @FlatAreaFrom, @FlatAreaTo, @PriceFrom, @PriceTo, @Newest);
+                    @"INSERT INTO Filters (UserId, Type, Deal, Market, Location, FlatAreaFrom, FlatAreaTo, PriceFrom, PriceTo)
+                        VALUES(@UserId, @Type, @Deal, @Market, @Location, @FlatAreaFrom, @FlatAreaTo, @PriceFrom, @PriceTo);
                     SELECT CAST(SCOPE_IDENTITY() as int)",
                     new
                     {
@@ -66,8 +66,7 @@ namespace Ref.Data.Repositories
                         filter.FlatAreaFrom,
                         filter.FlatAreaTo,
                         filter.PriceFrom,
-                        filter.PriceTo,
-                        filter.Newest
+                        filter.PriceTo
                     });
             }
         }
@@ -91,7 +90,7 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 return await c.ExecuteAsync(
-                    @"UPDATE Filters SET Type = @Type, Deal = @Deal, Market = @Market, Location = @Location, FlatAreaFrom = @FlatAreaFrom, FlatAreaTo = @FlatAreaTo, PriceFrom = @PriceFrom, PriceTo = @PriceTo, Newest = @Newest
+                    @"UPDATE Filters SET Type = @Type, Deal = @Deal, Market = @Market, Location = @Location, FlatAreaFrom = @FlatAreaFrom, FlatAreaTo = @FlatAreaTo, PriceFrom = @PriceFrom, PriceTo = @PriceTo
                         WHERE Id = @Id AND UserId = @UserId",
                     new
                     {
@@ -104,8 +103,7 @@ namespace Ref.Data.Repositories
                         filter.FlatAreaFrom,
                         filter.FlatAreaTo,
                         filter.PriceFrom,
-                        filter.PriceTo,
-                        filter.Newest
+                        filter.PriceTo
                     });
             }
         }

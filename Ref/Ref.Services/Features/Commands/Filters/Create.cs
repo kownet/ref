@@ -52,8 +52,7 @@ namespace Ref.Services.Features.Commands.Filters
                         FlatAreaFrom = request.FlatAreaFrom,
                         FlatAreaTo = request.FlatAreaTo,
                         PriceFrom = request.PriceFrom,
-                        PriceTo = request.PriceTo,
-                        Newest = request.Newest
+                        PriceTo = request.PriceTo
                     });
 
                     return new Result();

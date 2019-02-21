@@ -17,7 +17,6 @@ CREATE TABLE Filters(
 	[FlatAreaTo] [int] NOT NULL,
 	[PriceTo] [int] NOT NULL,
 	[PriceFrom] [int] NOT NULL,
-	[Newest] [bit] NULL,
 	[Name] nvarchar(128) NULL
 )
 
