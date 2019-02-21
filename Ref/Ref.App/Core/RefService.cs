@@ -179,7 +179,7 @@ namespace Ref.App.Core
             if (_appProvider.Mode() == 1)
             {
                 var cities = await _citiesRepository.GetAllAsync();
-                var dealTypes = (DealType[])Enum.GetValues(typeof(DealType));
+                var dealTypes = _appProvider.Deals().Select(s => (DealType)s);
 
                 while (successTries < _appProvider.SuccessTries())
                 {

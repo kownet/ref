@@ -16,6 +16,7 @@ namespace Ref.Shared.Providers
         bool AdminNotification();
         int SuccessTries();
         int Mode();
+        IEnumerable<int> Deals();
     }
 
     public class AppProvider : IAppProvider
@@ -31,6 +32,7 @@ namespace Ref.Shared.Providers
         private readonly string _adminnotification;
         private readonly string _successTries;
         private readonly string _mode;
+        private readonly string _deals;
 
         public AppProvider(
             string address,
@@ -43,7 +45,8 @@ namespace Ref.Shared.Providers
             string appId,
             string adminnotification,
             string successTries,
-            string mode)
+            string mode,
+            string deals)
         {
             _address = address;
             _sender = sender;
@@ -56,6 +59,7 @@ namespace Ref.Shared.Providers
             _adminnotification = adminnotification;
             _successTries = successTries;
             _mode = mode;
+            _deals = deals;
         }
 
         public string Address() => _address;
@@ -69,5 +73,6 @@ namespace Ref.Shared.Providers
         public bool AdminNotification() => bool.Parse(_adminnotification);
         public int SuccessTries() => int.Parse(_successTries);
         public int Mode() => int.Parse(_mode);
+        public IEnumerable<int> Deals() => _deals.Split(",").Select(int.Parse).ToList();
     }
 }

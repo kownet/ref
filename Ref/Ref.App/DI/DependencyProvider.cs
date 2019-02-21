@@ -184,7 +184,8 @@ namespace Ref.App.DI
                 appId,
                 configurationRoot["app:adminnotification"],
                 configurationRoot["app:successtries"],
-                configurationRoot["app:mode"])
+                configurationRoot["app:mode"],
+                configurationRoot["app:deals"])
             );
             #endregion
 
