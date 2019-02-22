@@ -34,9 +34,9 @@ namespace Ref.App
                 await servicesProvider.GetRequiredService<RefService>().Crawl();
             }
 
-            return 0;
-
             NLog.LogManager.Shutdown();
+
+            return 0;
         }
     }
 }

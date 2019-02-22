@@ -193,11 +193,13 @@ namespace Ref.App.Core
                                 {
                                     foreach (DealType dealType in dealTypes)
                                     {
-                                        var oldest = await _offerRepository
+                                        var old = await _offerRepository
                                             .FindByAsync(c =>
                                                 c.CityId == city.Id &&
                                                 c.SiteType == siteType &&
                                                 c.DealType == dealType);
+
+                                        var oldest = old.ToList();
 
                                         var result = _siteAccessor(siteType).Scrapp(city, dealType);
 
@@ -233,8 +235,8 @@ namespace Ref.App.Core
                                         }
 
                                         _logger.LogTrace(
-                                            $"Site {siteType.ToString()}, Deal {dealType.ToString()} " +
-                                            $"City {city.NameRaw} " +
+                                            $"Site {siteType.ToString()}, Deal {dealType.ToString()}, " +
+                                            $"City {city.NameRaw}, " +
                                             $"collected {newestFromCriteria.Count()} records," +
                                             $" {newestFrom.Count()} new.");
                                     }

@@ -15,6 +15,7 @@ namespace Ref.Data.Repositories
     {
         Task<IQueryable<Offer>> FindByAsync(Expression<Func<Offer, bool>> predicate);
         void BulkInsert(IList<Offer> offers);
+        void BulkDelete(IList<int> offers);
     }
 
     public class OfferRepository : IOfferRepository
@@ -24,6 +25,18 @@ namespace Ref.Data.Repositories
         public OfferRepository(IDbAccess dbAccess)
         {
             _dbAccess = dbAccess;
+        }
+
+        public void BulkDelete(IList<int> offers)
+        {
+            using (var c = _dbAccess.Connection)
+            {
+                c.Execute("DELETE FROM Offers WHERE Id IN @Ids",
+                    new
+                    {
+                        Ids = offers.ToArray()
+                    });
+            }
         }
 
         public void BulkInsert(IList<Offer> offers)
