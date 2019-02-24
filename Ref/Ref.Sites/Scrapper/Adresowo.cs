@@ -50,8 +50,8 @@ namespace Ref.Sites.Scrapper
 
             var result = Crawl(pages, searchQuery, doc);
 
-            result.Change(o => o.SiteType = SiteType.Adresowo);
-            result.Change(o => o.DealType = dealType);
+            result.Change(o => o.Site = SiteType.Adresowo);
+            result.Change(o => o.Deal = dealType);
             result.Change(o => o.CityId = city.Id);
 
             return new ScrappResponse
@@ -150,7 +150,7 @@ namespace Ref.Sites.Scrapper
                             {
                                 var ad = new Offer
                                 {
-                                    SiteType = SiteType.Adresowo,
+                                    Site = SiteType.Adresowo,
                                     DateAdded = DateTime.Now
                                 };
 

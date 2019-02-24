@@ -45,8 +45,8 @@ namespace Ref.Sites.Scrapper
 
             var result = Crawl(pages, searchQuery, doc, code);
 
-            result.Change(o => o.SiteType = SiteType.Gumtree);
-            result.Change(o => o.DealType = dealType);
+            result.Change(o => o.Site = SiteType.Gumtree);
+            result.Change(o => o.Deal = dealType);
             result.Change(o => o.CityId = city.Id);
 
             return new ScrappResponse

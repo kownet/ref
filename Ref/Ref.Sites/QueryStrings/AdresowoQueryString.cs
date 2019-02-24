@@ -41,8 +41,7 @@ namespace Ref.Sites.QueryStrings
             if (!string.IsNullOrWhiteSpace(market))
                 result = result + $"_{market}";
 
-            if (_filter.Newest == 1)
-                result = result + $"_l";
+            result = result + $"_l"; // newest
 
             return result;
         }

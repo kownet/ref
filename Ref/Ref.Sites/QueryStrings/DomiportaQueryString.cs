@@ -1,6 +1,5 @@
 ﻿using Ref.Data.Models;
 using Ref.Sites.Helpers;
-using System;
 
 namespace Ref.Sites.QueryStrings
 {
@@ -46,8 +45,7 @@ namespace Ref.Sites.QueryStrings
             if (!string.IsNullOrWhiteSpace(market))
                 result = result + $"&Rynek={market}";
 
-            if (_filter.Newest == 1)
-                result = result + $"&Rodzaj=Bezposrednie&SortingOrder=InsertionDate";
+            result = result + $"&Rodzaj=Bezposrednie&SortingOrder=InsertionDate";
 
             return result;
         }

@@ -33,7 +33,7 @@ namespace Ref.Sites.QueryStrings
             var code = FilterResolver.Code(_filter);
 
             var houseOrFlat = _filter.Deal == DealType.Sale
-                ? (_filter.Type == PropertyType.Flat ? "mieszkanie/" : "dom/")
+                ? (_filter.Property == PropertyType.Flat ? "mieszkanie/" : "dom/")
                 : string.Empty;
 
             var page = 1;
@@ -46,8 +46,7 @@ namespace Ref.Sites.QueryStrings
 
             result = result + $"pr={pFrom},{pTo}";
 
-            if (_filter.Newest == 1)
-                result = result + $"&df=ownr&sort=dt&order=desc";
+            result = result + $"&df=ownr&sort=dt&order=desc";
 
             return result;
         }

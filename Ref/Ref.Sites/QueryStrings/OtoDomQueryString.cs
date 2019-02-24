@@ -55,7 +55,7 @@ namespace Ref.Sites.QueryStrings
             if (_filter.FlatAreaTo != 0)
                 result = result + $"{divider}filter_float_m%3Ato%5D={_filter.FlatAreaTo}&";
 
-            result = result + $"{divider}created_since%5D={_filter.Newest}&";
+            result = result + $"{divider}created_since%5D=1&";
 
             if (_filter.Deal == DealType.Sale)
             {

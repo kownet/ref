@@ -196,8 +196,8 @@ namespace Ref.App.Core
                                         var old = await _offerRepository
                                             .FindByAsync(c =>
                                                 c.CityId == city.Id &&
-                                                c.SiteType == siteType &&
-                                                c.DealType == dealType);
+                                                c.Site == siteType &&
+                                                c.Deal == dealType);
 
                                         var oldest = old.ToList();
 
@@ -224,8 +224,8 @@ namespace Ref.App.Core
 
                                         var newestFrom = newestFromCriteria
                                             .Where(p => oldest.Where(t =>
-                                                t.SiteType == siteType &&
-                                                t.DealType == dealType)
+                                                t.Site == siteType &&
+                                                t.Deal == dealType)
                                             .All(p2 => p2.Id != p.Id))
                                             .ToList();
 

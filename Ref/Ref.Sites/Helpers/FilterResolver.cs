@@ -10,7 +10,7 @@ namespace Ref.Sites.Helpers
             {
                 case SiteType.OtoDom:
                     {
-                        switch (filter.Type)
+                        switch (filter.Property)
                         {
                             case PropertyType.Flat: return "mieszkanie";
                             case PropertyType.House: return "dom";
@@ -19,7 +19,7 @@ namespace Ref.Sites.Helpers
                     }
                 case SiteType.Olx:
                     {
-                        switch (filter.Type)
+                        switch (filter.Property)
                         {
                             case PropertyType.Flat: return "mieszkania";
                             case PropertyType.House: return "domy";
@@ -28,7 +28,7 @@ namespace Ref.Sites.Helpers
                     }
                 case SiteType.Adresowo:
                     {
-                        switch (filter.Type)
+                        switch (filter.Property)
                         {
                             case PropertyType.Flat: return "mieszkania";
                             case PropertyType.House: return "domy";
@@ -37,7 +37,7 @@ namespace Ref.Sites.Helpers
                     }
                 case SiteType.DomiPorta:
                     {
-                        switch (filter.Type)
+                        switch (filter.Property)
                         {
                             case PropertyType.Flat: return "mieszkanie";
                             case PropertyType.House: return "dom";
@@ -46,7 +46,7 @@ namespace Ref.Sites.Helpers
                     }
                 case SiteType.Gratka:
                     {
-                        switch (filter.Type)
+                        switch (filter.Property)
                         {
                             case PropertyType.Flat: return "mieszkania";
                             case PropertyType.House: return "domy";
@@ -55,7 +55,7 @@ namespace Ref.Sites.Helpers
                     }
                 case SiteType.Morizon:
                     {
-                        switch (filter.Type)
+                        switch (filter.Property)
                         {
                             case PropertyType.Flat: return "mieszkania";
                             case PropertyType.House: return "domy";
@@ -64,7 +64,7 @@ namespace Ref.Sites.Helpers
                     }
                 case SiteType.Gumtree:
                     {
-                        switch (filter.Type)
+                        switch (filter.Property)
                         {
                             case PropertyType.Flat: return "s-mieszkania-i-domy";
                             case PropertyType.House: return "s-mieszkania-i-domy";

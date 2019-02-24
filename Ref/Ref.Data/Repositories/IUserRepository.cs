@@ -38,14 +38,15 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 return await c.ExecuteAsync(
-                    @"INSERT INTO Users (Email, PasswordHash, PasswordSalt, Role) VALUES(@Email, @PasswordHash, @PasswordSalt, @Role);
+                    @"INSERT INTO Users (Email, PasswordHash, PasswordSalt, Role, RegisteredAt) VALUES(@Email, @PasswordHash, @PasswordSalt, @Role, @RegisteredAt);
                     SELECT CAST(SCOPE_IDENTITY() as int)",
                     new
                     {
                         user.Email,
                         user.PasswordHash,
                         user.PasswordSalt,
-                        user.Role
+                        user.Role,
+                        RegisteredAt = DateTime.Now
                     });
             }
         }

@@ -61,7 +61,7 @@ namespace Ref.Sites.QueryStrings
             if (_filter.FlatAreaTo != 0)
                 result = result + $"{divider}living_area_to%5D={_filter.FlatAreaTo}&";
 
-            result = result + $"{divider}date_filter%5D={_filter.Newest}&";
+            result = result + $"{divider}date_filter%5D=1&";
 
             if (!string.IsNullOrWhiteSpace(market))
                 result = result + $"{divider}market_type%5D%5B0%5D={market}";

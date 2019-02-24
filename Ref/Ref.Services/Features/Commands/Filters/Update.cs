@@ -55,7 +55,7 @@ namespace Ref.Services.Features.Commands.Filters
                         Id = request.Id,
                         UserId = request.UserId,
                         Location = request.Location,
-                        Type = request.Type,
+                        Property = request.Type,
                         Deal = request.Deal,
                         Market = request.Market,
                         FlatAreaFrom = request.FlatAreaFrom,

@@ -12,15 +12,16 @@ namespace Ref.Services.Features.Commands.Filters
         public class Cmd : IRequest<Result>
         {
             public int UserId { get; set; }
-            public PropertyType Type { get; set; }
+            public PropertyType Property { get; set; }
             public DealType Deal { get; set; }
             public MarketType Market { get; set; }
-            public string Location { get; set; }
+            public int CityId { get; set; }
             public int FlatAreaFrom { get; set; }
             public int FlatAreaTo { get; set; }
             public int PriceFrom { get; set; }
             public int PriceTo { get; set; }
-            public int Newest { get; set; }
+            public NotificationType Notification { get; set; }
+            public string Name { get; set; }
         }
 
         public class Result
@@ -45,14 +46,16 @@ namespace Ref.Services.Features.Commands.Filters
                     var result = await _filterRepository.CreateAsync(new Filter
                     {
                         UserId = request.UserId,
-                        Type = request.Type,
+                        Property = request.Property,
                         Deal = request.Deal,
                         Market = request.Market,
-                        Location = request.Location,
+                        CityId = request.CityId,
                         FlatAreaFrom = request.FlatAreaFrom,
                         FlatAreaTo = request.FlatAreaTo,
                         PriceFrom = request.PriceFrom,
-                        PriceTo = request.PriceTo
+                        PriceTo = request.PriceTo,
+                        Notification = request.Notification,
+                        Name = request.Name
                     });
 
                     return new Result();

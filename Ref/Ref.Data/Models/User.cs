@@ -21,6 +21,8 @@ namespace Ref.Data.Models
         public byte[] PasswordSalt { get; set; }
 
         public string Role { get; set; }
+        public SubscriptionType Subscription { get; set; }
+        public DateTime RegisteredAt { get; set; }
 
         public IEnumerable<Filter> Filters { get; set; }
 

@@ -43,8 +43,8 @@ namespace Ref.Sites.Scrapper
 
             var result = Crawl(pages, searchQuery, doc);
 
-            result.Change(o => o.SiteType = SiteType.Gratka);
-            result.Change(o => o.DealType = dealType);
+            result.Change(o => o.Site = SiteType.Gratka);
+            result.Change(o => o.Deal = dealType);
             result.Change(o => o.CityId = city.Id);
 
             return new ScrappResponse

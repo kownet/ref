@@ -1,7 +1,6 @@
 ﻿using Ref.Data.Models;
 using Ref.Shared.Extensions;
 using Ref.Sites.Helpers;
-using System;
 
 namespace Ref.Sites.QueryStrings
 {
@@ -57,8 +56,7 @@ namespace Ref.Sites.QueryStrings
                     result = result + $"{divider}filter_enum_market%5D%5B0%5D={market}&";
             }
 
-            if (_filter.Newest == 1)
-                result = result + $"{divider}Border%5D=created_at%3Adesc&";
+            result = result + $"{divider}Border%5D=created_at%3Adesc&";
 
             result = result + $"{divider}private_business%5D=private&";
 

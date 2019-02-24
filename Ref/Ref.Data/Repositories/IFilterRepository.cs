@@ -33,7 +33,7 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 return await c.QueryAsync<Filter>(
-                    @"SELECT Id, UserId, Type, Deal, Market, Location, FlatAreaFrom, FlatAreaTo, PriceFrom, PriceTo, Newest FROM Filters");
+                    @"SELECT Id, UserId, Property, Deal, Market, CityId, FlatAreaFrom, FlatAreaTo, PriceFrom, PriceTo, Name, Notification, LastCheckedAt FROM Filters");
             }
         }
 
@@ -42,7 +42,7 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 var result = (await c.QueryAsync<Filter>(
-                    @"SELECT Id, UserId, Type, Deal, Market, Location, FlatAreaFrom, FlatAreaTo, PriceFrom, PriceTo, Newest FROM Filters")).AsQueryable();
+                    @"SELECT Id, UserId, Property, Deal, Market, CityId, FlatAreaFrom, FlatAreaTo, PriceFrom, PriceTo, Name, Notification, LastCheckedAt FROM Filters")).AsQueryable();
 
                 return result.Where(predicate);
             }
@@ -53,20 +53,22 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 return await c.ExecuteAsync(
-                    @"INSERT INTO Filters (UserId, Type, Deal, Market, Location, FlatAreaFrom, FlatAreaTo, PriceFrom, PriceTo)
-                        VALUES(@UserId, @Type, @Deal, @Market, @Location, @FlatAreaFrom, @FlatAreaTo, @PriceFrom, @PriceTo);
+                    @"INSERT INTO Filters (UserId, Property, Deal, Market, FlatAreaFrom, FlatAreaTo, PriceFrom, PriceTo, CityId, Name, Notification)
+                        VALUES(@UserId, @Property, @Deal, @Market, @FlatAreaFrom, @FlatAreaTo, @PriceFrom, @PriceTo, @CityId, @Name, @Notification);
                     SELECT CAST(SCOPE_IDENTITY() as int)",
                     new
                     {
                         filter.UserId,
-                        filter.Type,
+                        filter.Property,
                         filter.Deal,
                         filter.Market,
-                        filter.Location,
                         filter.FlatAreaFrom,
                         filter.FlatAreaTo,
                         filter.PriceFrom,
-                        filter.PriceTo
+                        filter.PriceTo,
+                        filter.CityId,
+                        filter.Name,
+                        filter.Notification
                     });
             }
         }
@@ -90,20 +92,21 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 return await c.ExecuteAsync(
-                    @"UPDATE Filters SET Type = @Type, Deal = @Deal, Market = @Market, Location = @Location, FlatAreaFrom = @FlatAreaFrom, FlatAreaTo = @FlatAreaTo, PriceFrom = @PriceFrom, PriceTo = @PriceTo
+                    @"UPDATE Filters SET Property = @Property, Deal = @Deal, Market = @Market, CityId = @CityId, FlatAreaFrom = @FlatAreaFrom, FlatAreaTo = @FlatAreaTo, PriceFrom = @PriceFrom, PriceTo = @PriceTo, Name = @Name 
                         WHERE Id = @Id AND UserId = @UserId",
                     new
                     {
                         filter.Id,
                         filter.UserId,
-                        filter.Type,
+                        filter.Property,
                         filter.Deal,
                         filter.Market,
-                        filter.Location,
+                        filter.CityId,
                         filter.FlatAreaFrom,
                         filter.FlatAreaTo,
                         filter.PriceFrom,
-                        filter.PriceTo
+                        filter.PriceTo,
+                        filter.Name
                     });
             }
         }
@@ -113,7 +116,7 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 return await c.QueryFirstOrDefaultAsync<Filter>(
-                    @"SELECT Id, UserId, Type, Deal, Market, Location, FlatAreaFrom, FlatAreaTo, PriceFrom, PriceTo, Newest FROM Filters 
+                    @"SELECT Id, UserId, Type, Deal, Market, Location, FlatAreaFrom, FlatAreaTo, PriceFrom, PriceTo, Name, Notification, LastCheckedAt FROM Filters 
                         WHERE Id = @Id AND UserId = @UserId",
                     new
                     {
