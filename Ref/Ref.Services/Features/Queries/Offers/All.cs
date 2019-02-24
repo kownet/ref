@@ -2,7 +2,6 @@
 using MediatR;
 using Newtonsoft.Json;
 using Ref.Data.Db;
-using Ref.Data.Models;
 using Ref.Services.Features.Shared;
 using Ref.Shared.Extensions;
 using System;
@@ -17,6 +16,19 @@ namespace Ref.Services.Features.Queries.Offers
     {
         public class Query : PaginableQuery, IRequest<Result>
         {
+            public string Location { get; set; }
+            public string LocationRaw => string.IsNullOrWhiteSpace(Location)
+                ? string.Empty
+                : Location.ToLowerInvariant().RemoveDiacritics();
+            public bool HasLocationFilter => !string.IsNullOrWhiteSpace(Location);
+
+            public int? PriceFrom { get; set; }
+            public bool HasPriceFrom => PriceFrom.HasValue;
+
+            public int? PriceTo { get; set; }
+            public bool HasPriceTo => PriceTo.HasValue;
+
+            public bool HasFilter => HasLocationFilter || HasPriceFrom || HasPriceTo;
         }
 
         public class Result
@@ -31,11 +43,11 @@ namespace Ref.Services.Features.Queries.Offers
         {
             public Container()
             {
-                Offers = new HashSet<Offer>();
+                Offers = new HashSet<OfferResult>();
             }
 
             public Pagination Pagination { get; set; }
-            public IEnumerable<Offer> Offers { get; set; }
+            public IEnumerable<OfferResult> Offers { get; set; }
 
             public string XPagination => Pagination != null
                 ? JsonConvert.SerializeObject(Pagination)
@@ -59,23 +71,54 @@ namespace Ref.Services.Features.Queries.Offers
                     using (var c = _dbAccess.Connection)
                     {
                         int? totalRecords = null;
-                        IEnumerable<Offer> offers = null;
+                        IEnumerable<OfferResult> offers = null;
                         Pagination pagination = null;
 
-                        string sql = @"SELECT Id, CityId, SiteOfferId, SiteType, Url, Header, Price, DateAdded FROM Offers";
+                        string join = " INNER JOIN Cities C ON O.CityId = C.Id";
+                        string sql = "SELECT O.Id, C.Name, O.SiteOfferId, O.SiteType, O.Url, O.Header, O.Price, O.DateAdded" +
+                            $" FROM Offers O {join}";
+
+                        string filterSql = string.Empty;
+
+                        if (request.HasFilter)
+                        {
+                            if (request.HasLocationFilter)
+                            {
+                                filterSql += " C.NameRaw = @LocationRaw ";
+                            }
+
+                            if (request.HasPriceFrom)
+                            {
+                                filterSql = filterSql.SqlAnd();
+                                filterSql += " O.Price >= @PriceFrom ";
+                            }
+
+                            if (request.HasPriceTo)
+                            {
+                                filterSql = filterSql.SqlAnd();
+                                filterSql += $" O.Price <= @PriceTo ";
+                            }
+
+                            sql += $" WHERE {filterSql}";
+                        }
 
                         if (request.PageNumber.HasValue)
                         {
-                            sql += @" ORDER BY Offers.Id 
+                            sql += @" ORDER BY O.Id 
                             OFFSET @PageSize * (@PageNumber - 1) ROWS
                             FETCH NEXT @PageSize ROWS ONLY";
 
-                            sql += " SELECT [TotalCount] = COUNT(*) FROM Offers";
+                            sql += $" SELECT [TotalCount] = COUNT(*) FROM Offers O {join} ";
+
+                            if (!string.IsNullOrWhiteSpace(filterSql))
+                            {
+                                sql += $" WHERE {filterSql}";
+                            }
                         }
 
                         using (GridReader results = c.QueryMultiple(sql, request))
                         {
-                            offers = await results.ReadAsync<Offer>();
+                            offers = await results.ReadAsync<OfferResult>();
 
                             if (request.PageNumber.HasValue)
                             {

@@ -146,8 +146,16 @@ namespace Ref.Shared.Extensions
         }
 
         public static byte[] ToBytes(this string input)
+            => input.Split('-').Select(ch => Convert.ToByte(ch, 16)).ToArray();
+
+        public static string SqlAnd(this string sqlFilter)
         {
-            return input.Split('-').Select(ch => Convert.ToByte(ch, 16)).ToArray();
+            if (!string.IsNullOrWhiteSpace(sqlFilter))
+            {
+                sqlFilter += " AND";
+            }
+
+            return sqlFilter;
         }
     }
 }
