@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Ref.Data.Components;
 using Ref.Data.Repositories;
+using Ref.Notifier.UI;
 using Ref.Shared.Extensions;
 using Ref.Shared.Notifications;
 using Ref.Shared.Providers;
@@ -22,6 +23,7 @@ namespace Ref.Notifier.Core
 
         private readonly IMailReport _mailReport;
 
+        private readonly IEmailNotification _emailNotification;
         private readonly IPushOverNotification _pushOverNotification;
 
         public NotifierService(
@@ -29,12 +31,14 @@ namespace Ref.Notifier.Core
             IAppProvider appProvider,
             IOfferFilterRepository offerFilterRepository,
             IMailReport mailReport,
+            IEmailNotification emailNotification,
             IPushOverNotification pushOverNotification)
         {
             _logger = logger;
             _appProvider = appProvider;
             _offerFilterRepository = offerFilterRepository;
             _mailReport = mailReport;
+            _emailNotification = emailNotification;
             _pushOverNotification = pushOverNotification;
         }
 
@@ -57,22 +61,31 @@ namespace Ref.Notifier.Core
 
                         foreach (var user in groupedForClient)
                         {
-                            var email = user.Email;
+                            var email = new EmailUI();
 
                             foreach (var filter in user.Filters)
                             {
                                 var offersForEachFilter = await _mailReport.GetAllOffersForFilterAsync(filter.FilterId);
 
-                                if(offersForEachFilter.AnyAndNotNull())
+                                if (offersForEachFilter.AnyAndNotNull())
                                 {
-                                    var siteGrouped = offersForEachFilter.GroupBy(s => s.SiteType);
+                                    email.Filters.Add(filter.Filter, offersForEachFilter);
+                                }
+                            }
 
-                                    foreach (var site in siteGrouped)
-                                    {
-                                        var header = $"{site.Key.ToString()} - [{site.ToList().Count}]";
+                            var emailToSend = email.Prepare();
 
+                            if (email.CanBeSend)
+                            {
+                                var emailResponse = _emailNotification.Send(
+                                    emailToSend.Title,
+                                    emailToSend.RawMessage,
+                                    emailToSend.HtmlMessage,
+                                    new string[] { user.Email });
 
-                                    }
+                                if (emailResponse.IsSuccess)
+                                {
+                                    await _mailReport.UpdateFiltersAsSentAsync(user.Filters.Select(f => f.FilterId));
                                 }
                             }
                         }

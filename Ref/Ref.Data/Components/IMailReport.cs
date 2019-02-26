@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Ref.Data.Db;
+using Ref.Shared.Extensions;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -9,6 +10,7 @@ namespace Ref.Data.Components
     {
         Task<IEnumerable<MailReportFilter>> GetAllAsync();
         Task<IEnumerable<MailReportOffer>> GetAllOffersForFilterAsync(int filterId);
+        Task<int> UpdateFiltersAsSentAsync(IEnumerable<int> filterIds);
     }
 
     public class MailReport : IMailReport
@@ -43,6 +45,28 @@ namespace Ref.Data.Components
                         FilterId = filterId
                     });
             }
+        }
+
+        public async Task<int> UpdateFiltersAsSentAsync(IEnumerable<int> filterIds)
+        {
+            var result = 0;
+
+            using (var c = _dbAccess.Connection)
+            {
+                var chunked = filterIds.Chunk(1000);
+
+                foreach (var chunk in chunked)
+                {
+                    result = await c.ExecuteAsync(
+                            @"UPDATE OfferFilters SET Sent = 1 WHERE FilterId IN @Ids",
+                            new
+                            {
+                                Ids = chunk
+                            });
+                }
+            }
+
+            return result;
         }
     }
 }
