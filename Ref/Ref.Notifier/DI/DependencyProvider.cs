@@ -2,14 +2,15 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
-using Ref.Coordinator.Core;
+using Ref.Data.Components;
 using Ref.Data.Db;
 using Ref.Data.Repositories;
+using Ref.Notifier.Core;
 using Ref.Shared.Notifications;
 using Ref.Shared.Providers;
 using System;
 
-namespace Ref.Coordinator.DI
+namespace Ref.Notifier.DI
 {
     public static class DependencyProvider
     {
@@ -44,12 +45,20 @@ namespace Ref.Coordinator.DI
                 );
 
             services.AddTransient<IPushOverNotification, PushOverNotification>();
+
+            services.AddTransient<IEmailProvider>(
+                s => new EmailProvider(
+                    configurationRoot["notifications:email:host"],
+                    configurationRoot["notifications:email:apikey"])
+                );
+
+            services.AddTransient<IEmailNotification, EmailNotification>();
             #endregion
 
             #region Repositories
-            services.AddTransient<IFilterRepository, FilterRepository>();
-            services.AddTransient<IOfferRepository, OfferRepository>();
             services.AddTransient<IOfferFilterRepository, OfferFilterRepository>();
+
+            services.AddTransient<IMailReport, MailReport>();
             #endregion
 
             #region App
@@ -70,7 +79,7 @@ namespace Ref.Coordinator.DI
             );
             #endregion
 
-            services.AddTransient<CoordinatorService>();
+            services.AddTransient<NotifierService>();
 
             var serviceProvider = services.BuildServiceProvider();
 
