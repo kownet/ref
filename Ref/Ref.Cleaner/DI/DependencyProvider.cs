@@ -51,21 +51,32 @@ namespace Ref.Cleaner.DI
             #endregion
 
             #region App
-            services.AddTransient<IAppProvider>(
-            s => new AppProvider(
+            services.AddTransient<IAppCleanerProvider>(
+            s => new AppCleanerProvider(
                 configurationRoot["app:address"],
                 configurationRoot["app:sender"],
                 configurationRoot["app:replyto"],
-                configurationRoot["app:bcc"],
                 configurationRoot["app:pausetime"],
-                configurationRoot["app:timeout"],
-                configurationRoot["app:sites"],
-                appId,
                 configurationRoot["app:adminnotification"],
                 configurationRoot["app:successtries"],
-                configurationRoot["app:mode"],
-                configurationRoot["app:deals"])
+                appId,
+                configurationRoot["app:daystolive"])
             );
+            //services.AddTransient<IAppProvider>(
+            //s => new AppProvider(
+            //    configurationRoot["app:address"],
+            //    configurationRoot["app:sender"],
+            //    configurationRoot["app:replyto"],
+            //    configurationRoot["app:bcc"],
+            //    configurationRoot["app:pausetime"],
+            //    configurationRoot["app:timeout"],
+            //    configurationRoot["app:sites"],
+            //    appId,
+            //    configurationRoot["app:adminnotification"],
+            //    configurationRoot["app:successtries"],
+            //    configurationRoot["app:mode"],
+            //    configurationRoot["app:deals"])
+            //);
             #endregion
 
             services.AddTransient<CleanService>();

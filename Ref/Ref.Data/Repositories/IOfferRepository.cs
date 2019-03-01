@@ -4,6 +4,7 @@ using Ref.Data.Models;
 using Ref.Shared.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
@@ -31,11 +32,22 @@ namespace Ref.Data.Repositories
         {
             using (var c = _dbAccess.Connection)
             {
-                c.Execute("DELETE FROM Offers WHERE Id IN @Ids",
-                    new
-                    {
-                        Ids = offers.ToArray()
-                    });
+                using (var trans = c.BeginTransaction(IsolationLevel.ReadCommitted))
+                {
+                    c.Execute("DELETE FROM OfferFilters WHERE OfferId IN @Ids",
+                        new
+                        {
+                            Ids = offers.ToArray()
+                        }, trans);
+
+                    c.Execute("DELETE FROM Offers WHERE Id IN @Ids",
+                        new
+                        {
+                            Ids = offers.ToArray()
+                        }, trans);
+
+                    trans.Commit();
+                }
             }
         }
 

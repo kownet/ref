@@ -15,7 +15,7 @@ namespace Ref.Cleaner.Core
     {
         private readonly ILogger<CleanService> _logger;
 
-        private readonly IAppProvider _appProvider;
+        private readonly IAppCleanerProvider _appProvider;
 
         private readonly IOfferRepository _offerRepository;
 
@@ -23,7 +23,7 @@ namespace Ref.Cleaner.Core
 
         public CleanService(
             ILogger<CleanService> logger,
-            IAppProvider appProvider,
+            IAppCleanerProvider appProvider,
             IOfferRepository offerRepository,
             IPushOverNotification pushOverNotification)
         {
@@ -42,7 +42,7 @@ namespace Ref.Cleaner.Core
                 try
                 {
                     var offersToDelete = await _offerRepository
-                        .FindByAsync(o => o.DateAdded < DateTime.Now.AddDays(-14));
+                        .FindByAsync(o => o.DateAdded < DateTime.Now.AddDays(-_appProvider.DaysToLive()));
 
                     if (offersToDelete.AnyAndNotNull())
                     {
@@ -55,6 +55,8 @@ namespace Ref.Cleaner.Core
 
                         _logger.LogTrace($"{offersToDelete.Count()} offers deleted.");
                     }
+
+                    _logger.LogTrace($"No offers to delete.");
 
                     successTries = _appProvider.SuccessTries();
                 }
@@ -72,7 +74,7 @@ namespace Ref.Cleaner.Core
                         $"[{_appProvider.AppId()}]{Labels.ErrorMsgTitle}",
                         $"{msgHeader} {ex.GetFullMessage()}");
 
-                    Thread.Sleep(5 * 1000);
+                    Thread.Sleep(_appProvider.PauseTime());
                 }
             }
 
