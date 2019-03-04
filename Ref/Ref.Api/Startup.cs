@@ -76,6 +76,7 @@ namespace Ref.Api
 
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IFilterRepository, FilterRepository>();
+            services.AddTransient<ICitiesRepository, CitiesRepository>();
 
             services.AddScoped<IPasswordProvider, PasswordProvider>();
 
