@@ -53,20 +53,15 @@ namespace Ref.Coordinator.DI
             #endregion
 
             #region App
-            services.AddTransient<IAppProvider>(
-            s => new AppProvider(
+            services.AddTransient<IAppCoordinatorProvider>(
+            s => new AppCoordinatorProvider(
                 configurationRoot["app:address"],
                 configurationRoot["app:sender"],
                 configurationRoot["app:replyto"],
-                configurationRoot["app:bcc"],
                 configurationRoot["app:pausetime"],
-                configurationRoot["app:timeout"],
-                configurationRoot["app:sites"],
-                appId,
                 configurationRoot["app:adminnotification"],
                 configurationRoot["app:successtries"],
-                configurationRoot["app:mode"],
-                configurationRoot["app:deals"])
+                appId)
             );
             #endregion
 

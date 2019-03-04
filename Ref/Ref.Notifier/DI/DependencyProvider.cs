@@ -62,20 +62,15 @@ namespace Ref.Notifier.DI
             #endregion
 
             #region App
-            services.AddTransient<IAppProvider>(
-            s => new AppProvider(
+            services.AddTransient<IAppNotifierProvider>(
+            s => new AppNotifierProvider(
                 configurationRoot["app:address"],
                 configurationRoot["app:sender"],
                 configurationRoot["app:replyto"],
-                configurationRoot["app:bcc"],
                 configurationRoot["app:pausetime"],
-                configurationRoot["app:timeout"],
-                configurationRoot["app:sites"],
-                appId,
                 configurationRoot["app:adminnotification"],
                 configurationRoot["app:successtries"],
-                configurationRoot["app:mode"],
-                configurationRoot["app:deals"])
+                appId)
             );
             #endregion
 

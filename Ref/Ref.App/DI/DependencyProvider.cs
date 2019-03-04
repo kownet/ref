@@ -177,15 +177,15 @@ namespace Ref.App.DI
                 configurationRoot["app:address"],
                 configurationRoot["app:sender"],
                 configurationRoot["app:replyto"],
-                configurationRoot["app:bcc"],
                 configurationRoot["app:pausetime"],
-                configurationRoot["app:timeout"],
-                configurationRoot["app:sites"],
-                appId,
                 configurationRoot["app:adminnotification"],
                 configurationRoot["app:successtries"],
+                appId,
+                configurationRoot["app:bcc"],
+                configurationRoot["app:sites"],
                 configurationRoot["app:mode"],
-                configurationRoot["app:deals"])
+                configurationRoot["app:deals"],
+                configurationRoot["app:timeout"])
             );
             #endregion
 
