@@ -21,7 +21,12 @@ namespace Ref.Api.Controllers
         {
         }
 
+        /// <summary>
+        /// Get all notifications types
+        /// </summary>
+        /// <returns>All notification types stored in system</returns>
         [HttpGet]
+        [ProducesResponseType(200)]
         public IActionResult GetAll()
         {
             return Ok(Enum.GetValues(typeof(NotificationType))

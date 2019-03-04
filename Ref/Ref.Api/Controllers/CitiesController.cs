@@ -18,7 +18,13 @@ namespace Ref.Api.Controllers
         {
         }
 
+        /// <summary>
+        /// Get all cities
+        /// </summary>
+        /// <returns>All cities stored in system database</returns>
         [HttpGet]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         public async Task<IActionResult> GetAll()
         {
             var result = await Mediator.Send(new All.Query());

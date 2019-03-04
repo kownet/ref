@@ -20,7 +20,14 @@ namespace Ref.Api.Controllers
         {
         }
 
+        /// <summary>
+        /// Get all offers
+        /// </summary>
+        /// <param name="q">Offers query with filter if provided</param>
+        /// <returns>All offers stored in system database (filtered if needed)</returns>
         [HttpGet]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
         public async Task<IActionResult> GetAll(All.Query q)
         {
             var result = await Mediator.Send(q);

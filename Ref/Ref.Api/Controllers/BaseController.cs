@@ -19,6 +19,9 @@ namespace Ref.Api.Controllers
             Settings = appSettings.Value;
         }
 
+        /// <summary>
+        /// Returns the authenticated user identificator
+        /// </summary>
         protected int UserId
         {
             get
