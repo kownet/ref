@@ -17,7 +17,6 @@
         protected readonly string _sender;
         protected readonly string _replyto;
         protected readonly string _pausetime;
-        protected readonly string _timeout;
         protected readonly string _adminnotification;
         protected readonly string _successTries;
         protected readonly string _appId;

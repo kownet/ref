@@ -7,7 +7,6 @@ namespace Ref.Shared.Providers
     {
         string Bcc();
         IEnumerable<int> Sites();
-        int Mode();
         IEnumerable<int> Deals();
         int Timeout();
     }
@@ -16,7 +15,6 @@ namespace Ref.Shared.Providers
     {
         private readonly string _bcc;
         private readonly string _sites;
-        private readonly string _mode;
         private readonly string _deals;
         private readonly string _timeout;
 
@@ -30,21 +28,18 @@ namespace Ref.Shared.Providers
             string appId,
             string bcc,
             string sites,
-            string mode,
             string deals,
             string timeout)
             : base(address, sender, replyto, pausetime, adminnotification, successTries, appId)
         {
             _bcc = bcc;
             _sites = sites;
-            _mode = mode;
             _deals = deals;
             _timeout = timeout;
         }
 
         public string Bcc() => _bcc;
         public IEnumerable<int> Sites() => _sites.Split(",").Select(int.Parse).ToList();
-        public int Mode() => int.Parse(_mode);
         public IEnumerable<int> Deals() => _deals.Split(",").Select(int.Parse).ToList();
         public int Timeout() => int.Parse(_timeout);
     }

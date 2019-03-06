@@ -19,7 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ref.Cleaner", "Ref.Cleaner\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ref.Coordinator", "Ref.Coordinator\Ref.Coordinator.csproj", "{9071C484-78D0-41F3-88D2-D36698B702A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ref.Notifier", "Ref.Notifier\Ref.Notifier.csproj", "{1DCA7FA8-CA41-4DD5-BDAC-C7FB3524B597}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ref.Notifier", "Ref.Notifier\Ref.Notifier.csproj", "{1DCA7FA8-CA41-4DD5-BDAC-C7FB3524B597}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ref.App.Standalone", "Ref.App.Standalone\Ref.App.Standalone.csproj", "{AA350DF9-5D55-4E2E-8F57-C81A29110CFA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{1DCA7FA8-CA41-4DD5-BDAC-C7FB3524B597}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1DCA7FA8-CA41-4DD5-BDAC-C7FB3524B597}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1DCA7FA8-CA41-4DD5-BDAC-C7FB3524B597}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA350DF9-5D55-4E2E-8F57-C81A29110CFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA350DF9-5D55-4E2E-8F57-C81A29110CFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA350DF9-5D55-4E2E-8F57-C81A29110CFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA350DF9-5D55-4E2E-8F57-C81A29110CFA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

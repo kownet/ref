@@ -1,17 +1,17 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Ref.App.Core;
-using Ref.App.DI;
+using Ref.App.Standalone.Core;
+using Ref.App.Standalone.DI;
 using System;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ref.App
+namespace Ref.App.Standalone
 {
     class Program
     {
-        private static readonly string appId = "app";
+        private static readonly string appId = "standalone";
 
         static async Task<int> Main(string[] args)
         {
@@ -29,7 +29,7 @@ namespace Ref.App
 
             var servicesProvider = DependencyProvider.Get(configuration, appId);
 
-            await servicesProvider.GetRequiredService<RefService>().Crawl();
+            await servicesProvider.GetRequiredService<RefStandaloneService>().Crawl();
 
             NLog.LogManager.Shutdown();
 

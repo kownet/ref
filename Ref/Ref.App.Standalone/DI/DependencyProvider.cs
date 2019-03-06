@@ -2,8 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
-using Ref.App.Core;
-using Ref.Data.Db;
+using Ref.App.Standalone.Core;
 using Ref.Data.Models;
 using Ref.Data.Repositories;
 using Ref.Shared.Notifications;
@@ -14,7 +13,7 @@ using Ref.Sites.Scrapper;
 using System;
 using System.Collections.Generic;
 
-namespace Ref.App.DI
+namespace Ref.App.Standalone.DI
 {
     public static class DependencyProvider
     {
@@ -40,10 +39,6 @@ namespace Ref.App.DI
                     configurationRoot["storages:file_json:result"],
                     configurationRoot["storages:file_json:clients"])
                 );
-
-            services.AddTransient<IDbAccess>(
-                s => new DbAccess(configurationRoot["storages:mssql:cs"])
-                );
             #endregion
 
             #region Notifications
@@ -66,10 +61,7 @@ namespace Ref.App.DI
             #endregion
 
             #region Repositories
-            services.AddTransient<IUserRepository, UserJsonRepository>();
             services.AddTransient<IAdRepository, AdJsonRepository>();
-            services.AddTransient<ICitiesRepository, CitiesRepository>();
-            services.AddTransient<IOfferRepository, OfferRepository>();
             #endregion
 
             #region QueryStrings
@@ -188,7 +180,7 @@ namespace Ref.App.DI
             );
             #endregion
 
-            services.AddTransient<RefService>();
+            services.AddTransient<RefStandaloneService>();
 
             var serviceProvider = services.BuildServiceProvider();
 
