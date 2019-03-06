@@ -1,5 +1,6 @@
 ﻿using HtmlAgilityPack;
 using Ref.Data.Models;
+using Ref.Data.Repositories.Standalone;
 using Ref.Shared.Extensions;
 using Ref.Shared.Providers;
 using Ref.Sites.Helpers;
@@ -53,10 +54,8 @@ namespace Ref.Sites.Scrapper
             };
         }
 
-        public SiteResponse Search(IEnumerable<Filter> filterProvider)
+        public SiteResponse Search(SearchFilter filter)
         {
-            var filter = filterProvider.First();
-
             var result = new List<Ad>();
 
             var searchQuery = QueryStringProvider(SiteType.Gratka).Get(filter);
@@ -108,7 +107,7 @@ namespace Ref.Sites.Scrapper
 
                                 var price = article.CssSelect($".teaser__price").FirstOrDefault();
 
-                                if(!(price is null))
+                                if (!(price is null))
                                 {
                                     ad.Price = price.FirstChild != null ? price.FirstChild.InnerHtml.Trim().Replace(" ", string.Empty) : string.Empty;
                                 }

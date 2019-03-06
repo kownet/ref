@@ -66,8 +66,6 @@ namespace Ref.App.DI
             #endregion
 
             #region Repositories
-            services.AddTransient<IUserRepository, UserJsonRepository>();
-            services.AddTransient<IAdRepository, AdJsonRepository>();
             services.AddTransient<ICitiesRepository, CitiesRepository>();
             services.AddTransient<IOfferRepository, OfferRepository>();
             #endregion

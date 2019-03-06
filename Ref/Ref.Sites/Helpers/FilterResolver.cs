@@ -1,10 +1,11 @@
 ﻿using Ref.Data.Models;
+using Ref.Data.Repositories.Standalone;
 
 namespace Ref.Sites.Helpers
 {
     public static class FilterResolver
     {
-        public static string Type(SiteType siteType, Filter filter)
+        public static string Type(SiteType siteType, SearchFilter filter)
         {
             switch (siteType)
             {
@@ -75,7 +76,7 @@ namespace Ref.Sites.Helpers
             }
         }
 
-        public static string Deal(SiteType siteType, Filter filter)
+        public static string Deal(SiteType siteType, SearchFilter filter)
         {
             switch (siteType)
             {
@@ -146,7 +147,7 @@ namespace Ref.Sites.Helpers
             }
         }
 
-        public static string Market(SiteType siteType, Filter filter)
+        public static string Market(SiteType siteType, SearchFilter filter)
         {
             switch (siteType)
             {
@@ -217,7 +218,7 @@ namespace Ref.Sites.Helpers
             }
         }
 
-        public static string Code(Filter filter)
+        public static string Code(SearchFilter filter)
         {
             /// TODO: cities!
             switch (filter.Location)

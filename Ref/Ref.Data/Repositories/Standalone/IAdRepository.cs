@@ -1,11 +1,10 @@
 ﻿using Newtonsoft.Json;
-using Ref.Data.Models;
 using Ref.Shared.Extensions;
 using Ref.Shared.Providers;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Ref.Data.Repositories
+namespace Ref.Data.Repositories.Standalone
 {
     public interface IAdRepository : IRepository
     {
@@ -28,7 +27,7 @@ namespace Ref.Data.Repositories
 
             var clientPath = _storageProvider.ResultFullPath(clientCode);
 
-            if(File.Exists(clientPath))
+            if (File.Exists(clientPath))
             {
                 var currentContent = File.ReadAllText(clientPath);
 

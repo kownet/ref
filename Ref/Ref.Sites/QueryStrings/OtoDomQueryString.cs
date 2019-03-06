@@ -1,4 +1,5 @@
 ﻿using Ref.Data.Models;
+using Ref.Data.Repositories.Standalone;
 using Ref.Shared.Extensions;
 using Ref.Sites.Helpers;
 
@@ -28,7 +29,7 @@ namespace Ref.Sites.QueryStrings
             return result.RemoveLastIf("&");
         }
 
-        public string Get(Filter _filter)
+        public string Get(SearchFilter _filter)
         {
             var type = FilterResolver.Type(SiteType.OtoDom, _filter);
             var deal = FilterResolver.Deal(SiteType.OtoDom, _filter);

@@ -1,5 +1,6 @@
 ﻿using HtmlAgilityPack;
 using Ref.Data.Models;
+using Ref.Data.Repositories.Standalone;
 using Ref.Shared.Extensions;
 using Ref.Shared.Providers;
 using Ref.Sites.Helpers;
@@ -54,10 +55,8 @@ namespace Ref.Sites.Scrapper
             };
         }
 
-        public SiteResponse Search(IEnumerable<Filter> filterProvider)
+        public SiteResponse Search(SearchFilter filter)
         {
-            var filter = filterProvider.First();
-
             var result = new List<Ad>();
 
             var searchQuery = QueryStringProvider(SiteType.Morizon).Get(filter);

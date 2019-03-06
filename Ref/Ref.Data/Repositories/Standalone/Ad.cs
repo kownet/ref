@@ -1,4 +1,6 @@
-﻿namespace Ref.Data.Models
+﻿using Ref.Data.Models;
+
+namespace Ref.Data.Repositories.Standalone
 {
     public class Ad
     {

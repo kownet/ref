@@ -1,4 +1,5 @@
 ﻿using Ref.Data.Models;
+using Ref.Data.Repositories.Standalone;
 using Ref.Sites.Helpers;
 
 namespace Ref.Sites.QueryStrings
@@ -24,7 +25,7 @@ namespace Ref.Sites.QueryStrings
             return result;
         }
 
-        public string Get(Filter _filter)
+        public string Get(SearchFilter _filter)
         {
             var type = FilterResolver.Type(SiteType.Gumtree, _filter);
             var deal = FilterResolver.Deal(SiteType.Gumtree, _filter);

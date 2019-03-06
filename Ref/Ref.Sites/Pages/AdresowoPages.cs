@@ -11,11 +11,11 @@ namespace Ref.Sites.Pages
         {
             int pages = 1;
 
-            var pager = html.CssSelect(".content-indent").FirstOrDefault();
+            var pager = html.CssSelect(".search-pagination").FirstOrDefault();
 
             if (!(pager is null))
             {
-                var elements = pager.CssSelect(".pure-button");
+                var elements = pager.CssSelect(".search-pagination__number");
 
                 if (!(elements is null))
                 {

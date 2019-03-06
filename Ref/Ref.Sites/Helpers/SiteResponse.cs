@@ -1,4 +1,4 @@
-﻿using Ref.Data.Models;
+﻿using Ref.Data.Repositories.Standalone;
 using System.Collections.Generic;
 
 namespace Ref.Sites.Helpers

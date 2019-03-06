@@ -36,7 +36,11 @@ namespace Ref.Sites.Scrapper
 
             httpWebRequest.Timeout = AppProvider.Timeout();
             httpWebRequest.UserAgent = new UserAgents().GetRandom();
-            httpWebRequest.Referer = AppProvider.Address();
+
+            if(!string.IsNullOrWhiteSpace(AppProvider.Address()))
+            {
+                httpWebRequest.Referer = AppProvider.Address();
+            }
 
             using (HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse())
             {

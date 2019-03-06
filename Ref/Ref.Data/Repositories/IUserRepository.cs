@@ -1,12 +1,8 @@
 ﻿using Dapper;
-using Newtonsoft.Json;
 using Ref.Data.Db;
 using Ref.Data.Models;
-using Ref.Shared.Extensions;
-using Ref.Shared.Providers;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -15,7 +11,6 @@ namespace Ref.Data.Repositories
 {
     public interface IUserRepository : IRepository
     {
-        IEnumerable<User> GetAll();
         Task<IEnumerable<User>> GetAllAsync();
         Task<User> GetAsync(int userId);
         Task<int> CreateAsync(User user);
@@ -96,11 +91,6 @@ namespace Ref.Data.Repositories
             }
         }
 
-        public IEnumerable<User> GetAll()
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<int> UpdateAsync(User user)
         {
             using (var c = _dbAccess.Connection)
@@ -116,76 +106,6 @@ namespace Ref.Data.Repositories
                         user.Role
                     });
             }
-        }
-    }
-
-    public class UserJsonRepository : IUserRepository
-    {
-        private readonly IStorageProvider _storageProvider;
-
-        public UserJsonRepository(IStorageProvider storageProvider)
-        {
-            _storageProvider = storageProvider;
-        }
-
-        public async Task<int> CreateAsync(User user)
-        {
-            return 0;
-        }
-
-        public Task<int> DeleteAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IQueryable<User>> FindByAsync(Expression<Func<User, bool>> predicate)
-        {
-            throw new NotImplementedException();
-        }
-
-        public User Get(int userId)
-            => GetAll().FirstOrDefault(c => c.Id == userId);
-
-        public IEnumerable<User> GetAll()
-        {
-            var result = new List<User>();
-
-            var files = Directory.GetFiles(_storageProvider.ClientsPath(), "*.json", SearchOption.TopDirectoryOnly);
-
-            if (files.AnyAndNotNull())
-            {
-                foreach (var file in files)
-                {
-                    var clientRaw = File.ReadAllText(file);
-
-                    if (!string.IsNullOrWhiteSpace(clientRaw))
-                    {
-                        var clientEntity = JsonConvert.DeserializeObject<User>(clientRaw);
-
-                        if (clientEntity != null)
-                        {
-                            result.Add(clientEntity);
-                        }
-                    }
-                }
-            }
-
-            return result;
-        }
-
-        public Task<User> GetAsync(int userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<int> UpdateAsync(User user)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<IEnumerable<User>> IUserRepository.GetAllAsync()
-        {
-            throw new NotImplementedException();
         }
     }
 }

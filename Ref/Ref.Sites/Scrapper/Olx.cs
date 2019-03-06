@@ -1,5 +1,6 @@
 ﻿using HtmlAgilityPack;
 using Ref.Data.Models;
+using Ref.Data.Repositories.Standalone;
 using Ref.Shared.Extensions;
 using Ref.Shared.Providers;
 using Ref.Sites.Helpers;
@@ -64,10 +65,8 @@ namespace Ref.Sites.Scrapper
             };
         }
 
-        public SiteResponse Search(IEnumerable<Filter> filterProvider)
+        public SiteResponse Search(SearchFilter filter)
         {
-            var filter = filterProvider.First();
-
             var result = new List<Ad>();
 
             var searchQuery = QueryStringProvider(SiteType.Olx).Get(filter);
@@ -120,13 +119,13 @@ namespace Ref.Sites.Scrapper
 
                             var table = offer.CssSelect("table").FirstOrDefault();
 
-                            if(!(table is null))
+                            if (!(table is null))
                             {
                                 ad.Id = table.ByAttribute("data-id");
 
                                 var link = table.CssSelect(".linkWithHash").FirstOrDefault();
 
-                                if(!(link is null))
+                                if (!(link is null))
                                 {
                                     var url = link.ByAttribute("href");
 

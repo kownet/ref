@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using Ref.App.Standalone.Core;
 using Ref.Data.Models;
-using Ref.Data.Repositories;
+using Ref.Data.Repositories.Standalone;
 using Ref.Shared.Notifications;
 using Ref.Shared.Providers;
 using Ref.Sites.Pages;
@@ -62,6 +62,7 @@ namespace Ref.App.Standalone.DI
 
             #region Repositories
             services.AddTransient<IAdRepository, AdJsonRepository>();
+            services.AddTransient<IClientRepository, ClientJsonRepository>();
             #endregion
 
             #region QueryStrings
@@ -173,7 +174,6 @@ namespace Ref.App.Standalone.DI
                 configurationRoot["app:adminnotification"],
                 configurationRoot["app:successtries"],
                 appId,
-                configurationRoot["app:bcc"],
                 configurationRoot["app:sites"],
                 configurationRoot["app:deals"],
                 configurationRoot["app:timeout"])

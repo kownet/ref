@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Ref.Data.Models;
-using Ref.Data.Repositories;
+using Ref.Data.Repositories.Standalone;
 using Ref.Data.Views;
 using Ref.Shared.Extensions;
 using Ref.Shared.Notifications;
@@ -11,7 +11,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Ref.App.Standalone.Core
 {
@@ -23,7 +22,7 @@ namespace Ref.App.Standalone.Core
         private readonly IAppProvider _appProvider;
 
         private readonly IAdRepository _adRepository;
-        private readonly IUserRepository _userRepository;
+        private readonly IClientRepository _clientRepository;
 
         private readonly IPushOverNotification _pushOverNotification;
         private readonly IEmailNotification _emailNotification;
@@ -33,7 +32,7 @@ namespace Ref.App.Standalone.Core
             Func<SiteType, ISiteToScrapp> siteAccessor,
             IAppProvider appProvider,
             IAdRepository adRepository,
-            IUserRepository userRepository,
+            IClientRepository clientRepository,
             IPushOverNotification pushOverNotification,
             IEmailNotification emailNotification)
         {
@@ -41,19 +40,18 @@ namespace Ref.App.Standalone.Core
             _siteAccessor = siteAccessor;
             _appProvider = appProvider;
             _adRepository = adRepository;
-            _userRepository = userRepository;
+            _clientRepository = clientRepository;
             _pushOverNotification = pushOverNotification;
             _emailNotification = emailNotification;
         }
 
-        public async Task<int> Crawl()
+        public void Crawl()
         {
             var successTries = 0;
 
             var availableSites = _appProvider.Sites().Select(s => (SiteType)s);
 
-            #region Search per client filters from flat JSON files
-            var clients = _userRepository.GetAll()
+            var clients = _clientRepository.GetAll()
                 .Where(c => c.IsWorkingTime)
                 .Where(c => c.IsActive);
 
@@ -65,6 +63,8 @@ namespace Ref.App.Standalone.Core
                     {
                         foreach (var client in clients.Where(c => !c.IsChecked))
                         {
+                            _logger.LogTrace($"--- START '{client.Name}' ---");
+
                             var oldest = _adRepository.GetAll(client.Code);
 
                             var newestAll = new List<Ad>();
@@ -74,7 +74,7 @@ namespace Ref.App.Standalone.Core
 
                             foreach (SiteType siteType in availableSites)
                             {
-                                var result = _siteAccessor(siteType).Search(client.Filters);
+                                var result = _siteAccessor(siteType).Search(client.Filters.First());
 
                                 if (result.WeAreBanned)
                                 {
@@ -98,8 +98,7 @@ namespace Ref.App.Standalone.Core
                                 newest.AddRange(newestFrom);
 
                                 _logger.LogTrace(
-                                    $"From {siteType.ToString()} collected {newestFromSite.Count()} records," +
-                                    $" {newestFrom.Count()} new. Client '{client.Name}'.");
+                                    $"{siteType.ToString()} - {newestFromSite.Count()} records, {newestFrom.Count()} new.");
                             }
 
                             if (newestAll.AnyAndNotNull())
@@ -141,6 +140,8 @@ namespace Ref.App.Standalone.Core
 
                             client.IsChecked = true;
 
+                            _logger.LogTrace($"--- STOP '{client.Name}' ---");
+
                             Thread.Sleep(_appProvider.PauseTime());
                         }
                     }
@@ -161,12 +162,9 @@ namespace Ref.App.Standalone.Core
                         $"[{_appProvider.AppId()}]{Labels.ErrorMsgTitle}",
                         $"{msgHeader} {ex.GetFullMessage()}");
 
-                    Thread.Sleep(5 * 1000);
+                    Thread.Sleep(_appProvider.PauseTime());
                 }
             }
-            #endregion
-
-            return 0;
         }
     }
 }

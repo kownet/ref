@@ -1,4 +1,4 @@
-﻿using Ref.Data.Models;
+﻿using Ref.Data.Repositories.Standalone;
 using Ref.Shared.Extensions;
 using Ref.Shared.Notifications.Messages;
 using Ref.Shared.Utils;

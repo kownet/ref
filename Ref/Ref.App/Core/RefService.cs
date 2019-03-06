@@ -20,8 +20,6 @@ namespace Ref.App.Core
         private readonly Func<SiteType, ISiteToScrapp> _siteAccessor;
         private readonly IAppProvider _appProvider;
 
-        private readonly IAdRepository _adRepository;
-        private readonly IUserRepository _clientRepository;
         private readonly ICitiesRepository _citiesRepository;
         private readonly IOfferRepository _offerRepository;
 
@@ -32,8 +30,6 @@ namespace Ref.App.Core
             ILogger<RefService> logger,
             Func<SiteType, ISiteToScrapp> siteAccessor,
             IAppProvider appProvider,
-            IAdRepository adRepository,
-            IUserRepository clientRepository,
             ICitiesRepository citiesRepository,
             IOfferRepository offerRepository,
             IPushOverNotification pushOverNotification,
@@ -42,8 +38,6 @@ namespace Ref.App.Core
             _logger = logger;
             _siteAccessor = siteAccessor;
             _appProvider = appProvider;
-            _adRepository = adRepository;
-            _clientRepository = clientRepository;
             _citiesRepository = citiesRepository;
             _offerRepository = offerRepository;
             _pushOverNotification = pushOverNotification;

@@ -5,7 +5,6 @@ using Ref.App.Standalone.DI;
 using System;
 using System.IO;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Ref.App.Standalone
 {
@@ -13,7 +12,7 @@ namespace Ref.App.Standalone
     {
         private static readonly string appId = "standalone";
 
-        static async Task<int> Main(string[] args)
+        static void Main(string[] args)
         {
             EncodingProvider provider = CodePagesEncodingProvider.Instance;
             Encoding.RegisterProvider(provider);
@@ -29,11 +28,9 @@ namespace Ref.App.Standalone
 
             var servicesProvider = DependencyProvider.Get(configuration, appId);
 
-            await servicesProvider.GetRequiredService<RefStandaloneService>().Crawl();
+            servicesProvider.GetRequiredService<RefStandaloneService>().Crawl();
 
             NLog.LogManager.Shutdown();
-
-            return 0;
         }
     }
 }

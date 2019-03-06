@@ -1,5 +1,6 @@
 ﻿using HtmlAgilityPack;
 using Ref.Data.Models;
+using Ref.Data.Repositories.Standalone;
 using Ref.Shared.Extensions;
 using Ref.Shared.Providers;
 using Ref.Sites.Helpers;
@@ -24,7 +25,7 @@ namespace Ref.Sites.Scrapper
 
         public ScrappResponse Scrapp(City city, DealType dealType)
         {
-            if(dealType == DealType.Rent)
+            if (dealType == DealType.Rent)
             {
                 return new ScrappResponse
                 {
@@ -60,10 +61,8 @@ namespace Ref.Sites.Scrapper
             };
         }
 
-        public SiteResponse Search(IEnumerable<Filter> filterProvider)
+        public SiteResponse Search(SearchFilter filter)
         {
-            var filter = filterProvider.First();
-
             var result = new List<Ad>();
 
             var searchQuery = QueryStringProvider(SiteType.Adresowo).Get(filter);
@@ -86,11 +85,11 @@ namespace Ref.Sites.Scrapper
             {
                 doc = ScrapThis($"{searchQuery}{i}", "iso-8859-2");
 
-                var listing = doc.CssSelect(".offer-list");
+                var listing = doc.CssSelect(".search-block");
 
                 if (!(listing is null))
                 {
-                    var articles = listing.CssSelect("tr");
+                    var articles = listing.CssSelect(".search-results__item");
 
                     if (!(articles is null))
                     {
@@ -103,14 +102,35 @@ namespace Ref.Sites.Scrapper
                                     SiteType = SiteType.Adresowo
                                 };
 
-                                var id = article.ByAttribute("id");
-
-                                ad.Id = !string.IsNullOrWhiteSpace(id) ? id.Remove(0, 1) : string.Empty;
+                                ad.Id = article.ByAttribute("data-public-code");
                                 ad.Url = $"https://adresowo.pl/o/{ad.Id}";
 
-                                ad.Header = article.ByClass("address");
-                                ad.Price = article.ByClass("price", @"[^0-9,.-]");
-                                ad.PricePerMeter = article.ByClass("price-per-unit", @"[^0-9 ,.-]").RemoveLastIf("2");
+                                var header = article.CssSelect(".result-info__header").FirstOrDefault();
+
+                                if(!(header is null))
+                                {
+                                    if(!string.IsNullOrWhiteSpace(header.InnerText))
+                                    {
+                                        ad.Header = header.InnerText
+                                            .Trim()
+                                            .Replace("\n", " ")
+                                            .Replace("Mieszkanie na sprzedaż", "");
+                                    }
+                                }
+
+                                var area = article.CssSelect(".result-info__basic").Skip(1).FirstOrDefault();
+
+                                if(!(area is null))
+                                {
+                                    if (!string.IsNullOrWhiteSpace(area.InnerText))
+                                    {
+                                        ad.Area = area.InnerText
+                                            .Replace("m&sup2;", "")
+                                            .Trim();
+                                    }
+                                }
+                                ad.Price = article.ByClass("result-info__price--total", @"[^0-9 ,.-]").Trim().Replace(" ", "");
+                                ad.PricePerMeter = article.ByClass("result-info__price--per-sqm", @"[^0-9 ,.-]").RemoveLastIf("2");
 
                                 if (ad.IsValid())
                                     result.Add(ad);
@@ -136,11 +156,11 @@ namespace Ref.Sites.Scrapper
             {
                 doc = ScrapThis($"{searchQuery}{i}", "iso-8859-2");
 
-                var listing = doc.CssSelect(".offer-list");
+                var listing = doc.CssSelect(".search-block");
 
                 if (!(listing is null))
                 {
-                    var articles = listing.CssSelect("tr");
+                    var articles = listing.CssSelect(".search-results__item");
 
                     if (!(articles is null))
                     {
@@ -154,12 +174,21 @@ namespace Ref.Sites.Scrapper
                                     DateAdded = DateTime.Now
                                 };
 
-                                var id = article.ByAttribute("id");
-
-                                ad.SiteOfferId = !string.IsNullOrWhiteSpace(id) ? id.Remove(0, 1) : string.Empty;
+                                ad.SiteOfferId = article.ByAttribute("data-public-code");
                                 ad.Url = $"https://adresowo.pl/o/{ad.SiteOfferId}";
 
-                                ad.Header = article.ByClass("address");
+                                var header = article.CssSelect(".result-info__header").FirstOrDefault();
+
+                                if (!(header is null))
+                                {
+                                    if (!string.IsNullOrWhiteSpace(header.InnerText))
+                                    {
+                                        ad.Header = header.InnerText
+                                            .Trim()
+                                            .Replace("\n", " ")
+                                            .Replace("Mieszkanie na sprzedaż", "");
+                                    }
+                                }
 
                                 if (int.TryParse(article.ByClass("price", @"[^0-9,.-]"), out int price))
                                 {

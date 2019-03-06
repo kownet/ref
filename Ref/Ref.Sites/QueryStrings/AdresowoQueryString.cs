@@ -1,4 +1,5 @@
 ﻿using Ref.Data.Models;
+using Ref.Data.Repositories.Standalone;
 using Ref.Sites.Helpers;
 using System;
 
@@ -17,7 +18,7 @@ namespace Ref.Sites.QueryStrings
             return result;
         }
 
-        public string Get(Filter _filter)
+        public string Get(SearchFilter _filter)
         {
             var type = FilterResolver.Type(SiteType.Adresowo, _filter);
             var deal = FilterResolver.Deal(SiteType.Adresowo, _filter);
