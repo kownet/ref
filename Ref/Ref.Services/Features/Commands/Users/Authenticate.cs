@@ -9,6 +9,7 @@ using System.Text;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Ref.Shared.Extensions;
 
 namespace Ref.Services.Features.Commands.Users
 {
@@ -46,7 +47,10 @@ namespace Ref.Services.Features.Commands.Users
 
             public async Task<Result> Handle(Cmd request, CancellationToken cancellationToken)
             {
-                var entity = (await _userRepository.FindByAsync(u => u.Email == request.Email)).FirstOrDefault();
+                if (!request.Email.IsValidEmail())
+                    return new Result { Message = "Please provide valid email" };
+
+                var entity = (await _userRepository.FindByAsync(u => u.Email == request.Email.ToLowerInvariant())).FirstOrDefault();
 
                 if (entity is null)
                 {

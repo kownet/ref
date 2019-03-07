@@ -2,6 +2,7 @@
 using Ref.Data.Models;
 using Ref.Data.Repositories;
 using Ref.Services.Contracts;
+using Ref.Shared.Extensions;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ namespace Ref.Services.Features.Commands.Users
         {
             public string Email { get; set; }
             public string Password { get; set; }
+            public string Confirmation { get; set; }
         }
 
         public class Result
@@ -39,6 +41,12 @@ namespace Ref.Services.Features.Commands.Users
 
             public async Task<Result> Handle(Cmd request, CancellationToken cancellationToken)
             {
+                if(!string.Equals(request.Password, request.Confirmation))
+                    return new Result { Message = "Password and password confirmation are not equal" };
+
+                if (!request.Email.IsValidEmail())
+                    return new Result { Message = "Please provide valid email" };
+
                 try
                 {
                     _passwordProvider.CreatePasswordHash(
@@ -48,10 +56,12 @@ namespace Ref.Services.Features.Commands.Users
 
                     var result = await _userRepository.CreateAsync(new User
                     {
-                        Email = request.Email,
+                        Email = request.Email.ToLowerInvariant(),
                         PasswordHash = passwordHash,
                         PasswordSalt = passwordSalt,
-                        Role = Role.User
+                        Role = Role.User,
+                        RegisteredAt = DateTime.Now,
+                        Subscription = SubscriptionType.Normal
                     });
 
                     return new Result

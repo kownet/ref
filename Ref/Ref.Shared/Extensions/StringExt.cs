@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Ref.Shared.Extensions
 {
@@ -162,5 +163,14 @@ namespace Ref.Shared.Extensions
             => string.IsNullOrWhiteSpace(value) || maxLength <= 0
                 ? value : value.Length <= maxLength ? value
                 : value.Substring(0, maxLength);
+
+        public static bool IsValidEmail(this string email)
+        {
+            const string pattern = @"^(?!\.)(""([^""\r\\]|\\[""\r\\])*""|" + @"([-a-z0-9!#$%&'*+/=?^_`{|}~]|(?<!\.)\.)*)(?<!\.)" + @"@[a-z0-9][\w\.-]*[a-z0-9]\.[a-z][a-z\.]*[a-z]$";
+
+            var regex = new Regex(pattern, RegexOptions.IgnoreCase);
+
+            return regex.IsMatch(email);
+        }
     }
 }

@@ -48,7 +48,7 @@ namespace Ref.Api.Controllers
         /// <returns>Status code</returns>
         [HttpPost("authenticate")]
         [ProducesResponseType(200)]
-        [ProducesResponseType(403)]
+        [ProducesResponseType(400)]
         [AllowAnonymous]
         public async Task<IActionResult> Authenticate(Authenticate.Cmd cmd)
         {
@@ -59,7 +59,7 @@ namespace Ref.Api.Controllers
             if (result.Succeed)
                 return Ok(result.Token);
             else
-                return Forbid(result.Message);
+                return BadRequest(result.Message);
         }
 
         /// <summary>
@@ -157,6 +157,20 @@ namespace Ref.Api.Controllers
         {
             cmd.Id = id;
 
+            var result = await Mediator.Send(cmd);
+
+            if (result.Succeed)
+                return Ok();
+            else
+                return BadRequest(result.Message);
+        }
+
+        [HttpPost("lost")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [AllowAnonymous]
+        public async Task<IActionResult> Lost(Lost.Cmd cmd)
+        {
             var result = await Mediator.Send(cmd);
 
             if (result.Succeed)
