@@ -36,7 +36,19 @@ namespace Ref.Sites.Scrapper
 
             var searchQuery = QueryStringProvider(SiteType.Adresowo).Get(city, dealType);
 
-            var doc = ScrapThis(searchQuery, "iso-8859-2");
+            var scrap = ScrapThis(searchQuery);
+
+            if (!scrap.Succeed)
+            {
+                return new ScrappResponse
+                {
+                    Offers = new List<Offer>(),
+                    ExceptionAccured = scrap.ExceptionAccured,
+                    ExceptionMessage = scrap.ExceptionMessage
+                };
+            }
+
+            HtmlNode doc = scrap.HtmlNode;
 
             if (doc.InnerHtml.Contains("jest pusta"))
             {
@@ -67,7 +79,19 @@ namespace Ref.Sites.Scrapper
 
             var searchQuery = QueryStringProvider(SiteType.Adresowo).Get(filter);
 
-            var doc = ScrapThis(searchQuery, "iso-8859-2");
+            var scrap = ScrapThis(searchQuery, "iso-8859-2");
+
+            if (!scrap.Succeed)
+            {
+                return new SiteResponse
+                {
+                    Advertisements = new List<Ad>(),
+                    ExceptionAccured = scrap.ExceptionAccured,
+                    ExceptionMessage = scrap.ExceptionMessage
+                };
+            }
+
+            HtmlNode doc = scrap.HtmlNode;
 
             if (doc.InnerHtml.Contains("jest pusta"))
             {
@@ -83,7 +107,7 @@ namespace Ref.Sites.Scrapper
 
             for (int i = 1; i <= pages; i++)
             {
-                doc = ScrapThis($"{searchQuery}{i}", "iso-8859-2");
+                doc = ScrapThis($"{searchQuery}{i}", "iso-8859-2").HtmlNode;
 
                 var listing = doc.CssSelect(".search-block");
 
@@ -107,9 +131,9 @@ namespace Ref.Sites.Scrapper
 
                                 var header = article.CssSelect(".result-info__header").FirstOrDefault();
 
-                                if(!(header is null))
+                                if (!(header is null))
                                 {
-                                    if(!string.IsNullOrWhiteSpace(header.InnerText))
+                                    if (!string.IsNullOrWhiteSpace(header.InnerText))
                                     {
                                         ad.Header = header.InnerText
                                             .Trim()
@@ -120,7 +144,7 @@ namespace Ref.Sites.Scrapper
 
                                 var area = article.CssSelect(".result-info__basic").Skip(1).FirstOrDefault();
 
-                                if(!(area is null))
+                                if (!(area is null))
                                 {
                                     if (!string.IsNullOrWhiteSpace(area.InnerText))
                                     {
@@ -154,7 +178,12 @@ namespace Ref.Sites.Scrapper
 
             for (int i = 1; i <= pages; i++)
             {
-                doc = ScrapThis($"{searchQuery}{i}", "iso-8859-2");
+                var scrap = ScrapThis($"{searchQuery}{i}", "iso-8859-2");
+
+                if (!scrap.Succeed)
+                    return result;
+
+                doc = scrap.HtmlNode;
 
                 var listing = doc.CssSelect(".search-block");
 
@@ -192,7 +221,7 @@ namespace Ref.Sites.Scrapper
 
                                 var priceRaw = article.ByClass("result-info__price--total", @"[^0-9 ,.-]");
 
-                                if(!string.IsNullOrWhiteSpace(priceRaw))
+                                if (!string.IsNullOrWhiteSpace(priceRaw))
                                 {
                                     priceRaw = priceRaw.Trim().Replace(" ", "");
 

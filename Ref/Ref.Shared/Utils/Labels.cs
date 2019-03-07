@@ -11,6 +11,9 @@
         public static string NoRecordsMsgTitle => $"{App} Pusto";
         public static string NoRecordsMsg(string site) => $"Brak wyników na: {site}.";
 
+        public static string ExceptionMsgTitle => $"{App} Exception";
+        public static string ExceptionMsg(string site, string message) => $"Site: {site}. Message: {message}.";
+
         public static string ErrorEmailMsg(string client) => $"Nie wysłano wiadomości do: {client}";
 
         public static string NoNewRecordsMsgTitle => $"{App} Brak nowych ogłoszeń";

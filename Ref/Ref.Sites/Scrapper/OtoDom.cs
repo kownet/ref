@@ -27,7 +27,19 @@ namespace Ref.Sites.Scrapper
         {
             var searchQuery = QueryStringProvider(SiteType.OtoDom).Get(city, dealType);
 
-            var doc = ScrapThis(searchQuery);
+            var scrap = ScrapThis(searchQuery);
+
+            if (!scrap.Succeed)
+            {
+                return new ScrappResponse
+                {
+                    Offers = new List<Offer>(),
+                    ExceptionAccured = scrap.ExceptionAccured,
+                    ExceptionMessage = scrap.ExceptionMessage
+                };
+            }
+
+            HtmlNode doc = scrap.HtmlNode;
 
             var noResult = doc.CssSelect(".search-location-extended-warning").FirstOrDefault();
 
@@ -60,7 +72,19 @@ namespace Ref.Sites.Scrapper
 
             var searchQuery = QueryStringProvider(SiteType.OtoDom).Get(filter);
 
-            var doc = ScrapThis(searchQuery);
+            var scrap = ScrapThis(searchQuery);
+
+            if (!scrap.Succeed)
+            {
+                return new SiteResponse
+                {
+                    Advertisements = new List<Ad>(),
+                    ExceptionAccured = scrap.ExceptionAccured,
+                    ExceptionMessage = scrap.ExceptionMessage
+                };
+            }
+
+            HtmlNode doc = scrap.HtmlNode;
 
             var noResult = doc.CssSelect(".search-location-extended-warning").FirstOrDefault();
 
@@ -78,7 +102,7 @@ namespace Ref.Sites.Scrapper
 
             for (int i = 1; i <= pages; i++)
             {
-                doc = ScrapThis($@"{searchQuery}page={i}");
+                doc = ScrapThis($@"{searchQuery}page={i}").HtmlNode;
 
                 var listing = doc.CssSelect(".section-listing__row-content");
 
@@ -125,7 +149,12 @@ namespace Ref.Sites.Scrapper
 
             for (int i = 1; i <= pages; i++)
             {
-                doc = ScrapThis($@"{searchQuery}page={i}");
+                var scrap = ScrapThis($@"{searchQuery}page={i}");
+
+                if (!scrap.Succeed)
+                    return result;
+
+                doc = scrap.HtmlNode;
 
                 var listing = doc.CssSelect(".section-listing__row-content");
 
@@ -154,7 +183,7 @@ namespace Ref.Sites.Scrapper
 
                                 var areaRaw = article.ByClass("offer-item-area", @"[^0-9,.-]");
 
-                                if(!string.IsNullOrWhiteSpace(areaRaw))
+                                if (!string.IsNullOrWhiteSpace(areaRaw))
                                 {
                                     areaRaw.Replace(",", "");
                                     areaRaw = areaRaw.Substring(0, 2);

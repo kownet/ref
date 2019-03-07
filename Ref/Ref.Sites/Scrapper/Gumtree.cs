@@ -25,7 +25,7 @@ namespace Ref.Sites.Scrapper
 
         public ScrappResponse Scrapp(City city, DealType dealType)
         {
-            if(!city.IsGumtreeAvailable)
+            if (!city.IsGumtreeAvailable)
             {
                 return new ScrappResponse
                 {
@@ -37,7 +37,19 @@ namespace Ref.Sites.Scrapper
 
             var code = dealType == DealType.Sale ? city.GtCodeSale : city.GtCodeRent;
 
-            var doc = ScrapThis(searchQuery);
+            var scrap = ScrapThis(searchQuery);
+
+            if (!scrap.Succeed)
+            {
+                return new ScrappResponse
+                {
+                    Offers = new List<Offer>(),
+                    ExceptionAccured = scrap.ExceptionAccured,
+                    ExceptionMessage = scrap.ExceptionMessage
+                };
+            }
+
+            HtmlNode doc = scrap.HtmlNode;
 
             int.TryParse(doc.ByClass("count", @"[^0-9]"), out int count);
 
@@ -72,7 +84,19 @@ namespace Ref.Sites.Scrapper
 
             var code = FilterResolver.Code(filter);
 
-            var doc = ScrapThis(searchQuery);
+            var scrap = ScrapThis(searchQuery);
+
+            if (!scrap.Succeed)
+            {
+                return new SiteResponse
+                {
+                    Advertisements = new List<Ad>(),
+                    ExceptionAccured = scrap.ExceptionAccured,
+                    ExceptionMessage = scrap.ExceptionMessage
+                };
+            }
+
+            HtmlNode doc = scrap.HtmlNode;
 
             int.TryParse(doc.ByClass("count", @"[^0-9]"), out int count);
 
@@ -92,7 +116,7 @@ namespace Ref.Sites.Scrapper
             {
                 var sq = searchQuery.Replace($"{code}1", $"page-{i}/{code}{i}");
 
-                doc = ScrapThis($@"{sq}");
+                doc = ScrapThis($@"{sq}").HtmlNode;
 
                 var listing = doc.CssSelect(".result-link");
 
@@ -143,7 +167,12 @@ namespace Ref.Sites.Scrapper
             {
                 var sq = searchQuery.Replace($"{code}1", $"page-{i}/{code}{i}");
 
-                doc = ScrapThis($@"{sq}");
+                var scrap = ScrapThis($@"{sq}");
+
+                if (!scrap.Succeed)
+                    return result;
+
+                doc = scrap.HtmlNode;
 
                 var listing = doc.CssSelect(".result-link");
 

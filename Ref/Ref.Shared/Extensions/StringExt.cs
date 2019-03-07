@@ -157,5 +157,10 @@ namespace Ref.Shared.Extensions
 
             return sqlFilter;
         }
+
+        public static string Truncate(this string value, int maxLength)
+            => string.IsNullOrWhiteSpace(value) || maxLength <= 0
+                ? value : value.Length <= maxLength ? value
+                : value.Substring(0, maxLength);
     }
 }

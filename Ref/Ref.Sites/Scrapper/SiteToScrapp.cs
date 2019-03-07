@@ -1,5 +1,6 @@
 ﻿using HtmlAgilityPack;
 using Ref.Data.Models;
+using Ref.Shared.Extensions;
 using Ref.Shared.Providers;
 using Ref.Shared.Utils;
 using Ref.Sites.Pages;
@@ -28,57 +29,92 @@ namespace Ref.Sites.Scrapper
             QueryStringProvider = queryStringProvider;
         }
 
-        protected HtmlNode ScrapThis(string url, string specialEncoding = "")
+        protected SiteToScrappResponse ScrapThis(string url, string specialEncoding = "")
         {
-            Thread.Sleep(AppProvider.PauseTime());
-
-            var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
-
-            httpWebRequest.Timeout = AppProvider.Timeout();
-            httpWebRequest.UserAgent = new UserAgents().GetRandom();
-
-            if(!string.IsNullOrWhiteSpace(AppProvider.Address()))
+            try
             {
-                httpWebRequest.Referer = AppProvider.Address();
-            }
+                Thread.Sleep(AppProvider.PauseTime());
 
-            using (HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse())
-            {
-                if (httpWebResponse.StatusCode == HttpStatusCode.OK)
+                var httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+
+                httpWebRequest.Timeout = AppProvider.Timeout();
+                httpWebRequest.UserAgent = new UserAgents().GetRandom();
+
+                if (!string.IsNullOrWhiteSpace(AppProvider.Address()))
                 {
-                    using (var responseStream = httpWebResponse.GetResponseStream())
+                    httpWebRequest.Referer = AppProvider.Address();
+                }
+
+                using (HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse())
+                {
+                    if (httpWebResponse.StatusCode == HttpStatusCode.OK)
                     {
-                        if (string.IsNullOrWhiteSpace(specialEncoding))
+                        using (var responseStream = httpWebResponse.GetResponseStream())
                         {
-                            using (var reader = new StreamReader(responseStream))
+                            if (string.IsNullOrWhiteSpace(specialEncoding))
                             {
-                                var htmlstring = reader.ReadToEnd();
+                                using (var reader = new StreamReader(responseStream))
+                                {
+                                    var htmlstring = reader.ReadToEnd();
 
-                                var doc = new HtmlDocument();
+                                    var doc = new HtmlDocument();
 
-                                doc.LoadHtml(htmlstring);
+                                    doc.LoadHtml(htmlstring);
 
-                                return doc.DocumentNode;
+                                    return new SiteToScrappResponse
+                                    {
+                                        HtmlNode = doc.DocumentNode
+                                    };
+                                }
                             }
-                        }
-                        else
-                        {
-                            using (var reader = new StreamReader(responseStream, Encoding.GetEncoding(specialEncoding)))
+                            else
                             {
-                                var htmlstring = reader.ReadToEnd();
+                                using (var reader = new StreamReader(responseStream, Encoding.GetEncoding(specialEncoding)))
+                                {
+                                    var htmlstring = reader.ReadToEnd();
 
-                                var doc = new HtmlDocument();
+                                    var doc = new HtmlDocument();
 
-                                doc.LoadHtml(htmlstring);
+                                    doc.LoadHtml(htmlstring);
 
-                                return doc.DocumentNode;
+                                    return new SiteToScrappResponse
+                                    {
+                                        HtmlNode = doc.DocumentNode
+                                    };
+                                }
                             }
                         }
                     }
+                    else
+                    {
+                        return new SiteToScrappResponse
+                        {
+                            ExceptionMessage = "Response status not OK"
+
+                        };
+                    }
                 }
-                else
-                    throw new Exception($"Cannot get the site to scrapp: '{url}'.");
+            }
+            catch (Exception ex)
+            {
+                return new SiteToScrappResponse
+                {
+                    ExceptionAccured = true,
+                    ExceptionMessage = ex.GetFullMessage()
+                };
             }
         }
+    }
+
+    public class SiteToScrappResponse
+    {
+        public HtmlNode HtmlNode { get; set; }
+        public bool ExceptionAccured { get; set; }
+        public string ExceptionMessage { get; set; }
+
+        public bool Succeed
+            => HtmlNode != null &&
+            !ExceptionAccured &&
+            string.IsNullOrWhiteSpace(ExceptionMessage);
     }
 }

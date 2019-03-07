@@ -27,7 +27,19 @@ namespace Ref.Sites.Scrapper
         {
             var searchQuery = QueryStringProvider(SiteType.Gratka).Get(city, dealType);
 
-            var doc = ScrapThis(searchQuery);
+            var scrap = ScrapThis(searchQuery);
+
+            if (!scrap.Succeed)
+            {
+                return new ScrappResponse
+                {
+                    Offers = new List<Offer>(),
+                    ExceptionAccured = scrap.ExceptionAccured,
+                    ExceptionMessage = scrap.ExceptionMessage
+                };
+            }
+
+            HtmlNode doc = scrap.HtmlNode;
 
             var noResult = doc.CssSelect(".content__emptyListInfo").FirstOrDefault();
 
@@ -60,7 +72,19 @@ namespace Ref.Sites.Scrapper
 
             var searchQuery = QueryStringProvider(SiteType.Gratka).Get(filter);
 
-            var doc = ScrapThis(searchQuery);
+            var scrap = ScrapThis(searchQuery);
+
+            if (!scrap.Succeed)
+            {
+                return new SiteResponse
+                {
+                    Advertisements = new List<Ad>(),
+                    ExceptionAccured = scrap.ExceptionAccured,
+                    ExceptionMessage = scrap.ExceptionMessage
+                };
+            }
+
+            HtmlNode doc = scrap.HtmlNode;
 
             var noResult = doc.CssSelect(".content__emptyListInfo").FirstOrDefault();
 
@@ -78,7 +102,7 @@ namespace Ref.Sites.Scrapper
 
             for (int i = 1; i <= pages; i++)
             {
-                doc = ScrapThis($@"{searchQuery}&page={i}");
+                doc = ScrapThis($@"{searchQuery}&page={i}").HtmlNode;
 
                 var listing = doc.CssSelect(".content__listing");
 
@@ -134,7 +158,12 @@ namespace Ref.Sites.Scrapper
 
             for (int i = 1; i <= pages; i++)
             {
-                doc = ScrapThis($@"{searchQuery}&page={i}");
+                var scrap = ScrapThis($@"{searchQuery}&page={i}");
+
+                if (!scrap.Succeed)
+                    return result;
+
+                doc = scrap.HtmlNode;
 
                 var listing = doc.CssSelect(".content__listing");
 
@@ -185,7 +214,7 @@ namespace Ref.Sites.Scrapper
                                 {
                                     var lis = param.CssSelect("li");
 
-                                    if(lis.AnyAndNotNull())
+                                    if (lis.AnyAndNotNull())
                                     {
                                         var areaRaw = lis.First().InnerText.Replace("Powierzchnia w m2: ", "");
 

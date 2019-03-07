@@ -53,6 +53,9 @@ namespace Ref.Data.Repositories
 
         public void BulkInsert(IList<Offer> offers)
         {
+            offers.Change(o => o.Url = o.Url.Truncate(254));
+            offers.Change(o => o.Header = o.Header.Truncate(254));
+
             using (var c = _dbAccess.Connection)
             {
                 using (var sbc = new SqlBulkCopy((SqlConnection)c))
@@ -70,10 +73,10 @@ namespace Ref.Data.Repositories
                         sbc.ColumnMappings.Add("Url", "Url");
                         sbc.ColumnMappings.Add("Header", "Header");
                         sbc.ColumnMappings.Add("Price", "Price");
-                        sbc.ColumnMappings.Add("DateAdded", "DateAdded");
                         sbc.ColumnMappings.Add("Area", "Area");
                         sbc.ColumnMappings.Add("Rooms", "Rooms");
                         sbc.ColumnMappings.Add("PricePerMeter", "PricePerMeter");
+                        sbc.ColumnMappings.Add("DateAdded", "DateAdded");
 
                         sbc.WriteToServer(dt);
                     }

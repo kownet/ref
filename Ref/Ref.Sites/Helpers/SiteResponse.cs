@@ -14,5 +14,7 @@ namespace Ref.Sites.Helpers
         public string FilterName { get; set; }
         public string FilterDesc { get; set; }
         public bool WeAreBanned { get; set; }
+        public bool ExceptionAccured { get; set; }
+        public string ExceptionMessage { get; set; }
     }
 }

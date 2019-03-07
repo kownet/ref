@@ -91,9 +91,20 @@ namespace Ref.App.Core
                                             Labels.NoRecordsMsg(siteType.ToString()));
                                     }
 
+                                    if(result.ExceptionAccured)
+                                    {
+                                        _logger.LogError(Labels.ExceptionMsg(siteType.ToString(), result.ExceptionMessage));
+                                        _pushOverNotification.Send(
+                                            Labels.ExceptionMsgTitle,
+                                            Labels.ExceptionMsg(siteType.ToString(), result.ExceptionMessage));
+                                    }
+
                                     var newestFromCriteria = result.Offers.ToList();
 
-                                    if(siteType != SiteType.Adresowo && siteType != SiteType.DomiPorta && siteType != SiteType.Gratka && siteType != SiteType.Morizon)
+                                    if(siteType != SiteType.Adresowo && 
+                                        siteType != SiteType.DomiPorta && 
+                                        siteType != SiteType.Gratka && 
+                                        siteType != SiteType.Morizon)
                                     {
                                         newestFromCriteria = newestFromCriteria
                                             .DistinctBy(p => p.Header)
