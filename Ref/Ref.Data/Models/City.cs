@@ -7,5 +7,8 @@
         public string NameRaw { get; set; }
         public string GtCodeSale { get; set; }
         public string GtCodeRent { get; set; }
+
+        public bool IsGumtreeAvailable
+            => !string.IsNullOrWhiteSpace(GtCodeSale) && !string.IsNullOrWhiteSpace(GtCodeRent);
     }
 }

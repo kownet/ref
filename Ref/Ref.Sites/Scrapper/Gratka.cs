@@ -167,6 +167,42 @@ namespace Ref.Sites.Scrapper
                                     }
                                 }
 
+                                var pricepm = article.ByClass("teaser__priceAdditional", @"[^0-9,.-]");
+
+                                if (!string.IsNullOrWhiteSpace(pricepm))
+                                {
+                                    pricepm = pricepm.RemoveLastIf("2");
+
+                                    if (int.TryParse(pricepm, out int ppm))
+                                    {
+                                        ad.PricePerMeter = ppm;
+                                    }
+                                }
+
+                                var param = article.CssSelect(".teaser__params").FirstOrDefault();
+
+                                if (!(param is null))
+                                {
+                                    var lis = param.CssSelect("li");
+
+                                    if(lis.AnyAndNotNull())
+                                    {
+                                        var areaRaw = lis.First().InnerText.Replace("Powierzchnia w m2: ", "");
+
+                                        if (int.TryParse(areaRaw, out int a))
+                                        {
+                                            ad.Area = a;
+                                        }
+
+                                        var roomsRaw = lis.Skip(1).First().InnerText.Replace("Liczba pokoi: ", "");
+
+                                        if (int.TryParse(roomsRaw, out int r))
+                                        {
+                                            ad.Rooms = r;
+                                        }
+                                    }
+                                }
+
                                 if (ad.IsValidToAdd())
                                     result.Add(ad);
                             }

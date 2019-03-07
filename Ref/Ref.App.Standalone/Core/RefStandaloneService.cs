@@ -83,8 +83,13 @@ namespace Ref.App.Standalone.Core
                                         Labels.BannedMsg(siteType.ToString()));
                                 }
 
-                                var newestFromSite = result.Advertisements
-                                    .DistinctBy(p => p.Header);
+                                var newestFromSite = result.Advertisements;
+
+                                if (siteType != SiteType.Adresowo)
+                                {
+                                    newestFromSite = newestFromSite
+                                        .DistinctBy(p => p.Header);
+                                }
 
                                 filterName = result.FilterName;
                                 filterDesc = result.FilterDesc;

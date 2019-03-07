@@ -169,6 +169,23 @@ namespace Ref.Sites.Scrapper
                                     ad.Price = price;
                                 }
 
+                                var areaRaw = article.ByClass("sneakpeak__details_item--area", @"[^0-9,.-]");
+
+                                if(!string.IsNullOrWhiteSpace(areaRaw))
+                                {
+                                    areaRaw = areaRaw.Replace(",","").Substring(0, 2);
+
+                                    if (int.TryParse(areaRaw, out int area))
+                                    {
+                                        ad.Area = area;
+                                    }
+                                }
+
+                                if (int.TryParse(article.ByClass("sneakpeak__details_item--price", @"[^0-9,.-]"), out int ppm))
+                                {
+                                    ad.PricePerMeter = ppm;
+                                }
+
                                 var idPin = article.CssSelect(".sneakpeak__pin").FirstOrDefault();
 
                                 if (!(idPin is null))

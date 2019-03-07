@@ -50,7 +50,6 @@ namespace Ref.App.Core
 
             var availableSites = _appProvider.Sites().Select(s => (SiteType)s);
 
-            #region Search per city from DB table
             var cities = await _citiesRepository.GetAllAsync();
             var dealTypes = _appProvider.Deals().Select(s => (DealType)s);
 
@@ -92,14 +91,17 @@ namespace Ref.App.Core
                                             Labels.NoRecordsMsg(siteType.ToString()));
                                     }
 
-                                    var newestFromCriteria = result.Offers
-                                        .DistinctBy(p => p.Header);
+                                    var newestFromCriteria = result.Offers.ToList();
+
+                                    if(siteType != SiteType.Adresowo && siteType != SiteType.DomiPorta && siteType != SiteType.Gratka && siteType != SiteType.Morizon)
+                                    {
+                                        newestFromCriteria = newestFromCriteria
+                                            .DistinctBy(p => p.Header)
+                                            .ToList();
+                                    }
 
                                     var newestFrom = newestFromCriteria
-                                        .Where(p => oldest.Where(t =>
-                                            t.Site == siteType &&
-                                            t.Deal == dealType)
-                                        .All(p2 => p2.Id != p.Id))
+                                        .Where(p => oldest.All(p2 => p2.SiteOfferId != p.SiteOfferId))
                                         .ToList();
 
                                     if (newestFrom.AnyAndNotNull())
@@ -137,10 +139,9 @@ namespace Ref.App.Core
                         $"[{_appProvider.AppId()}]{Labels.ErrorMsgTitle}",
                         $"{msgHeader} {ex.GetFullMessage()}");
 
-                    Thread.Sleep(5 * 1000);
+                    Thread.Sleep(_appProvider.PauseTime());
                 }
             }
-            #endregion
 
             return 0;
         }

@@ -65,18 +65,25 @@ namespace Ref.Data.Repositories
 
                         sbc.ColumnMappings.Add("CityId", "CityId");
                         sbc.ColumnMappings.Add("SiteOfferId", "SiteOfferId");
-                        sbc.ColumnMappings.Add("SiteType", "SiteType");
-                        sbc.ColumnMappings.Add("DealType", "DealType");
+                        sbc.ColumnMappings.Add("Site", "Site");
+                        sbc.ColumnMappings.Add("Deal", "Deal");
                         sbc.ColumnMappings.Add("Url", "Url");
                         sbc.ColumnMappings.Add("Header", "Header");
                         sbc.ColumnMappings.Add("Price", "Price");
                         sbc.ColumnMappings.Add("DateAdded", "DateAdded");
+                        sbc.ColumnMappings.Add("Area", "Area");
+                        sbc.ColumnMappings.Add("Rooms", "Rooms");
+                        sbc.ColumnMappings.Add("PricePerMeter", "PricePerMeter");
 
                         sbc.WriteToServer(dt);
                     }
                     catch (Exception)
                     {
                         throw;
+                    }
+                    finally
+                    {
+                        _dbAccess.CloseConnection();
                     }
                 }
             }
@@ -87,7 +94,7 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 var result = (await c.QueryAsync<Offer>(
-                    @"SELECT Id, CityId, SiteOfferId, SiteType, Url, Header, Price, DateAdded FROM Offers")).AsQueryable();
+                    @"SELECT Id, CityId, SiteOfferId, Site, Deal, Url, Header, Price, DateAdded, Area, Rooms, PricePerMeter FROM Offers")).AsQueryable();
 
                 return result.Where(predicate);
             }

@@ -152,6 +152,29 @@ namespace Ref.Sites.Scrapper
                                     ad.Price = price;
                                 }
 
+                                var areaRaw = article.ByClass("offer-item-area", @"[^0-9,.-]");
+
+                                if(!string.IsNullOrWhiteSpace(areaRaw))
+                                {
+                                    areaRaw.Replace(",", "");
+                                    areaRaw = areaRaw.Substring(0, 2);
+
+                                    if (int.TryParse(areaRaw, out int area))
+                                    {
+                                        ad.Area = area;
+                                    }
+                                }
+
+                                if (int.TryParse(article.ByClass("offer-item-rooms", @"[^0-9,.-]"), out int rooms))
+                                {
+                                    ad.Rooms = rooms;
+                                }
+
+                                if (int.TryParse(article.ByClass("offer-item-price-per-m", @"[^0-9,.-]"), out int ppm))
+                                {
+                                    ad.PricePerMeter = ppm;
+                                }
+
                                 if (ad.IsValidToAdd())
                                     result.Add(ad);
                             }

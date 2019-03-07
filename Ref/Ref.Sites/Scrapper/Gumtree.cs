@@ -25,6 +25,14 @@ namespace Ref.Sites.Scrapper
 
         public ScrappResponse Scrapp(City city, DealType dealType)
         {
+            if(!city.IsGumtreeAvailable)
+            {
+                return new ScrappResponse
+                {
+                    Offers = new List<Offer>()
+                };
+            }
+
             var searchQuery = QueryStringProvider(SiteType.Gumtree).Get(city, dealType);
 
             var code = dealType == DealType.Sale ? city.GtCodeSale : city.GtCodeRent;

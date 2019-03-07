@@ -12,9 +12,12 @@ namespace Ref.Data.Models
         public string Url { get; set; }
         public string Header { get; set; }
         public int Price { get; set; }
+        public int Area { get; set; }
+        public int Rooms { get; set; }
+        public int PricePerMeter { get; set; }
         public DateTime DateAdded { get; set; }
 
         public bool IsValidToAdd() =>
-            !string.IsNullOrWhiteSpace(SiteOfferId) && !string.IsNullOrWhiteSpace(Url);
+            !string.IsNullOrWhiteSpace(SiteOfferId) && !string.IsNullOrWhiteSpace(Url) && Price > 0;
     }
 }

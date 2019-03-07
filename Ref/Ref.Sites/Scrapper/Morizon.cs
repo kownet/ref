@@ -145,6 +145,8 @@ namespace Ref.Sites.Scrapper
         {
             var result = new List<Offer>();
 
+            string regex = @"[^0-9,.-]";
+
             for (int i = 1; i <= pages; i++)
             {
                 doc = ScrapThis($@"{searchQuery}&page={i}");
@@ -176,6 +178,34 @@ namespace Ref.Sites.Scrapper
                                 if (int.TryParse(article.ByClass("single-result__price", @"[^0-9,.-]"), out int price))
                                 {
                                     ad.Price = price;
+                                }
+
+                                if (int.TryParse(article.ByClass("single-result__price--currency", @"[^0-9,.-]"), out int ppm))
+                                {
+                                    ad.PricePerMeter = ppm;
+                                }
+
+                                var info = article.CssSelect(".info-description").FirstOrDefault();
+
+                                if (!(info is null))
+                                {
+                                    var elements = info.CssSelect("li");
+
+                                    if (!(elements is null))
+                                    {
+                                        if (elements.AnyAndNotNull())
+                                        {
+                                            if (int.TryParse(Regex.Replace(elements.First().InnerText, regex, string.Empty).Trim(), out int r))
+                                            {
+                                                ad.Rooms = r;
+                                            }
+
+                                            if (int.TryParse(Regex.Replace(elements.SecondLast().InnerText, regex, string.Empty).Trim(), out int a))
+                                            {
+                                                ad.Area = a;
+                                            }
+                                        }
+                                    }
                                 }
 
                                 if (ad.IsValidToAdd())

@@ -179,7 +179,6 @@ namespace Ref.App.DI
                 configurationRoot["app:adminnotification"],
                 configurationRoot["app:successtries"],
                 appId,
-                configurationRoot["app:bcc"],
                 configurationRoot["app:sites"],
                 configurationRoot["app:deals"],
                 configurationRoot["app:timeout"])

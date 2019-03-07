@@ -8,6 +8,14 @@ CREATE TABLE Users(
 	[RegisteredAt] datetime NOT NULL
 )
 
+CREATE TABLE Cities(
+	[Id] [int] PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	[Name] nvarchar(256) NOT NULL,
+	[NameRaw] nvarchar(256) NOT NULL,
+	[GtCodeSale] nvarchar(128) NOT NULL,
+	[GtCodeRent] nvarchar(128) NOT NULL
+)
+
 CREATE TABLE Filters(
 	[Id] [int] PRIMARY KEY IDENTITY(1,1) NOT NULL,
 	[UserId] [int] REFERENCES Users(Id),
@@ -24,23 +32,18 @@ CREATE TABLE Filters(
 	[LastCheckedAt] datetime NULL
 )
 
-CREATE TABLE Cities(
-	[Id] [int] PRIMARY KEY IDENTITY(1,1) NOT NULL,
-	[Name] nvarchar(256) NOT NULL,
-	[NameRaw] nvarchar(256) NOT NULL,
-	[GtCodeSale] nvarchar(128) NOT NULL,
-	[GtCodeRent] nvarchar(128) NOT NULL
-)
-
 CREATE TABLE Offers(
 	[Id] [int] PRIMARY KEY IDENTITY(1,1) NOT NULL,
 	[CityId] [int] REFERENCES Cities(Id),
 	[SiteOfferId] nvarchar(128) NOT NULL,
-	[SiteType] [int] NOT NULL,
-	[DealType] int NOT NULL,
+	[Site] [int] NOT NULL,
+	[Deal] int NOT NULL,
 	[Url] nvarchar(255) NOT NULL,
 	[Header] nvarchar(255) NOT NULL,
 	[Price] [int] NOT NULL,
+	[Area] [int] NOT NULL,
+	[Rooms] [int] NULL,
+	[PricePerMeter] [int] NULL,
 	[DateAdded] datetime NOT NULL
 )
 

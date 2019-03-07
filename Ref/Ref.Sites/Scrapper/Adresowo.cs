@@ -190,9 +190,45 @@ namespace Ref.Sites.Scrapper
                                     }
                                 }
 
-                                if (int.TryParse(article.ByClass("price", @"[^0-9,.-]"), out int price))
+                                var priceRaw = article.ByClass("result-info__price--total", @"[^0-9 ,.-]");
+
+                                if(!string.IsNullOrWhiteSpace(priceRaw))
                                 {
-                                    ad.Price = price;
+                                    priceRaw = priceRaw.Trim().Replace(" ", "");
+
+                                    if (int.TryParse(priceRaw, out int price))
+                                    {
+                                        ad.Price = price;
+                                    }
+                                }
+
+                                var ppmRaw = article.ByClass("result-info__price--per-sqm", @"[^0-9 ,.-]");
+
+                                if (!string.IsNullOrWhiteSpace(priceRaw))
+                                {
+                                    ppmRaw = ppmRaw.RemoveLastIf("2");
+
+                                    if (int.TryParse(ppmRaw, out int ppm))
+                                    {
+                                        ad.PricePerMeter = ppm;
+                                    }
+                                }
+
+                                var area = article.CssSelect(".result-info__basic").Skip(1).FirstOrDefault();
+
+                                if (!(area is null))
+                                {
+                                    if (!string.IsNullOrWhiteSpace(area.InnerText))
+                                    {
+                                        var areaRaw = area.InnerText
+                                            .Replace("m&sup2;", "")
+                                            .Trim();
+
+                                        if (int.TryParse(areaRaw, out int areaa))
+                                        {
+                                            ad.Area = areaa;
+                                        }
+                                    }
                                 }
 
                                 if (ad.IsValidToAdd())
