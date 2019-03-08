@@ -1,6 +1,7 @@
 ﻿using MediatR;
-using Ref.Data.Models;
 using Ref.Data.Repositories;
+using Ref.Services.Features.Shared;
+using Ref.Shared.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -19,13 +20,13 @@ namespace Ref.Services.Features.Queries.Filters
         {
             public Result()
             {
-                Filters = new HashSet<Filter>();
+                Filters = new HashSet<FilterResult>();
             }
 
             public bool Succeed => string.IsNullOrWhiteSpace(Message);
             public string Message { get; set; }
 
-            public IEnumerable<Filter> Filters { get; set; }
+            public IEnumerable<FilterResult> Filters { get; set; }
         }
 
         public class Handler : IRequestHandler<Query, Result>
@@ -41,12 +42,42 @@ namespace Ref.Services.Features.Queries.Filters
             {
                 try
                 {
-                    return new Result
-                    {
-                        Filters = request.UserId.HasValue
+                    var filters = request.UserId.HasValue
                         ? await _filterRepository.FindByAsync(f => f.UserId == request.UserId.Value)
-                        : await _filterRepository.GetAllAsync()
-                    };
+                        : await _filterRepository.GetAllAsync();
+
+                    if (filters.AnyAndNotNull())
+                    {
+                        var filterResult = new List<FilterResult>();
+
+                        foreach (var filter in filters)
+                        {
+                            filterResult.Add(new FilterResult
+                            {
+                                Id = filter.Id,
+                                CityId = filter.CityId,
+                                FlatAreaFrom = filter.FlatAreaFrom,
+                                FlatAreaTo = filter.FlatAreaTo,
+                                PriceFrom = filter.PriceFrom,
+                                PriceTo = filter.PriceTo,
+                                UserId = filter.UserId,
+                                Name = filter.Name,
+                                Notification = filter.Notification
+                            });
+                        }
+
+                        return new Result
+                        {
+                            Filters = filterResult
+                        };
+                    }
+                    else
+                    {
+                        return new Result
+                        {
+                            Message = "There are no filters"
+                        };
+                    }
                 }
                 catch (Exception ex)
                 {

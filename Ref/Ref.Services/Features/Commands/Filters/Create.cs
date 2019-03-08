@@ -12,9 +12,6 @@ namespace Ref.Services.Features.Commands.Filters
         public class Cmd : IRequest<Result>
         {
             public int UserId { get; set; }
-            public PropertyType Property { get; set; }
-            public DealType Deal { get; set; }
-            public MarketType Market { get; set; }
             public int CityId { get; set; }
             public int FlatAreaFrom { get; set; }
             public int FlatAreaTo { get; set; }
@@ -46,9 +43,9 @@ namespace Ref.Services.Features.Commands.Filters
                     var result = await _filterRepository.CreateAsync(new Filter
                     {
                         UserId = request.UserId,
-                        Property = request.Property,
-                        Deal = request.Deal,
-                        Market = request.Market,
+                        Property = PropertyType.Flat,
+                        Deal = DealType.Sale,
+                        Market = MarketType.Secondary,
                         CityId = request.CityId,
                         FlatAreaFrom = request.FlatAreaFrom,
                         FlatAreaTo = request.FlatAreaTo,
