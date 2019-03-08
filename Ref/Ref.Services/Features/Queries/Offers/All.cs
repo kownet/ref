@@ -28,7 +28,13 @@ namespace Ref.Services.Features.Queries.Offers
             public int? PriceTo { get; set; }
             public bool HasPriceTo => PriceTo.HasValue;
 
-            public bool HasFilter => HasLocationFilter || HasPriceFrom || HasPriceTo;
+            public int? AreaFrom { get; set; }
+            public bool HasAreaFrom => AreaFrom.HasValue;
+
+            public int? AreaTo { get; set; }
+            public bool HasAreaTo => AreaTo.HasValue;
+
+            public bool HasFilter => HasLocationFilter || HasPriceFrom || HasPriceTo || HasAreaFrom || HasAreaTo;
         }
 
         public class Result
@@ -75,7 +81,7 @@ namespace Ref.Services.Features.Queries.Offers
                         Pagination pagination = null;
 
                         string join = " INNER JOIN Cities C ON O.CityId = C.Id";
-                        string sql = "SELECT O.Id, C.Name, O.SiteOfferId, O.SiteType, O.Url, O.Header, O.Price, O.DateAdded" +
+                        string sql = "SELECT O.Id, C.Name, O.SiteOfferId, O.Site, O.Url, O.Header, O.Price, O.DateAdded, O.Area, O.Rooms, O.PricePerMeter" +
                             $" FROM Offers O {join}";
 
                         string filterSql = string.Empty;
@@ -97,6 +103,18 @@ namespace Ref.Services.Features.Queries.Offers
                             {
                                 filterSql = filterSql.SqlAnd();
                                 filterSql += $" O.Price <= @PriceTo ";
+                            }
+
+                            if (request.HasAreaFrom)
+                            {
+                                filterSql = filterSql.SqlAnd();
+                                filterSql += " O.Area >= @AreaFrom ";
+                            }
+
+                            if (request.HasAreaTo)
+                            {
+                                filterSql = filterSql.SqlAnd();
+                                filterSql += $" O.Area <= @AreaTo ";
                             }
 
                             sql += $" WHERE {filterSql}";

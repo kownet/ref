@@ -13,6 +13,9 @@ namespace Ref.Services.Features.Shared
         public string Url { get; set; }
         public string Header { get; set; }
         public int Price { get; set; }
+        public int Area { get; set; }
+        public int Rooms { get; set; }
+        public int PricePerMeter { get; set; }
         public DateTime DateAdded { get; set; }
     }
 }
