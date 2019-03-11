@@ -73,10 +73,12 @@ namespace Ref.Api.Controllers
         [ProducesResponseType(403)]
         public async Task<IActionResult> GetById(int id)
         {
-            if (id != UserId)
+            if ((id != UserId) && IsNotAdmin)
                 return Forbid();
 
-            var result = await Mediator.Send(new ById.Query(UserId));
+            var userId = IsAdmin ? id : UserId;
+
+            var result = await Mediator.Send(new ById.Query(userId));
 
             if (result.Succeed)
                 return Ok(result.User);
@@ -128,12 +130,15 @@ namespace Ref.Api.Controllers
         /// </summary>
         /// <param name="cmd">New user properties</param>
         /// <returns>Status code</returns>
-        [HttpPut("{id}")]
+        [HttpPut("update/{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public async Task<IActionResult> Update(Update.Cmd cmd)
+        public async Task<IActionResult> Update(int id, Update.Cmd cmd)
         {
-            cmd.Id = UserId;
+            if ((id != UserId) && IsNotAdmin)
+                return Forbid();
+
+            cmd.Id = IsAdmin ? id : UserId;
 
             var result = await Mediator.Send(cmd);
 

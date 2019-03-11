@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Ref.Api.Helpers;
+using Ref.Data.Models;
 
 namespace Ref.Api.Controllers
 {
@@ -36,5 +37,11 @@ namespace Ref.Api.Controllers
                 return result;
             }
         }
+
+        protected bool IsAdmin => User.IsInRole(Role.Admin);
+
+        protected bool IsNotAdmin => !IsAdmin;
+
+        protected bool IsUser => User.IsInRole(Role.User);
     }
 }

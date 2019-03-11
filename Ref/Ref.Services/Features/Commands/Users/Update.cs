@@ -1,9 +1,8 @@
 ﻿using MediatR;
 using Ref.Data.Repositories;
 using Ref.Services.Contracts;
+using Ref.Shared.Extensions;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -39,24 +38,26 @@ namespace Ref.Services.Features.Commands.Users
 
             public async Task<Result> Handle(Cmd request, CancellationToken cancellationToken)
             {
+                if (!request.Email.IsValidEmail())
+                    return new Result { Message = "Please provide valid email" };
+
+                if (string.IsNullOrWhiteSpace(request.Password))
+                    return new Result { Message = "Please provide current password" };
+
                 try
                 {
                     var entity = await _userRepository.GetAsync(request.Id);
 
                     if (entity is null)
                     {
-                        return new Result { Message = "No such filter" };
+                        return new Result { Message = "No such user" };
                     }
 
-                    if(!string.IsNullOrWhiteSpace(request.Password))
-                    {
-                        _passwordProvider.CreatePasswordHash(
-                            request.Password,
-                            out byte[] passwordHash,
-                            out byte[] passwordSalt);
+                    var user = _passwordProvider.VerifyPasswordHash(request.Password, entity.PasswordHash, entity.PasswordSalt);
 
-                        entity.PasswordHash = passwordHash;
-                        entity.PasswordSalt = passwordSalt;
+                    if (!user)
+                    {
+                        return new Result { Message = "Bad username or password" };
                     }
 
                     entity.Email = request.Email;

@@ -13,6 +13,7 @@ namespace Ref.Services.Features.Commands.Users
         {
             public int Id { get; set; }
             public string Password { get; set; }
+            public string Confirmation { get; set; }
         }
 
         public class Result
@@ -36,6 +37,9 @@ namespace Ref.Services.Features.Commands.Users
 
             public async Task<Result> Handle(Cmd request, CancellationToken cancellationToken)
             {
+                if (!string.Equals(request.Password, request.Confirmation))
+                    return new Result { Message = "Password and password confirmation are not equal" };
+
                 try
                 {
                     var entity = await _userRepository.GetAsync(request.Id);

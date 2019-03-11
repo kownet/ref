@@ -42,7 +42,11 @@ namespace Ref.Services.Features.Queries.Users
                 {
                     var user = await _userRepository.GetAsync(request.UserId);
 
-                    if (user != null)
+                    if (user is null)
+                    {
+                        return new Result { Message = "No such user" };
+                    }
+                    else
                     {
                         return new Result
                         {
@@ -51,13 +55,6 @@ namespace Ref.Services.Features.Queries.Users
                                 Id = user.Id,
                                 Email = user.Email
                             }
-                        };
-                    }
-                    else
-                    {
-                        return new Result
-                        {
-                            Message = "No such object"
                         };
                     }
                 }

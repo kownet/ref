@@ -54,20 +54,14 @@ namespace Ref.Services.Features.Commands.Users
 
                 if (entity is null)
                 {
-                    return new Result
-                    {
-                        Message = "User not exist"
-                    };
+                    return new Result { Message = "User not exist" };
                 }
 
                 var user = _passwordProvider.VerifyPasswordHash(request.Password, entity.PasswordHash, entity.PasswordSalt);
 
                 if (!user)
                 {
-                    return new Result
-                    {
-                        Message = "Bad username or password"
-                    };
+                    return new Result { Message = "Bad username or password" };
                 }
 
                 var tokenHandler = new JwtSecurityTokenHandler();
