@@ -2,6 +2,7 @@
 using Ref.Data.Models;
 using Ref.Data.Repositories;
 using Ref.Services.Contracts;
+using Ref.Services.Features.Shared;
 using Ref.Shared.Extensions;
 using System;
 using System.Threading;
@@ -18,11 +19,8 @@ namespace Ref.Services.Features.Commands.Users
             public string Confirmation { get; set; }
         }
 
-        public class Result
+        public class Result : BaseResult
         {
-            public bool Succeed => string.IsNullOrWhiteSpace(Message);
-            public string Message { get; set; }
-
             public int UserId { get; set; }
         }
 

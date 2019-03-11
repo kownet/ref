@@ -11,19 +11,14 @@ namespace Ref.Services.Features.Queries.Users
 {
     public class All
     {
-        public class Query : IRequest<Result>
-        {
-        }
+        public class Query : IRequest<Result> { }
 
-        public class Result
+        public class Result : BaseResult
         {
             public Result()
             {
                 Users = new HashSet<UserResult>();
             }
-
-            public bool Succeed => string.IsNullOrWhiteSpace(Message);
-            public string Message { get; set; }
 
             public IEnumerable<UserResult> Users { get; set; }
         }
@@ -51,10 +46,7 @@ namespace Ref.Services.Features.Queries.Users
                             result.Add(new UserResult { Id = entity.Id, Email = entity.Email });
                         }
 
-                        return new Result
-                        {
-                            Users = result
-                        };
+                        return new Result { Users = result };
                     }
                     else return new Result { Message = "No users in database" };
                 }

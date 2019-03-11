@@ -22,11 +22,8 @@ namespace Ref.Services.Features.Queries.Filters
             public int FilterId { get; private set; }
         }
 
-        public class Result
+        public class Result : BaseResult
         {
-            public bool Succeed => string.IsNullOrWhiteSpace(Message);
-            public string Message { get; set; }
-
             public FilterResult Filter { get; set; }
         }
 
@@ -68,10 +65,7 @@ namespace Ref.Services.Features.Queries.Filters
                     }
                     else
                     {
-                        return new Result
-                        {
-                            Message = "No such object"
-                        };
+                        return new Result { Message = "No such object" };
                     }
                 }
                 catch (Exception ex)

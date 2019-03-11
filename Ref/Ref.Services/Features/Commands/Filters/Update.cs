@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Ref.Data.Models;
 using Ref.Data.Repositories;
+using Ref.Services.Features.Shared;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,11 +23,7 @@ namespace Ref.Services.Features.Commands.Filters
             public NotificationType Notification { get; set; }
         }
 
-        public class Result
-        {
-            public bool Succeed => string.IsNullOrWhiteSpace(Message);
-            public string Message { get; set; }
-        }
+        public class Result : BaseResult { }
 
         public class Handler : IRequestHandler<Cmd, Result>
         {

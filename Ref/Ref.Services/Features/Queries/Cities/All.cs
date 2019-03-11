@@ -11,19 +11,14 @@ namespace Ref.Services.Features.Queries.Cities
 {
     public class All
     {
-        public class Query : IRequest<Result>
-        {
-        }
+        public class Query : IRequest<Result> { }
 
-        public class Result
+        public class Result : BaseResult
         {
             public Result()
             {
                 Cities = new HashSet<CityResult>();
             }
-
-            public bool Succeed => string.IsNullOrWhiteSpace(Message);
-            public string Message { get; set; }
 
             public IEnumerable<CityResult> Cities { get; set; }
         }
@@ -51,10 +46,7 @@ namespace Ref.Services.Features.Queries.Cities
                             result.Add(new CityResult { Id = entity.Id, Name = entity.Name, NameRaw = entity.NameRaw });
                         }
 
-                        return new Result
-                        {
-                            Cities = result
-                        };
+                        return new Result { Cities = result };
                     }
                     else return new Result { Message = "No cities in database" };
                 }

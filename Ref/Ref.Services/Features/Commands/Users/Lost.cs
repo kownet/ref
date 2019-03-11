@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Ref.Data.Repositories;
+using Ref.Services.Features.Shared;
 using Ref.Shared.Extensions;
 using System;
 using System.Linq;
@@ -15,11 +16,7 @@ namespace Ref.Services.Features.Commands.Users
             public string Email { get; set; }
         }
 
-        public class Result
-        {
-            public bool Succeed => string.IsNullOrWhiteSpace(Message);
-            public string Message { get; set; }
-        }
+        public class Result : BaseResult { }
 
         public class Handler : IRequestHandler<Cmd, Result>
         {

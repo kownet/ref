@@ -19,11 +19,8 @@ namespace Ref.Services.Features.Queries.Users
             public int UserId { get; private set; }
         }
 
-        public class Result
+        public class Result : BaseResult
         {
-            public bool Succeed => string.IsNullOrWhiteSpace(Message);
-            public string Message { get; set; }
-
             public UserResult User { get; set; }
         }
 

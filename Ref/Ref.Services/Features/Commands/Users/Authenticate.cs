@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Ref.Shared.Extensions;
+using Ref.Services.Features.Shared;
 
 namespace Ref.Services.Features.Commands.Users
 {
@@ -22,11 +23,8 @@ namespace Ref.Services.Features.Commands.Users
             public string SigningToken { get; set; }
         }
 
-        public class Result
+        public class Result : BaseResult
         {
-            public bool Succeed => string.IsNullOrWhiteSpace(Message);
-            public string Message { get; set; }
-
             public int Id { get; set; }
             public string Email { get; set; }
             public string Token { get; set; }

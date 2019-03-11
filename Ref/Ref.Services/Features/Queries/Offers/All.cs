@@ -37,11 +37,8 @@ namespace Ref.Services.Features.Queries.Offers
             public bool HasFilter => HasLocationFilter || HasPriceFrom || HasPriceTo || HasAreaFrom || HasAreaTo;
         }
 
-        public class Result
+        public class Result : BaseResult
         {
-            public bool Succeed => string.IsNullOrWhiteSpace(Message);
-            public string Message { get; set; }
-
             public Container Response { get; set; }
         }
 
@@ -167,10 +164,7 @@ namespace Ref.Services.Features.Queries.Offers
                             };
                         }
 
-                        return new Result
-                        {
-                            Message = "There no offers"
-                        };
+                        return new Result { Message = "There no offers" };
                     }
                 }
                 catch (Exception ex)

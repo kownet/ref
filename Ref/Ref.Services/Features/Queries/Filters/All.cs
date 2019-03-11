@@ -16,15 +16,12 @@ namespace Ref.Services.Features.Queries.Filters
             public int? UserId { get; set; }
         }
 
-        public class Result
+        public class Result : BaseResult
         {
             public Result()
             {
                 Filters = new HashSet<FilterResult>();
             }
-
-            public bool Succeed => string.IsNullOrWhiteSpace(Message);
-            public string Message { get; set; }
 
             public IEnumerable<FilterResult> Filters { get; set; }
         }
@@ -66,17 +63,11 @@ namespace Ref.Services.Features.Queries.Filters
                             });
                         }
 
-                        return new Result
-                        {
-                            Filters = filterResult
-                        };
+                        return new Result { Filters = filterResult };
                     }
                     else
                     {
-                        return new Result
-                        {
-                            Message = "There are no filters"
-                        };
+                        return new Result { Message = "There are no filters" };
                     }
                 }
                 catch (Exception ex)
