@@ -17,7 +17,7 @@ namespace Ref.Coordinator.Core
     {
         private readonly ILogger<CoordinatorService> _logger;
 
-        private readonly IAppProvider _appProvider;
+        private readonly IAppCoordinatorProvider _appProvider;
 
         private readonly IFilterRepository _filterRepository;
         private readonly IOfferRepository _offerRepository;
@@ -27,7 +27,7 @@ namespace Ref.Coordinator.Core
 
         public CoordinatorService(
             ILogger<CoordinatorService> logger,
-            IAppProvider appProvider,
+            IAppCoordinatorProvider appProvider,
             IFilterRepository filterRepository,
             IOfferRepository offerRepository,
             IOfferFilterRepository offerFilterRepository,
@@ -62,7 +62,11 @@ namespace Ref.Coordinator.Core
 
                         if(oldFiltersToCheckGroup.AnyAndNotNull())
                         {
+                            _logger.LogTrace($"There are {oldFiltersToCheckGroup.Count()} old filters to check.");
+
                             await MatchOffers(oldFiltersToCheckGroup);
+
+                            _logger.LogTrace("Old checked");
                         }
                     }
 
@@ -73,7 +77,11 @@ namespace Ref.Coordinator.Core
 
                     if (newFiltersToCheck.AnyAndNotNull())
                     {
+                        _logger.LogTrace($"There are {newFiltersToCheck.Count()} new filters to check.");
+
                         await MatchOffers(newFiltersToCheck);
+
+                        _logger.LogTrace("New checked");
                     }
 
                     successTries = _appProvider.SuccessTries();
