@@ -39,6 +39,13 @@ namespace Ref.Services.Features.Commands.Filters
             {
                 try
                 {
+                    var entity = await _filterRepository.GetAsync(request.FilterId, request.UserId);
+
+                    if (entity is null)
+                    {
+                        return new Result { Message = "No such filter" };
+                    }
+
                     await _filterRepository.DeleteAsync(request.FilterId, request.UserId);
 
                     return new Result();
