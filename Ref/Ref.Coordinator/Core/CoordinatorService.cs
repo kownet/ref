@@ -100,7 +100,7 @@ namespace Ref.Coordinator.Core
                         $"[{_appProvider.AppId()}]{Labels.ErrorMsgTitle}",
                         $"{msgHeader} {ex.GetFullMessage()}");
 
-                    Thread.Sleep(5 * 1000);
+                    Thread.Sleep(_appProvider.PauseTime());
                 }
             }
 

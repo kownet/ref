@@ -17,7 +17,7 @@ namespace Ref.Notifier.Core
     {
         private readonly ILogger<NotifierService> _logger;
 
-        private readonly IAppProvider _appProvider;
+        private readonly IAppNotifierProvider _appProvider;
 
         private readonly IOfferFilterRepository _offerFilterRepository;
 
@@ -28,7 +28,7 @@ namespace Ref.Notifier.Core
 
         public NotifierService(
             ILogger<NotifierService> logger,
-            IAppProvider appProvider,
+            IAppNotifierProvider appProvider,
             IOfferFilterRepository offerFilterRepository,
             IMailReport mailReport,
             IEmailNotification emailNotification,
@@ -107,7 +107,7 @@ namespace Ref.Notifier.Core
                         $"[{_appProvider.AppId()}]{Labels.ErrorMsgTitle}",
                         $"{msgHeader} {ex.GetFullMessage()}");
 
-                    Thread.Sleep(5 * 1000);
+                    Thread.Sleep(_appProvider.PauseTime());
                 }
             }
 
