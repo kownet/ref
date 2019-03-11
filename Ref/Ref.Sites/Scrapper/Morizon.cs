@@ -224,14 +224,29 @@ namespace Ref.Sites.Scrapper
                                     {
                                         if (elements.AnyAndNotNull())
                                         {
-                                            if (int.TryParse(Regex.Replace(elements.First().InnerText, regex, string.Empty).Trim(), out int r))
+                                            var first = elements.First();
+                                            var secondLast = elements.SecondLast();
+
+                                            if (!(first is null))
                                             {
-                                                ad.Rooms = r;
+                                                if (!string.IsNullOrWhiteSpace(first.InnerText))
+                                                {
+                                                    if (int.TryParse(Regex.Replace(first.InnerText, regex, string.Empty).Trim(), out int r))
+                                                    {
+                                                        ad.Rooms = r;
+                                                    }
+                                                }
                                             }
 
-                                            if (int.TryParse(Regex.Replace(elements.SecondLast().InnerText, regex, string.Empty).Trim(), out int a))
+                                            if (!(secondLast is null))
                                             {
-                                                ad.Area = a;
+                                                if (!string.IsNullOrWhiteSpace(secondLast.InnerText))
+                                                {
+                                                    if (int.TryParse(Regex.Replace(secondLast.InnerText, regex, string.Empty).Trim(), out int a))
+                                                    {
+                                                        ad.Area = a;
+                                                    }
+                                                }
                                             }
                                         }
                                     }
