@@ -92,7 +92,7 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 return await c.ExecuteAsync(
-                    @"UPDATE Filters SET Property = @Property, Deal = @Deal, Market = @Market, CityId = @CityId, FlatAreaFrom = @FlatAreaFrom, FlatAreaTo = @FlatAreaTo, PriceFrom = @PriceFrom, PriceTo = @PriceTo, Name = @Name 
+                    @"UPDATE Filters SET Property = @Property, Deal = @Deal, Market = @Market, CityId = @CityId, FlatAreaFrom = @FlatAreaFrom, FlatAreaTo = @FlatAreaTo, PriceFrom = @PriceFrom, PriceTo = @PriceTo, Name = @Name, Notification = @Notification  
                         WHERE Id = @Id AND UserId = @UserId",
                     new
                     {
@@ -106,7 +106,8 @@ namespace Ref.Data.Repositories
                         filter.FlatAreaTo,
                         filter.PriceFrom,
                         filter.PriceTo,
-                        filter.Name
+                        filter.Name,
+                        filter.Notification
                     });
             }
         }
@@ -116,7 +117,7 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 return await c.QueryFirstOrDefaultAsync<Filter>(
-                    @"SELECT Id, UserId, Type, Deal, Market, Location, FlatAreaFrom, FlatAreaTo, PriceFrom, PriceTo, Name, Notification, LastCheckedAt FROM Filters 
+                    @"SELECT Id, UserId, Property, Deal, Market, CityId, FlatAreaFrom, FlatAreaTo, PriceFrom, PriceTo, Name, Notification, LastCheckedAt FROM Filters 
                         WHERE Id = @Id AND UserId = @UserId",
                     new
                     {

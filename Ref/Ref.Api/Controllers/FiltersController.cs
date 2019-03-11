@@ -122,9 +122,10 @@ namespace Ref.Api.Controllers
         /// <param name="id">Filter id</param>
         /// <param name="cmd">New filter properties command</param>
         /// <returns>Status code</returns>
-        [HttpPut("{id}")]
+        [HttpPut("update/{id}")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
+        //[Route("user")]
         public async Task<IActionResult> Update(int id, Update.Cmd cmd)
         {
             cmd.Id = id;

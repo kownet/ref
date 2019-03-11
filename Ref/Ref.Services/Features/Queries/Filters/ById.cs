@@ -1,6 +1,6 @@
 ﻿using MediatR;
-using Ref.Data.Models;
 using Ref.Data.Repositories;
+using Ref.Services.Features.Shared;
 using System;
 using System.Linq;
 using System.Threading;
@@ -27,7 +27,7 @@ namespace Ref.Services.Features.Queries.Filters
             public bool Succeed => string.IsNullOrWhiteSpace(Message);
             public string Message { get; set; }
 
-            public Filter Filter { get; set; }
+            public FilterResult Filter { get; set; }
         }
 
         public class Handler : IRequestHandler<Query, Result>
@@ -50,7 +50,21 @@ namespace Ref.Services.Features.Queries.Filters
 
                     if (filter != null)
                     {
-                        return new Result { Filter = filter };
+                        return new Result
+                        {
+                            Filter = new FilterResult
+                            {
+                                Id = filter.Id,
+                                CityId = filter.CityId,
+                                FlatAreaFrom = filter.FlatAreaFrom,
+                                FlatAreaTo = filter.FlatAreaTo,
+                                PriceFrom = filter.PriceFrom,
+                                PriceTo = filter.PriceTo,
+                                UserId = filter.UserId,
+                                Name = filter.Name,
+                                Notification = filter.Notification
+                            }
+                        };
                     }
                     else
                     {

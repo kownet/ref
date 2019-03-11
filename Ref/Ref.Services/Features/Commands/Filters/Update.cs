@@ -13,15 +13,13 @@ namespace Ref.Services.Features.Commands.Filters
         {
             public int Id { get; set; }
             public int UserId { get; set; }
-            public PropertyType Type { get; set; }
-            public DealType Deal { get; set; }
-            public string Location { get; set; }
+            public int CityId { get; set; }
             public int FlatAreaFrom { get; set; }
             public int FlatAreaTo { get; set; }
             public int PriceFrom { get; set; }
             public int PriceTo { get; set; }
-            public MarketType Market { get; set; }
-            public int Newest { get; set; }
+            public string Name { get; set; }
+            public NotificationType Notification { get; set; }
         }
 
         public class Result
@@ -54,13 +52,16 @@ namespace Ref.Services.Features.Commands.Filters
                     {
                         Id = request.Id,
                         UserId = request.UserId,
-                        Property = request.Type,
-                        Deal = request.Deal,
-                        Market = request.Market,
+                        Property = PropertyType.Flat,
+                        Deal = DealType.Sale,
+                        Market = MarketType.Secondary,
                         FlatAreaFrom = request.FlatAreaFrom,
                         FlatAreaTo = request.FlatAreaTo,
                         PriceFrom = request.PriceFrom,
-                        PriceTo = request.PriceTo
+                        PriceTo = request.PriceTo,
+                        Notification = request.Notification,
+                        CityId = request.CityId,
+                        Name = request.Name
                     });
 
                     return new Result();
