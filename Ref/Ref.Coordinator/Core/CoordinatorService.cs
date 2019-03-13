@@ -159,6 +159,8 @@ namespace Ref.Coordinator.Core
                     if (newestFrom.AnyAndNotNull())
                     {
                         _offerFilterRepository.BulkInsert(newestFrom, true);
+
+                        _logger.LogTrace($"Filter: {filter.Id} updated with {newestFrom.Count} offers.");
                     }
                 }
             }
