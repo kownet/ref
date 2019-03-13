@@ -216,18 +216,30 @@ namespace Ref.Sites.Scrapper
 
                                     if (lis.AnyAndNotNull())
                                     {
-                                        var areaRaw = lis.First().InnerText.Replace("Powierzchnia w m2: ", "");
+                                        var areaRaw = lis.FirstOrDefault();
 
-                                        if (int.TryParse(areaRaw, out int a))
+                                        if (!(areaRaw is null))
                                         {
-                                            ad.Area = a;
+                                            if (!string.IsNullOrWhiteSpace(areaRaw.InnerText))
+                                            {
+                                                if (int.TryParse(areaRaw.InnerText.Replace("Powierzchnia w m2: ", ""), out int a))
+                                                {
+                                                    ad.Area = a;
+                                                }
+                                            }
                                         }
 
-                                        var roomsRaw = lis.Skip(1).First().InnerText.Replace("Liczba pokoi: ", "");
+                                        var roomsRaw = lis.Skip(1).FirstOrDefault();
 
-                                        if (int.TryParse(roomsRaw, out int r))
+                                        if (!(roomsRaw is null))
                                         {
-                                            ad.Rooms = r;
+                                            if (!string.IsNullOrWhiteSpace(roomsRaw.InnerText))
+                                            {
+                                                if (int.TryParse(roomsRaw.InnerText.Replace("Liczba pokoi: ", ""), out int r))
+                                                {
+                                                    ad.Rooms = r;
+                                                }
+                                            }
                                         }
                                     }
                                 }
