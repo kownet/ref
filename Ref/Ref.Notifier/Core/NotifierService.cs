@@ -86,7 +86,34 @@ namespace Ref.Notifier.Core
                                 if (emailResponse.IsSuccess)
                                 {
                                     await _mailReport.UpdateFiltersAsSentAsync(user.Filters.Select(f => f.FilterId));
+
+                                    var msg = $"Mail to: {user.Email} with result sent.";
+
+                                    _logger.LogError(msg);
+
+                                    if(_appProvider.AdminNotification())
+                                    {
+                                        _pushOverNotification.Send(
+                                        Labels.SuccessEmailMsgTitle,
+                                        msg);
+                                    }
                                 }
+                                else
+                                {
+                                    var msg = $"Mail to: {user.Email} with result NOT sent. Message: {emailResponse.Message}";
+
+                                    _logger.LogError(msg);
+
+                                    _pushOverNotification.Send(
+                                        Labels.ErrorEmailMsgTitle,
+                                        msg);
+                                }
+                            }
+                            else
+                            {
+                                var msg = $"Nothing to send for: {user.Email}.";
+
+                                _logger.LogError(msg);
                             }
                         }
                     }

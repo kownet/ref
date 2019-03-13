@@ -7,6 +7,7 @@ namespace Ref.Data.Components
         public string Header { get; set; }
         public string Url { get; set; }
         public int Price { get; set; }
-        public SiteType SiteType { get; set; }
+        public int Area { get; set; }
+        public SiteType Site { get; set; }
     }
 }

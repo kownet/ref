@@ -24,7 +24,6 @@ namespace Ref.App.Core
         private readonly IOfferRepository _offerRepository;
 
         private readonly IPushOverNotification _pushOverNotification;
-        private readonly IEmailNotification _emailNotification;
 
         public RefService(
             ILogger<RefService> logger,
@@ -32,8 +31,7 @@ namespace Ref.App.Core
             IAppProvider appProvider,
             ICitiesRepository citiesRepository,
             IOfferRepository offerRepository,
-            IPushOverNotification pushOverNotification,
-            IEmailNotification emailNotification)
+            IPushOverNotification pushOverNotification)
         {
             _logger = logger;
             _siteAccessor = siteAccessor;
@@ -41,7 +39,6 @@ namespace Ref.App.Core
             _citiesRepository = citiesRepository;
             _offerRepository = offerRepository;
             _pushOverNotification = pushOverNotification;
-            _emailNotification = emailNotification;
         }
 
         public async Task<int> Crawl()
@@ -91,7 +88,7 @@ namespace Ref.App.Core
                                             Labels.NoRecordsMsg(siteType.ToString()));
                                     }
 
-                                    if(result.ExceptionAccured)
+                                    if (result.ExceptionAccured)
                                     {
                                         _logger.LogError(Labels.ExceptionMsg(siteType.ToString(), result.ExceptionMessage));
                                         _pushOverNotification.Send(
@@ -101,9 +98,9 @@ namespace Ref.App.Core
 
                                     var newestFromCriteria = result.Offers.ToList();
 
-                                    if(siteType != SiteType.Adresowo && 
-                                        siteType != SiteType.DomiPorta && 
-                                        siteType != SiteType.Gratka && 
+                                    if (siteType != SiteType.Adresowo &&
+                                        siteType != SiteType.DomiPorta &&
+                                        siteType != SiteType.Gratka &&
                                         siteType != SiteType.Morizon)
                                     {
                                         newestFromCriteria = newestFromCriteria

@@ -1,6 +1,7 @@
 ﻿using Ref.Data.Components;
 using Ref.Shared.Extensions;
 using Ref.Shared.Notifications.Messages;
+using Ref.Shared.Utils;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,7 +27,7 @@ namespace Ref.Notifier.UI
                 sbRaw.AppendLine($"Filtr: {filter.Key}:");
                 sbHtml.AppendLine($"</br><strong>Filtr: {filter.Key}:<strong></br></br>");
 
-                var siteGrouped = filter.Value.GroupBy(s => s.SiteType);
+                var siteGrouped = filter.Value.GroupBy(s => s.Site);
 
                 foreach (var site in siteGrouped)
                 {
@@ -46,7 +47,7 @@ namespace Ref.Notifier.UI
             }
 
             return new EmailMessage(
-                "REF",
+                $"{Labels.RecordsFoundTitle}",
                 sbRaw.ToString(),
                 sbHtml.ToString());
         }

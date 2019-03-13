@@ -26,14 +26,14 @@ namespace Ref.Shared.Notifications
     public class EmailNotification : IEmailNotification
     {
         private readonly IEmailProvider _emailProvider;
-        private readonly IAppProvider _appProvider;
+        private readonly ISenderProvider _senderProvider;
 
         public EmailNotification(
             IEmailProvider emailProvider,
-            IAppProvider appProvider)
+            ISenderProvider senderProvider)
         {
             _emailProvider = emailProvider;
-            _appProvider = appProvider;
+            _senderProvider = senderProvider;
         }
 
         public EmailResponse Send(string title, string rawMessage, string htmlMessage, string[] recipients)
@@ -48,7 +48,7 @@ namespace Ref.Shared.Notifications
                 {
                     ApiKey = _emailProvider.ApiKey(),
                     To = to,
-                    Sender = _appProvider.Sender(),
+                    Sender = _senderProvider.Sender(),
                     Subject = title,
                     Text = rawMessage,
                     Html = htmlMessage,
@@ -57,7 +57,7 @@ namespace Ref.Shared.Notifications
                         new EmailPayloadCustomHeader
                         {
                             Header = "Reply-To",
-                            Value = _appProvider.ReplyTo()
+                            Value = _senderProvider.ReplyTo()
                         }
                     }
                 };

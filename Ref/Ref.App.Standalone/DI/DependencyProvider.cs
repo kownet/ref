@@ -57,6 +57,12 @@ namespace Ref.App.Standalone.DI
                     configurationRoot["notifications:email:apikey"])
                 );
 
+            services.AddTransient<ISenderProvider>(
+                s => new SenderProvider(
+                    configurationRoot["app:sender"],
+                    configurationRoot["app:replyto"])
+                );
+
             services.AddTransient<IEmailNotification, EmailNotification>();
             #endregion
 

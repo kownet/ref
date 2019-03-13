@@ -37,7 +37,7 @@ namespace Ref.Data.Components
             using (var c = _dbAccess.Connection)
             {
                 return await c.QueryAsync<MailReportOffer>(@"
-                    SELECT O.Header, O.Url, O.Price, O.SiteType FROM Offers O
+                    SELECT O.Header, O.Url, O.Price, O.Site, O.Area FROM Offers O
                     INNER JOIN OfferFilters FO ON FO.OfferId = O.Id
                     WHERE FO.FilterId = @FilterId AND FO.Sent = 0",
                     new
