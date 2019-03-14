@@ -2,7 +2,9 @@
 using Ref.Data.Models;
 using Ref.Data.Repositories;
 using Ref.Services.Features.Shared;
+using Ref.Services.Helpers;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,36 +29,66 @@ namespace Ref.Services.Features.Commands.Filters
         public class Handler : IRequestHandler<Cmd, Result>
         {
             private readonly IFilterRepository _filterRepository;
+            private readonly IUserRepository _userRepository;
 
-            public Handler(IFilterRepository filterRepository)
+            public Handler(
+                IFilterRepository filterRepository,
+                IUserRepository userRepository)
             {
                 _filterRepository = filterRepository;
+                _userRepository = userRepository;
             }
 
             public async Task<Result> Handle(Cmd request, CancellationToken cancellationToken)
             {
+                var noFilterByUser = 0;
+                var maximumForCurrentSubscription = 0;
+
                 try
                 {
-                    var result = await _filterRepository.CreateAsync(new Filter
-                    {
-                        UserId = request.UserId,
-                        Property = PropertyType.Flat,
-                        Deal = DealType.Sale,
-                        Market = MarketType.Secondary,
-                        CityId = request.CityId,
-                        FlatAreaFrom = request.FlatAreaFrom,
-                        FlatAreaTo = request.FlatAreaTo,
-                        PriceFrom = request.PriceFrom,
-                        PriceTo = request.PriceTo,
-                        Notification = request.Notification,
-                        Name = request.Name
-                    });
+                    var user = await _userRepository.GetAsync(request.UserId);
 
-                    return new Result();
+                    noFilterByUser = (await _filterRepository.FindByAsync(f => f.UserId == request.UserId)).Count();
+
+                    maximumForCurrentSubscription = SubscriptionProvider.MaxNumberOfFilters(user.Subscription);
                 }
                 catch (Exception ex)
                 {
                     return new Result { Message = ex.Message };
+                }
+
+                if (noFilterByUser <= maximumForCurrentSubscription)
+                {
+                    try
+                    {
+                        var result = await _filterRepository.CreateAsync(new Filter
+                        {
+                            UserId = request.UserId,
+                            Property = PropertyType.Flat,
+                            Deal = DealType.Sale,
+                            Market = MarketType.Secondary,
+                            CityId = request.CityId,
+                            FlatAreaFrom = request.FlatAreaFrom,
+                            FlatAreaTo = request.FlatAreaTo,
+                            PriceFrom = request.PriceFrom,
+                            PriceTo = request.PriceTo,
+                            Notification = request.Notification,
+                            Name = request.Name
+                        });
+
+                        return new Result();
+                    }
+                    catch (Exception ex)
+                    {
+                        return new Result { Message = ex.Message };
+                    }
+                }
+                else
+                {
+                    return new Result
+                    {
+                        Message = $"Maximum number of filters - {maximumForCurrentSubscription} has been exceeded."
+                    };
                 }
             }
         }
