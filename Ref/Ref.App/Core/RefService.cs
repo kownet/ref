@@ -75,25 +75,37 @@ namespace Ref.App.Core
                                     if (result.WeAreBanned)
                                     {
                                         _logger.LogError(Labels.BannedMsg(siteType.ToString()));
-                                        _pushOverNotification.Send(
-                                            Labels.BannedMsgTitle,
-                                            Labels.BannedMsg(siteType.ToString()));
+
+                                        if(_appProvider.AdminNotification())
+                                        {
+                                            _pushOverNotification.Send(
+                                                Labels.BannedMsgTitle,
+                                                Labels.BannedMsg(siteType.ToString()));
+                                        }
                                     }
 
                                     if (result.ThereAreNoRecords)
                                     {
                                         _logger.LogError(Labels.NoRecordsMsg(siteType.ToString()));
-                                        _pushOverNotification.Send(
-                                            Labels.NoRecordsMsgTitle,
-                                            Labels.NoRecordsMsg(siteType.ToString()));
+                                        
+                                        if(_appProvider.AdminNotification())
+                                        {
+                                            _pushOverNotification.Send(
+                                                Labels.NoRecordsMsgTitle,
+                                                Labels.NoRecordsMsg(siteType.ToString()));
+                                        }
                                     }
 
                                     if (result.ExceptionAccured)
                                     {
                                         _logger.LogError(Labels.ExceptionMsg(siteType.ToString(), result.ExceptionMessage));
-                                        _pushOverNotification.Send(
-                                            Labels.ExceptionMsgTitle,
-                                            Labels.ExceptionMsg(siteType.ToString(), result.ExceptionMessage));
+                                        
+                                        if(_appProvider.AdminNotification())
+                                        {
+                                            _pushOverNotification.Send(
+                                                Labels.ExceptionMsgTitle,
+                                                Labels.ExceptionMsg(siteType.ToString(), result.ExceptionMessage));
+                                        }
                                     }
 
                                     var newestFromCriteria = result.Offers.ToList();

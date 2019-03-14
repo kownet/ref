@@ -102,7 +102,7 @@ namespace Ref.Sites.Scrapper
 
             for (int i = 1; i <= pages; i++)
             {
-                doc = ScrapThis($@"{searchQuery}page={i}").HtmlNode;
+                doc = ScrapThis($@"{searchQuery}%page={i}").HtmlNode;
 
                 var listing = doc.CssSelect(".section-listing__row-content");
 
@@ -149,7 +149,7 @@ namespace Ref.Sites.Scrapper
 
             for (int i = 1; i <= pages; i++)
             {
-                var scrap = ScrapThis($@"{searchQuery}page={i}");
+                var scrap = ScrapThis($@"{searchQuery}&page={i}");
 
                 if (!scrap.Succeed)
                     return result;
@@ -186,11 +186,15 @@ namespace Ref.Sites.Scrapper
                                 if (!string.IsNullOrWhiteSpace(areaRaw))
                                 {
                                     areaRaw.Replace(",", "");
-                                    areaRaw = areaRaw.Substring(0, 2);
-
-                                    if (int.TryParse(areaRaw, out int area))
+                                    
+                                    if(areaRaw.Length >= 2)
                                     {
-                                        ad.Area = area;
+                                        areaRaw = areaRaw.Substring(0, 2);
+
+                                        if (int.TryParse(areaRaw, out int area))
+                                        {
+                                            ad.Area = area;
+                                        }
                                     }
                                 }
 

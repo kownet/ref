@@ -126,7 +126,7 @@ namespace Ref.Sites.Scrapper
 
             for (int i = 1; i <= pages; i++)
             {
-                doc = ScrapThis($@"{searchQuery}page={i}").HtmlNode;
+                doc = ScrapThis($@"{searchQuery}&page={i}").HtmlNode;
 
                 var listing = doc.CssSelect(".offer-wrapper");
 
@@ -180,7 +180,7 @@ namespace Ref.Sites.Scrapper
 
             for (int i = 1; i <= pages; i++)
             {
-                var scrap = ScrapThis($@"{searchQuery}page={i}");
+                var scrap = ScrapThis($@"{searchQuery}&page={i}");
 
                 if (!scrap.Succeed)
                     return result;

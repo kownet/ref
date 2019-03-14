@@ -36,7 +36,7 @@ namespace Ref.Sites.Scrapper
 
             var searchQuery = QueryStringProvider(SiteType.Adresowo).Get(city, dealType);
 
-            var scrap = ScrapThis(searchQuery);
+            var scrap = ScrapThis($"{searchQuery}od");
 
             if (!scrap.Succeed)
             {
@@ -178,7 +178,7 @@ namespace Ref.Sites.Scrapper
 
             for (int i = 1; i <= pages; i++)
             {
-                var scrap = ScrapThis($"{searchQuery}{i}", "iso-8859-2");
+                var scrap = ScrapThis($"{searchQuery}{i}od", "iso-8859-2");
 
                 if (!scrap.Succeed)
                     return result;

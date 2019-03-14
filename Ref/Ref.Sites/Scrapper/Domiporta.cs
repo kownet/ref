@@ -202,11 +202,14 @@ namespace Ref.Sites.Scrapper
 
                                 if (!string.IsNullOrWhiteSpace(areaRaw))
                                 {
-                                    areaRaw = areaRaw.Replace(",", "").Substring(0, 2);
-
-                                    if (int.TryParse(areaRaw, out int area))
+                                    if(areaRaw.Length >= 2)
                                     {
-                                        ad.Area = area;
+                                        areaRaw = areaRaw.Replace(",", "").Substring(0, 2);
+
+                                        if (int.TryParse(areaRaw, out int area))
+                                        {
+                                            ad.Area = area;
+                                        }
                                     }
                                 }
 
