@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Ref.Api.Helpers;
 using Ref.Data.Models;
@@ -14,11 +15,15 @@ namespace Ref.Api.Controllers
     [Route("[controller]")]
     public class NotificationTypesController : BaseController
     {
+        private readonly ILogger<NotificationTypesController> _logger;
+
         public NotificationTypesController(
+            ILogger<NotificationTypesController> logger,
             IMediator mediator,
             IOptions<AppSettings> appSettings)
             : base(mediator, appSettings)
         {
+            _logger = logger;
         }
 
         /// <summary>

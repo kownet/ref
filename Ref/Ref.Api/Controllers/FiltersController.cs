@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Ref.Api.Helpers;
 using Ref.Data.Models;
@@ -15,11 +16,15 @@ namespace Ref.Api.Controllers
     [Route("[controller]")]
     public class FiltersController : BaseController
     {
+        private readonly ILogger<FiltersController> _logger;
+
         public FiltersController(
+            ILogger<FiltersController> logger,
             IMediator mediator,
             IOptions<AppSettings> appSettings)
             : base(mediator, appSettings)
         {
+            _logger = logger;
         }
 
         /// <summary>
@@ -37,7 +42,11 @@ namespace Ref.Api.Controllers
             if (result.Succeed)
                 return Ok(result.Filters);
             else
+            {
+                _logger.LogError(result.Message);
+
                 return BadRequest(result.Message);
+            }
         }
 
         /// <summary>
@@ -55,7 +64,11 @@ namespace Ref.Api.Controllers
             if (result.Succeed)
                 return Ok(result.Filters);
             else
+            {
+                _logger.LogError(result.Message);
+
                 return BadRequest(result.Message);
+            }
         }
 
         /// <summary>
@@ -73,7 +86,11 @@ namespace Ref.Api.Controllers
             if (result.Succeed)
                 return Ok(result.Filter);
             else
+            {
+                _logger.LogError(result.Message);
+
                 return BadRequest(result.Message);
+            }
         }
 
         /// <summary>
@@ -93,7 +110,11 @@ namespace Ref.Api.Controllers
             if (result.Succeed)
                 return Ok();
             else
+            {
+                _logger.LogError(result.Message);
+
                 return BadRequest(result.Message);
+            }
         }
 
         /// <summary>
@@ -113,7 +134,11 @@ namespace Ref.Api.Controllers
             if (result.Succeed)
                 return Ok();
             else
+            {
+                _logger.LogError(result.Message);
+
                 return BadRequest(result.Message);
+            }
         }
 
         /// <summary>
@@ -136,7 +161,11 @@ namespace Ref.Api.Controllers
             if (result.Succeed)
                 return Ok();
             else
+            {
+                _logger.LogError(result.Message);
+
                 return BadRequest(result.Message);
+            }
         }
     }
 }

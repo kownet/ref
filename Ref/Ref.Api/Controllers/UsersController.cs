@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Ref.Api.Helpers;
 using Ref.Data.Models;
@@ -15,11 +16,15 @@ namespace Ref.Api.Controllers
     [Route("[controller]")]
     public class UsersController : BaseController
     {
+        private readonly ILogger<UsersController> _logger;
+
         public UsersController(
+            ILogger<UsersController> logger,
             IOptions<AppSettings> appSettings,
             IMediator mediator)
             : base(mediator, appSettings)
         {
+            _logger = logger;
         }
 
         /// <summary>
@@ -38,7 +43,11 @@ namespace Ref.Api.Controllers
             if (result.Succeed)
                 return Ok();
             else
+            {
+                _logger.LogError(result.Message);
+
                 return BadRequest(result.Message);
+            }
         }
 
         /// <summary>
@@ -59,7 +68,11 @@ namespace Ref.Api.Controllers
             if (result.Succeed)
                 return Ok(result.Token);
             else
+            {
+                _logger.LogError(result.Message);
+
                 return BadRequest(result.Message);
+            }
         }
 
         /// <summary>
@@ -83,7 +96,11 @@ namespace Ref.Api.Controllers
             if (result.Succeed)
                 return Ok(result.User);
             else
+            {
+                _logger.LogError(result.Message);
+
                 return BadRequest(result.Message);
+            }
         }
 
         /// <summary>
@@ -101,7 +118,11 @@ namespace Ref.Api.Controllers
             if (result.Succeed)
                 return Ok(result.Users);
             else
+            {
+                _logger.LogError(result.Message);
+
                 return BadRequest(result.Message);
+            }
         }
 
         /// <summary>
@@ -122,7 +143,11 @@ namespace Ref.Api.Controllers
             if (result.Succeed)
                 return Ok();
             else
+            {
+                _logger.LogError(result.Message);
+
                 return BadRequest(result.Message);
+            }
         }
 
         /// <summary>
@@ -145,7 +170,11 @@ namespace Ref.Api.Controllers
             if (result.Succeed)
                 return Ok();
             else
+            {
+                _logger.LogError(result.Message);
+
                 return BadRequest(result.Message);
+            }
         }
 
         /// <summary>
@@ -167,7 +196,11 @@ namespace Ref.Api.Controllers
             if (result.Succeed)
                 return Ok();
             else
+            {
+                _logger.LogError(result.Message);
+
                 return BadRequest(result.Message);
+            }
         }
 
         [HttpPost("lost")]
@@ -181,7 +214,11 @@ namespace Ref.Api.Controllers
             if (result.Succeed)
                 return Ok();
             else
+            {
+                _logger.LogError(result.Message);
+
                 return BadRequest(result.Message);
+            }
         }
     }
 }

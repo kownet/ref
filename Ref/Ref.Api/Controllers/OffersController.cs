@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Ref.Api.Helpers;
 using Ref.Services.Features.Queries.Offers;
@@ -13,11 +14,15 @@ namespace Ref.Api.Controllers
     [Route("[controller]")]
     public class OffersController : BaseController
     {
+        private readonly ILogger<OffersController> _logger;
+
         public OffersController(
+            ILogger<OffersController> logger,
             IMediator mediator,
             IOptions<AppSettings> appSettings)
             : base(mediator, appSettings)
         {
+            _logger = logger;
         }
 
         /// <summary>
@@ -39,7 +44,11 @@ namespace Ref.Api.Controllers
                 return Ok(result.Response.Offers);
             }
             else
+            {
+                _logger.LogError(result.Message);
+
                 return BadRequest(result.Message);
+            }
         }
     }
 }

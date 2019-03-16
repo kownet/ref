@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Ref.Api.Helpers;
 using Ref.Services.Features.Queries.Cities;
@@ -11,11 +12,15 @@ namespace Ref.Api.Controllers
     [Route("[controller]")]
     public class CitiesController : BaseController
     {
+        private readonly ILogger<CitiesController> _logger;
+
         public CitiesController(
+            ILogger<CitiesController> logger,
             IMediator mediator,
             IOptions<AppSettings> appSettings)
             : base(mediator, appSettings)
         {
+            _logger = logger;
         }
 
         /// <summary>
@@ -32,7 +37,11 @@ namespace Ref.Api.Controllers
             if (result.Succeed)
                 return Ok(result.Cities);
             else
+            {
+                _logger.LogError(result.Message);
+
                 return BadRequest(result.Message);
+            }
         }
     }
 }
