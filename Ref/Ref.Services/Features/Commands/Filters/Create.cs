@@ -73,7 +73,8 @@ namespace Ref.Services.Features.Commands.Filters
                             PriceFrom = request.PriceFrom,
                             PriceTo = request.PriceTo,
                             Notification = request.Notification,
-                            Name = request.Name
+                            Name = request.Name,
+                            LastCheckedAt = DateTime.Now.AddHours(-1)
                         });
 
                         return new Result();

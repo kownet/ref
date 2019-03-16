@@ -58,7 +58,8 @@ namespace Ref.Services.Features.Commands.Filters
                         PriceTo = request.PriceTo,
                         Notification = request.Notification,
                         CityId = request.CityId,
-                        Name = request.Name
+                        Name = request.Name,
+                        LastCheckedAt = entity.LastCheckedAt
                     });
 
                     return new Result();

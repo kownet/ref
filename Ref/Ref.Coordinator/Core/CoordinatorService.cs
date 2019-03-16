@@ -49,14 +49,14 @@ namespace Ref.Coordinator.Core
             {
                 try
                 {
-                    var oldFiltersToCheck = await _filterRepository
+                    var filtersToCheck = await _filterRepository
                         .FindByAsync(f =>
                         f.Notification != NotificationType.Undefinded &&
                         f.LastCheckedAt.HasValue);
 
-                    var oldGrouped = oldFiltersToCheck.GroupBy(f => f.Notification);
+                    var grouped = filtersToCheck.GroupBy(f => f.Notification);
 
-                    foreach (var group in oldGrouped)
+                    foreach (var group in grouped)
                     {
                         var oldFiltersToCheckGroup = group
                             .Where(f => 
@@ -64,26 +64,12 @@ namespace Ref.Coordinator.Core
 
                         if(oldFiltersToCheckGroup.AnyAndNotNull())
                         {
-                            _logger.LogTrace($"There are {oldFiltersToCheckGroup.Count()} old filters to check.");
+                            _logger.LogTrace($"There are {oldFiltersToCheckGroup.Count()} filters to check.");
 
                             await MatchOffers(oldFiltersToCheckGroup);
 
-                            _logger.LogTrace("Old checked");
+                            _logger.LogTrace("Filters checked");
                         }
-                    }
-
-                    var newFiltersToCheck = await _filterRepository
-                        .FindByAsync(f =>
-                            f.Notification != NotificationType.Undefinded &&
-                            !f.LastCheckedAt.HasValue);
-
-                    if (newFiltersToCheck.AnyAndNotNull())
-                    {
-                        _logger.LogTrace($"There are {newFiltersToCheck.Count()} new filters to check.");
-
-                        await MatchOffers(newFiltersToCheck);
-
-                        _logger.LogTrace("New checked");
                     }
 
                     successTries = _appProvider.SuccessTries();
