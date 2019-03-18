@@ -25,7 +25,15 @@ namespace Ref.Sites.Scrapper
 
         public ScrappResponse Scrapp(City city, DealType dealType)
         {
-            if (!city.IsGumtreeAvailable)
+            if (!city.IsGumtreeAvailableForSale && dealType == DealType.Sale)
+            {
+                return new ScrappResponse
+                {
+                    Offers = new List<Offer>()
+                };
+            }
+
+            if (!city.IsGumtreeAvailableForRent && dealType == DealType.Rent)
             {
                 return new ScrappResponse
                 {

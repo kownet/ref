@@ -10,5 +10,11 @@
 
         public bool IsGumtreeAvailable
             => !string.IsNullOrWhiteSpace(GtCodeSale) && !string.IsNullOrWhiteSpace(GtCodeRent);
+
+        public bool IsGumtreeAvailableForSale
+            => !string.IsNullOrWhiteSpace(GtCodeSale);
+
+        public bool IsGumtreeAvailableForRent
+            => !string.IsNullOrWhiteSpace(GtCodeRent);
     }
 }
