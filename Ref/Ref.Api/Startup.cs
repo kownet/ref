@@ -94,6 +94,8 @@ namespace Ref.Api
 
             app.UseAuthentication();
 
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
             app.UseMvc();
         }
     }

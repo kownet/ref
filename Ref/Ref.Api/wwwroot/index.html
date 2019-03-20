@@ -1,0 +1,136 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>PewneMieszkanie.pl</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha256-YLGeXaapI0/5IgZopewRJcFXomhRMlYYjugPLSyNjTY=" crossorigin="anonymous" />
+    <link type="text/css" href="/css/theme.css" rel="stylesheet">
+    <link type="text/css" href="/css/style.css" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <div class="collapse bg-dark" id="navbarHeader">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-8 col-md-7 py-4">
+                        <h4 class="text-white">Usługa</h4>
+                        <p class="text-muted">
+                            Śledzenie rynku wtórnego nieruchomości poprzez monitorowanie portali ogłoszeniowych dla parametrów zdefiniowanych przez klienta i informowanie klienta pocztą elektroniczną o nowych ogłoszeniach spełniających te kryteria.
+                        </p>
+                    </div>
+                    <div class="col-sm-4 offset-md-1 py-4">
+                        <h4 class="text-white">Kontakt</h4>
+                        <ul class="list-unstyled">
+                            <li><a href="https://www.facebook.com/PewneMieszkanie/" class="text-white">Polub nas na Facebook</a></li>
+                            <li><a href="#" class="text-white">Email</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="navbar navbar-dark bg-dark shadow-sm">
+            <div class="container d-flex justify-content-between">
+                <a href="https://pewnemieszkanie.pl" class="navbar-brand d-flex align-items-center">
+                    <strong>PewneMieszkanie.pl</strong>
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main role="main">
+
+        <div class="album py-5 bg-light">
+
+            <div class="container">
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card mb-6 shadow-sm text-white bg-primary">
+                            <div class="card-header">Twoje dane</div>
+                            <div class="card-body">
+                                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-sm btn-outline-dark">Zapisz</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card mb-6 shadow-sm text-white bg-secondary">
+                            <div class="card-header">Informacje systemowe</div>
+                            <div class="card-body">
+                                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-md-12">
+                        <div class="card mb-12 shadow-sm text-white bg-dark">
+                            <div class="card-header">Filtry</div>
+                            <div class="card-body">
+                                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary">Dodaj</button>
+                                    </div>
+                                    <small class="text-muted">Możesz utworzyć: 3 filtry</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <footer class="text-muted">
+        <div class="container">
+            <p class="float-right">
+                <a href="#">Do góry</a>
+            </p>
+            <p>PewneMieszkanie.pl &copy; <a href="https://kownet.info">kownet.info</a> - tworzenie oprogramowania.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha256-CjSoeELFOcH0/uxWu6mC/Vlrc1AARqbm/jiiImDGV3s=" crossorigin="anonymous"></script>
+
+    <script>
+        var APP = {};
+    </script>
+
+    <script type="text/javascript" src="/js/cities.js"></script>
+    <script type="text/javascript" src="/js/notificationtypes.js"></script>
+
+    <script type="text/javascript">
+
+        APP.cities.getAll({
+            url: '/cities'
+        });
+
+        APP.notificationtypes.getAll({
+            url: '/notificationtypes'
+        });
+
+    </script>
+
+</body>
+</html>
