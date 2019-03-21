@@ -23,6 +23,20 @@
                         $(opts.cntInputEmail).val(data.email);
                         $(opts.cntRegisteredAtInfo).text('Data rejestracji: ' + data.registeredAt);
                         $(opts.cntUserId).val(data.userId);
+
+                        APP.users.updateEmail({
+                            url: '/poc/email',
+                            userId: data.userId,
+                            cntInputEmail: '#input-email',
+                            btnSave: '#input-email-save'
+                        });
+
+                        APP.filters.getUserFilters({
+                            url: '/poc/filters',
+                            userId: data.userId,
+                            cntFiltersTable: '#filters-table'
+                        });
+
                     } else {
                         swal($.errorHeader, data.message, "error");
                     }
@@ -33,41 +47,9 @@
         }
     };
 
-    var updateEmail = function (opts) {
-
-        $(document).on('click', opts.btnSave, function () {
-
-            var email = $(opts.cntInputEmail).val();
-            var id = $(opts.cntUserId).val();
-
-            var params = JSON.stringify({ email: email, id: id });
-
-            $.ajax({
-                contentType: 'application/json',
-                type: 'POST',
-                url: opts.url,
-                data: params,
-                success: function (data) {
-
-                    if (data.succeed) {
-                        swal($.successHeader, "Adres email został zmieniony.", "success");
-                    } else {
-                        swal($.errorHeader, data.message, "error");
-                    }
-
-                }
-            });
-
-        });
-
-    };
-
     return {
         checkGuid: function (opts) {
             checkGuid(opts);
-        },
-        updateEmail: function (opts) {
-            updateEmail(opts);
         }
     };
 

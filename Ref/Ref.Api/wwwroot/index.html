@@ -76,7 +76,9 @@
                         <div class="card mb-6 shadow-sm text-white bg-secondary">
                             <div class="card-header">Informacje systemowe</div>
                             <div class="card-body">
-                                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                <p class="card-text">
+                                    Brak.
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -87,11 +89,25 @@
                         <div class="card mb-12 shadow-sm text-white bg-dark">
                             <div class="card-header">Filtry</div>
                             <div class="card-body">
-                                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                <table class="table table-bordered table-dark" id="filters-table">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th scope="col">Nazwa</th>
+                                            <th scope="col">Miasto</th>
+                                            <th scope="col">Metraż [m<sup>2</sup>]</th>
+                                            <th scope="col">Cena [zł]</th>
+                                            <th scope="col">Powiadomienia</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        
+                                    </tbody>
+                                </table>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <div class="btn-group">
+                                    
+                                    <!--<div class="btn-group">
                                         <button type="button" class="btn btn-sm btn-outline-secondary">Dodaj</button>
-                                    </div>
+                                    </div>-->
                                     <small class="text-muted">Możesz utworzyć: 3 filtry</small>
                                 </div>
                             </div>
@@ -124,8 +140,10 @@
 
     <script type="text/javascript" src="/js/utils.js"></script>
     <script type="text/javascript" src="/js/home.js"></script>
+    <script type="text/javascript" src="/js/users.js"></script>
     <script type="text/javascript" src="/js/cities.js"></script>
     <script type="text/javascript" src="/js/notificationtypes.js"></script>
+    <script type="text/javascript" src="/js/filters.js"></script>
 
     <script type="text/javascript">
 
@@ -135,13 +153,6 @@
             cntUserId: '#user-id',
             guid: $.urlParam('guid'),
             cntRegisteredAtInfo: '#registered-at-info',
-        });
-
-        APP.home.updateEmail({
-            url: '/poc/email',
-            cntInputEmail: '#input-email',
-            cntUserId: '#user-id',
-            btnSave: '#input-email-save'
         });
 
     </script>

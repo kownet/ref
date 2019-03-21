@@ -47,5 +47,16 @@ namespace Ref.Api.Controllers
 
             return Ok(result);
         }
+
+        [HttpPost("filters")]
+        public async Task<IActionResult> Filters(Filters.Query q)
+        {
+            var result = await Mediator.Send(q);
+
+            if (!result.Succeed)
+                _logger.LogError(result.Message);
+
+            return Ok(result);
+        }
     }
 }
