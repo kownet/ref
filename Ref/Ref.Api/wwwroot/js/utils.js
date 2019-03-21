@@ -6,3 +6,5 @@
 };
 
 $.homeUrl = "https://pewnemieszkanie.pl";
+$.successHeader = "Zrobione!";
+$.errorHeader = "Błąd!";

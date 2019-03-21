@@ -18,6 +18,7 @@ namespace Ref.Services.Features.Queries.Poc
 
         public class Result : BaseResult
         {
+            public int UserId { get; set; }
             public string Email { get; set; }
             public string RegisteredAt { get; set; }
         }
@@ -36,13 +37,20 @@ namespace Ref.Services.Features.Queries.Poc
                 if (string.IsNullOrWhiteSpace(request.Guid))
                     return new Result { Message = "Please provide GUID to verify your identity." };
 
-                var user = (await _userRepository.FindByAsync(u => u.Guid == request.Guid.ToUpperInvariant())).FirstOrDefault();
-
-                if (user is null)
-                    return new Result { Message = "No such user." };
-                else
+                try
                 {
-                    return new Result { Email = user.Email, RegisteredAt = user.RegisteredAt.Format() };
+                    var user = (await _userRepository.FindByAsync(u => u.Guid == request.Guid.ToUpperInvariant())).FirstOrDefault();
+
+                    if (user is null)
+                        return new Result { Message = "No such user." };
+                    else
+                    {
+                        return new Result { UserId = user.Id, Email = user.Email, RegisteredAt = user.RegisteredAt.Format() };
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return new Result { Message = ex.Message };
                 }
             }
         }

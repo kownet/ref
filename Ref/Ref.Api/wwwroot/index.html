@@ -57,16 +57,17 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="card mb-6 shadow-sm text-white bg-primary">
-                            <div class="card-header">Twoje dane</div>
+                            <div class="card-header">Adres do powiadomień</div>
                             <div class="card-body">
                                 <p class="card-text">
+                                    <input type="hidden" id="user-id" name="user-id" value="">
                                     <input type="email" id="input-email" class="form-control" placeholder="Email adres" required="">
                                 </p>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="btn-group">
                                         <button type="button" id="input-email-save" class="btn btn-sm btn-outline-dark">Zapisz</button>
                                     </div>
-                                    <small id="registered-at-info">Możesz utworzyć: 3 filtry</small>
+                                    <small id="registered-at-info"></small>
                                 </div>
                             </div>
                         </div>
@@ -115,6 +116,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha256-CjSoeELFOcH0/uxWu6mC/Vlrc1AARqbm/jiiImDGV3s=" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <script>
         var APP = {};
@@ -129,17 +131,17 @@
 
         APP.home.checkGuid({
             url: '/poc/verify',
+            cntInputEmail: '#input-email',
+            cntUserId: '#user-id',
             guid: $.urlParam('guid'),
-            inputEmail: '#input-email',
-            registeredAtInfo: '#registered-at-info'
+            cntRegisteredAtInfo: '#registered-at-info',
         });
 
-        APP.cities.getAll({
-            url: '/cities'
-        });
-
-        APP.notificationtypes.getAll({
-            url: '/notificationtypes'
+        APP.home.updateEmail({
+            url: '/poc/email',
+            cntInputEmail: '#input-email',
+            cntUserId: '#user-id',
+            btnSave: '#input-email-save'
         });
 
     </script>
