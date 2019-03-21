@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Ref.Api.Helpers;
-using Ref.Services.Features.Commands.Filters;
 using Ref.Services.Features.Commands.Poc;
 using Ref.Services.Features.Queries.Poc;
 using System.Threading.Tasks;

@@ -100,15 +100,15 @@
                                             <th scope="col">Inne</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="filters-table">
-                                        
-                                    </tbody>
+                                    <tbody id="filters-table"></tbody>
                                 </table>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    
-                                    <!--<div class="btn-group">
-                                        <button type="button" class="btn btn-sm btn-outline-secondary">Dodaj</button>
-                                    </div>-->
+
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#filter-add">
+                                            Dodaj
+                                        </button>
+                                    </div>
                                     <small class="text-muted">Możesz utworzyć: 3 filtry</small>
                                 </div>
                             </div>
@@ -130,6 +130,66 @@
             <p>PewneMieszkanie.pl &copy; <a href="https://kownet.info">kownet.info</a> - tworzenie oprogramowania.</p>
         </div>
     </footer>
+
+    <!-- Modal -->
+    <div class="modal fade" id="filter-add" tabindex="-1" role="dialog" aria-labelledby="filter-add-label" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="filter-add-label">Dodaj filtr</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="filter-name">Nazwa</label>
+                            <input type="text" class="form-control" id="filter-name" aria-describedby="name-help" placeholder="Nazwa">
+                        </div>
+                        <div class="form-group">
+                            <label for="filter-name">Miasto</label>
+                            <select class="custom-select custom-select-sm" id="filter-city">
+                                <option selected>Wybierz</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="filter-area">Metraż</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="number" class="form-control" id="filter-area-from" placeholder="od" min="0" max="1000" step="1">
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="number" class="form-control" id="filter-area-to" placeholder="do" min="0" max="1000" step="1">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="filter-area">Cena</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="number" class="form-control" id="filter-price-from" placeholder="od" min="0" max="100000000" step="5">
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="number" class="form-control" id="filter-price-to" placeholder="do" min="0" max="100000000" step="5">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="filter-name">Powiadomienia</label>
+                            <select class="custom-select custom-select-sm" id="filter-notification">
+                                <option selected>Wybierz</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Anuluj</button>
+                    <button type="button" class="btn btn-primary">Zapisz</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha256-CjSoeELFOcH0/uxWu6mC/Vlrc1AARqbm/jiiImDGV3s=" crossorigin="anonymous"></script>
@@ -155,6 +215,16 @@
             guid: $.urlParam('guid'),
             cntRegisteredAtInfo: '#registered-at-info',
         });
+
+        APP.cities.getAll({
+            url: '/cities',
+            cnt: '#filter-city'
+        });
+
+        APP.notificationtypes.getAll({
+            url: '/notificationtypes',
+            cnt: '#filter-notification'
+        })
 
     </script>
 
