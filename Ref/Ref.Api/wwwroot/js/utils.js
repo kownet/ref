@@ -8,3 +8,4 @@
 $.homeUrl = "https://pewnemieszkanie.pl";
 $.successHeader = "Zrobione!";
 $.errorHeader = "Błąd!";
+$.confirmHeader = "Czy na pewno?";

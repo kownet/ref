@@ -31,6 +31,7 @@ namespace Ref.Services.Features.Queries.Poc
         public class FilterPoc
         {
             public int Id { get; set; }
+            public int UserId { get; set; }
             public string Name { get; set; }
             public string City { get; set; }
             public int FlatAreaFrom { get; set; }
@@ -39,6 +40,8 @@ namespace Ref.Services.Features.Queries.Poc
             public int PriceTo { get; set; }
             public NotificationType Notification { get; set; }
             public string NotificationFormatted => Notification.GetDescription();
+            public DateTime? LastCheckedAt { get; set; }
+            public string LastCheckedAtFormatted => LastCheckedAt.Format("niesprawdzany");
         }
 
         public class Handler : IRequestHandler<Query, Result>
@@ -56,7 +59,7 @@ namespace Ref.Services.Features.Queries.Poc
                 {
                     using (var c = _dbAccess.Connection)
                     {
-                        var entities = await c.QueryAsync<FilterPoc>(@"SELECT F.Id, F.Name, C.Name as City, F.FlatAreaFrom, F.FlatAreaTo, F.PriceFrom, F.PriceTo, F.Notification
+                        var entities = await c.QueryAsync<FilterPoc>(@"SELECT F.Id, F.UserId, F.Name, C.Name as City, F.FlatAreaFrom, F.FlatAreaTo, F.PriceFrom, F.PriceTo, F.Notification, F.LastCheckedAt 
                                         FROM Filters F
                                         INNER JOIN Cities C on F.CityId = C.Id
                                         WHERE F.UserId = @UserId", new { request.UserId });

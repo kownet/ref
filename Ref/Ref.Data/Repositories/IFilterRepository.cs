@@ -15,6 +15,7 @@ namespace Ref.Data.Repositories
         Task<IQueryable<Filter>> FindByAsync(Expression<Func<Filter, bool>> predicate);
         Task<int> CreateAsync(Filter filter);
         Task<int> DeleteAsync(int filterId, int userId);
+        Task<int> DeleteAsync(int filterId);
         Task<int> UpdateAsync(Filter filter);
         Task<Filter> GetAsync(int filterId, int userId);
     }
@@ -123,6 +124,19 @@ namespace Ref.Data.Repositories
                     {
                         Id = filterId,
                         UserId = userId
+                    });
+            }
+        }
+
+        public async Task<int> DeleteAsync(int filterId)
+        {
+            using (var c = _dbAccess.Connection)
+            {
+                return await c.ExecuteAsync(
+                    @"DELETE FROM Filters WHERE Id = @Id",
+                    new
+                    {
+                        Id = filterId
                     });
             }
         }
