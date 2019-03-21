@@ -59,11 +59,14 @@
                         <div class="card mb-6 shadow-sm text-white bg-primary">
                             <div class="card-header">Twoje dane</div>
                             <div class="card-body">
-                                <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                                <p class="card-text">
+                                    <input type="email" id="input-email" class="form-control" placeholder="Email adres" required="">
+                                </p>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="btn-group">
-                                        <button type="button" class="btn btn-sm btn-outline-dark">Zapisz</button>
+                                        <button type="button" id="input-email-save" class="btn btn-sm btn-outline-dark">Zapisz</button>
                                     </div>
+                                    <small id="registered-at-info">Możesz utworzyć: 3 filtry</small>
                                 </div>
                             </div>
                         </div>
@@ -117,10 +120,19 @@
         var APP = {};
     </script>
 
+    <script type="text/javascript" src="/js/utils.js"></script>
+    <script type="text/javascript" src="/js/home.js"></script>
     <script type="text/javascript" src="/js/cities.js"></script>
     <script type="text/javascript" src="/js/notificationtypes.js"></script>
 
     <script type="text/javascript">
+
+        APP.home.checkGuid({
+            url: '/poc/verify',
+            guid: $.urlParam('guid'),
+            inputEmail: '#input-email',
+            registeredAtInfo: '#registered-at-info'
+        });
 
         APP.cities.getAll({
             url: '/cities'

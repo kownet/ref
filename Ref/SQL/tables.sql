@@ -5,7 +5,8 @@ CREATE TABLE Users(
 	[PasswordSalt] binary(128) NOT NULL,
 	[Role] nvarchar(32) NOT NULL,
 	[Subscription] int NOT NULL DEFAULT(100),
-	[RegisteredAt] datetime NOT NULL
+	[RegisteredAt] datetime NOT NULL,
+	[Guid] varchar(255) NOT NULL
 )
 
 CREATE TABLE Cities(

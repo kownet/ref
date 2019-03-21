@@ -4,7 +4,7 @@
 
         $.get(opts.url)
             .done(function (data) {
-                console.log(data);
+                
             });
 
     };
