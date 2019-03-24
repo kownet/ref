@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Ref.Api.Helpers;
+using Ref.Services.Features.Commands.Filters;
 using Ref.Services.Features.Commands.Poc;
 using Ref.Services.Features.Queries.Poc;
 using System.Threading.Tasks;
@@ -64,6 +65,17 @@ namespace Ref.Api.Controllers
         {
             var cmd = new DeleteFilter.Cmd(id);
 
+            var result = await Mediator.Send(cmd);
+
+            if (!result.Succeed)
+                _logger.LogError(result.Message);
+
+            return Ok(result);
+        }
+
+        [HttpPost("addfilter")]
+        public async Task<IActionResult> AddFilter(Create.Cmd cmd)
+        {
             var result = await Mediator.Send(cmd);
 
             if (!result.Succeed)

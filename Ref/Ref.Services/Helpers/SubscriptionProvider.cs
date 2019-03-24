@@ -9,11 +9,11 @@ namespace Ref.Services.Helpers
             switch (subscriptionType)
             {
                 case SubscriptionType.Normal:
-                    return 5;
+                    return 4;
                 case SubscriptionType.Premium:
-                    return 20;
+                    return 19;
                 case SubscriptionType.Special:
-                    return 100;
+                    return 99;
                 case SubscriptionType.Undefinded:
                     return 0;
                 default: return 0;

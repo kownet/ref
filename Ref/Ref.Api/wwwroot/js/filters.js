@@ -58,34 +58,120 @@
                 buttons: true,
                 dangerMode: true
             }).then((willDelete) => {
-                    if (willDelete) {
+                if (willDelete) {
 
-                        $.ajax({
-                            type: 'DELETE',
-                            url: opts.url + '/' + filterId,
-                            success: function (data) {
+                    $.ajax({
+                        type: 'DELETE',
+                        url: opts.url + '/' + filterId,
+                        success: function (data) {
 
-                                if (data.succeed) {
+                            if (data.succeed) {
 
-                                    swal($.successHeader, {
-                                        icon: "success"
-                                    });
+                                swal($.successHeader, {
+                                    icon: "success"
+                                });
 
-                                    APP.filters.getUserFilters({
-                                        url: '/poc/filters',
-                                        userId: userId,
-                                        cntFiltersTable: '#filters-table'
-                                    });
+                                APP.filters.getUserFilters({
+                                    url: '/poc/filters',
+                                    userId: userId,
+                                    cntFiltersTable: '#filters-table'
+                                });
 
-                                } else {
-                                    swal($.errorHeader, data.message, "error");
-                                }
-
+                            } else {
+                                swal($.errorHeader, data.message, "error");
                             }
+
+                        }
+                    });
+
+                }
+            });
+
+        });
+
+    };
+
+    var addFilter = function (opts) {
+
+        function closeModal() {
+
+            $(opts.cntModal).modal('hide');
+            //hide the modal
+
+            $('body').removeClass('modal-open');
+            //modal-open class is added on body so it has to be removed
+
+            $('.modal-backdrop').remove();
+            //need to remove div with modal-backdrop class
+
+        }
+
+        $(document).on('change keyup', '.required', function (e) {
+            let disabled = true;
+            $(".required").each(function () {
+                let value = this.value;
+                if ((value) && (value.trim() !== '')) {
+                    disabled = false;
+                } else {
+                    disabled = true;
+                    return false;
+                }
+            });
+
+            if (disabled) {
+                $('.toggle-disabled').prop("disabled", true);
+            } else {
+                $('.toggle-disabled').prop("disabled", false);
+            }
+        });
+
+        $(document).on('click', opts.btn, function () {
+
+            var userId = $(opts.cntUserId).val();
+
+            var params = JSON.stringify({
+                userId: userId,
+                cityId: $(opts.cntCity).val(),
+                flatAreaFrom: $(opts.cntPriceFrom).val(),
+                flatAreaTo: $(opts.cntPriceTo).val(),
+                priceFrom: $(opts.cntPriceFrom).val(),
+                priceTo: $(opts.cntPriceTo).val(),
+                notification: $(opts.cntNtf).val(),
+                name: $(opts.cntName).val()
+            });
+
+            $.ajax({
+                contentType: 'application/json',
+                type: 'POST',
+                url: opts.url,
+                data: params,
+                success: function (data) {
+                    console.log(data);
+                    if (data.succeed) {
+
+                        swal($.successHeader, {
+                            icon: "success"
                         });
 
+                        $(opts.cntForm).trigger("reset");
+
+                        closeModal();
+
+                        APP.filters.getUserFilters({
+                            url: '/poc/filters',
+                            userId: userId,
+                            cntFiltersTable: '#filters-table'
+                        });
+
+                    } else {
+
+                        closeModal();
+
+                        swal($.errorHeader, data.message, "error");
                     }
-                });
+
+                }
+            });
 
         });
 
@@ -97,6 +183,9 @@
         },
         deleteFilter: function (opts) {
             deleteFilter(opts);
+        },
+        addFilter: function (opts) {
+            addFilter(opts);
         }
     };
 

@@ -109,7 +109,7 @@
                                             Dodaj
                                         </button>
                                     </div>
-                                    <small class="text-muted">Możesz utworzyć: 3 filtry</small>
+                                    <small class="text-muted">Możesz utworzyć: 5 filtrów</small>
                                 </div>
                             </div>
                         </div>
@@ -142,25 +142,25 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form>
+                    <form id="filter-add-form">
                         <div class="form-group">
                             <label for="filter-name">Nazwa</label>
-                            <input type="text" class="form-control" id="filter-name" aria-describedby="name-help" placeholder="Nazwa">
+                            <input type="text" class="form-control required" id="filter-name" aria-describedby="name-help" placeholder="Nazwa" required="">
                         </div>
                         <div class="form-group">
                             <label for="filter-name">Miasto</label>
-                            <select class="custom-select custom-select-sm" id="filter-city">
-                                <option selected>Wybierz</option>
+                            <select class="custom-select custom-select-sm required" id="filter-city">
+                                <option value="" selected disabled>Wybierz</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label for="filter-area">Metraż</label>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <input type="number" class="form-control" id="filter-area-from" placeholder="od" min="0" max="1000" step="1">
+                                    <input type="number" class="form-control required" id="filter-area-from" placeholder="od" min="0" max="1000" step="1" value="0" required="" oninput="this.value = Math.abs(this.value)">
                                 </div>
                                 <div class="col-md-6">
-                                    <input type="number" class="form-control" id="filter-area-to" placeholder="do" min="0" max="1000" step="1">
+                                    <input type="number" class="form-control required" id="filter-area-to" placeholder="do" min="0" max="1000" step="1" required="" oninput="this.value = Math.abs(this.value)">
                                 </div>
                             </div>
                         </div>
@@ -168,24 +168,24 @@
                             <label for="filter-area">Cena</label>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <input type="number" class="form-control" id="filter-price-from" placeholder="od" min="0" max="100000000" step="5">
+                                    <input type="number" class="form-control required" id="filter-price-from" placeholder="od" min="0" max="100000000" step="5" value="0" required="" oninput="this.value = Math.abs(this.value)">
                                 </div>
                                 <div class="col-md-6">
-                                    <input type="number" class="form-control" id="filter-price-to" placeholder="do" min="0" max="100000000" step="5">
+                                    <input type="number" class="form-control required" id="filter-price-to" placeholder="do" min="0" max="100000000" step="5" required="" oninput="this.value = Math.abs(this.value)">
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="filter-name">Powiadomienia</label>
-                            <select class="custom-select custom-select-sm" id="filter-notification">
-                                <option selected>Wybierz</option>
+                            <select class="custom-select custom-select-sm required" id="filter-notification">
+                                <option value="" selected disabled>Wybierz</option>
                             </select>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Anuluj</button>
-                    <button type="button" class="btn btn-primary">Zapisz</button>
+                    <button type="button" class="btn btn-primary toggle-disabled" id="filter-add-btn" disabled>Zapisz</button>
                 </div>
             </div>
         </div>
@@ -224,7 +224,22 @@
         APP.notificationtypes.getAll({
             url: '/notificationtypes',
             cnt: '#filter-notification'
-        })
+        });
+
+        APP.filters.addFilter({
+            url: '/poc/addfilter',
+            btn: '#filter-add-btn',
+            cntUserId: '#user-id',
+            cntName: '#filter-name',
+            cntCity: '#filter-city',
+            cntAreaFrom: '#filter-area-from',
+            cntAreaTo: '#filter-area-to',
+            cntPriceFrom: '#filter-price-from',
+            cntPriceTo: '#filter-price-to',
+            cntNtf: '#filter-notification',
+            cntModal: '#filter-add',
+            cntForm: '#filter-add-form'
+        });
 
     </script>
 

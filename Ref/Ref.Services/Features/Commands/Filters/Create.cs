@@ -88,7 +88,7 @@ namespace Ref.Services.Features.Commands.Filters
                 {
                     return new Result
                     {
-                        Message = $"Maximum number of filters - {maximumForCurrentSubscription} has been exceeded."
+                        Message = $"Maximum number of filters - {maximumForCurrentSubscription + 1} has been exceeded."
                     };
                 }
             }
