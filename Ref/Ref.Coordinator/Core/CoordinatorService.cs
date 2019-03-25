@@ -22,6 +22,7 @@ namespace Ref.Coordinator.Core
         private readonly IFilterRepository _filterRepository;
         private readonly IOfferRepository _offerRepository;
         private readonly IOfferFilterRepository _offerFilterRepository;
+        private readonly IUserRepository _userRepository;
 
         private readonly IPushOverNotification _pushOverNotification;
 
@@ -31,6 +32,7 @@ namespace Ref.Coordinator.Core
             IFilterRepository filterRepository,
             IOfferRepository offerRepository,
             IOfferFilterRepository offerFilterRepository,
+            IUserRepository userRepository,
             IPushOverNotification pushOverNotification)
         {
             _logger = logger;
@@ -38,6 +40,7 @@ namespace Ref.Coordinator.Core
             _filterRepository = filterRepository;
             _offerRepository = offerRepository;
             _offerFilterRepository = offerFilterRepository;
+            _userRepository = userRepository;
             _pushOverNotification = pushOverNotification;
         }
 
@@ -119,12 +122,16 @@ namespace Ref.Coordinator.Core
         {
             foreach (var filter in filters)
             {
+                var userRegisterDate = (await _userRepository.FindByAsync(u => u.Id == filter.UserId))
+                    .FirstOrDefault().RegisteredAt;
+
                 var matchCriteriaOffers = await _offerRepository
                     .FindByAsync(o =>
                         o.CityId == filter.CityId &&
                         o.Deal == filter.Deal &&
                         o.Price >= filter.PriceFrom &&
-                        o.Price <= filter.PriceTo);
+                        o.Price <= filter.PriceTo &&
+                        o.DateAdded >= userRegisterDate);
 
                 if (matchCriteriaOffers.AnyAndNotNull())
                 {

@@ -47,6 +47,7 @@ namespace Ref.Coordinator.DI
             #endregion
 
             #region Repositories
+            services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<IFilterRepository, FilterRepository>();
             services.AddTransient<IOfferRepository, OfferRepository>();
             services.AddTransient<IOfferFilterRepository, OfferFilterRepository>();
