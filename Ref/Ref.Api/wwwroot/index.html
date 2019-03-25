@@ -75,10 +75,7 @@
                     <div class="col-md-6">
                         <div class="card mb-6 shadow-sm text-white bg-secondary">
                             <div class="card-header">Informacje systemowe</div>
-                            <div class="card-body">
-                                <p class="card-text">
-                                    Brak.
-                                </p>
+                            <div class="card-body" id="admin-info"> 
                             </div>
                         </div>
                     </div>
@@ -205,6 +202,7 @@
     <script type="text/javascript" src="/js/cities.js"></script>
     <script type="text/javascript" src="/js/notificationtypes.js"></script>
     <script type="text/javascript" src="/js/filters.js"></script>
+    <script type="text/javascript" src="/js/admininfos.js"></script>
 
     <script type="text/javascript">
 
@@ -239,6 +237,11 @@
             cntNtf: '#filter-notification',
             cntModal: '#filter-add',
             cntForm: '#filter-add-form'
+        });
+
+        APP.admininfos.getAll({
+            url: '/admininfos',
+            cnt: '#admin-info'
         });
 
     </script>

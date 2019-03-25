@@ -53,3 +53,10 @@ CREATE TABLE OfferFilters(
 	[FilterId] [int] REFERENCES Filters(Id),
 	[Sent] [bit] NOT NULL
 )
+
+CREATE TABLE AdminInfos(
+	[Id] [int] PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	[Text] nvarchar(256) NOT NULL,
+	[DateAdded] datetime NOT NULL,
+	[IsActive] [bit] NOT NULL
+)
