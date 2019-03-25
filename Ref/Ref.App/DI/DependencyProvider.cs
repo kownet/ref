@@ -173,7 +173,8 @@ namespace Ref.App.DI
                 appId,
                 configurationRoot["app:sites"],
                 configurationRoot["app:deals"],
-                configurationRoot["app:timeout"])
+                configurationRoot["app:timeout"],
+                configurationRoot["app:pages"])
             );
             #endregion
 

@@ -164,8 +164,9 @@ namespace Ref.Sites.Scrapper
         {
             var result = new List<Offer>();
 
-            if (pages > 10) // to much old offers
-                pages = 10;
+            /// order by desc, no need to grab all sites
+            if (pages > AppProvider.Pages())
+                pages = AppProvider.Pages();
 
             for (int i = 1; i <= pages; i++)
             {

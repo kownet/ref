@@ -54,8 +54,8 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 return await c.ExecuteAsync(
-                    @"INSERT INTO Filters (UserId, Property, Deal, Market, FlatAreaFrom, FlatAreaTo, PriceFrom, PriceTo, CityId, Name, Notification)
-                        VALUES(@UserId, @Property, @Deal, @Market, @FlatAreaFrom, @FlatAreaTo, @PriceFrom, @PriceTo, @CityId, @Name, @Notification);
+                    @"INSERT INTO Filters (UserId, Property, Deal, Market, FlatAreaFrom, FlatAreaTo, PriceFrom, PriceTo, CityId, Name, Notification, LastCheckedAt)
+                        VALUES(@UserId, @Property, @Deal, @Market, @FlatAreaFrom, @FlatAreaTo, @PriceFrom, @PriceTo, @CityId, @Name, @Notification, @LastCheckedAt);
                     SELECT CAST(SCOPE_IDENTITY() as int)",
                     new
                     {
@@ -69,7 +69,8 @@ namespace Ref.Data.Repositories
                         filter.PriceTo,
                         filter.CityId,
                         filter.Name,
-                        filter.Notification
+                        filter.Notification,
+                        filter.LastCheckedAt
                     });
             }
         }

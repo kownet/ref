@@ -8,6 +8,7 @@ namespace Ref.Shared.Providers
         IEnumerable<int> Sites();
         IEnumerable<int> Deals();
         int Timeout();
+        int Pages();
     }
 
     public class AppProvider : AppBaseProvider, IAppProvider
@@ -15,6 +16,7 @@ namespace Ref.Shared.Providers
         private readonly string _sites;
         private readonly string _deals;
         private readonly string _timeout;
+        private readonly string _pages;
 
         public AppProvider(
             string address,
@@ -26,16 +28,19 @@ namespace Ref.Shared.Providers
             string appId,
             string sites,
             string deals,
-            string timeout)
+            string timeout,
+            string pages)
             : base(address, sender, replyto, pausetime, adminnotification, successTries, appId)
         {
             _sites = sites;
             _deals = deals;
             _timeout = timeout;
+            _pages = pages;
         }
 
         public IEnumerable<int> Sites() => _sites.Split(",").Select(int.Parse).ToList();
         public IEnumerable<int> Deals() => _deals.Split(",").Select(int.Parse).ToList();
         public int Timeout() => int.Parse(_timeout);
+        public int Pages() => int.Parse(_pages);
     }
 }

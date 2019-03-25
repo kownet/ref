@@ -176,6 +176,10 @@ namespace Ref.Sites.Scrapper
         {
             var result = new List<Offer>();
 
+            /// order by desc, no need to grab all sites
+            if (pages > AppProvider.Pages())
+                pages = AppProvider.Pages();
+
             for (int i = 1; i <= pages; i++)
             {
                 var scrap = ScrapThis($"{searchQuery}{i}od", "iso-8859-2");

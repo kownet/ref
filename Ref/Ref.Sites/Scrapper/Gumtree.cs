@@ -171,6 +171,10 @@ namespace Ref.Sites.Scrapper
         {
             var result = new List<Offer>();
 
+            /// order by desc, no need to grab all sites
+            if (pages > AppProvider.Pages())
+                pages = AppProvider.Pages();
+
             for (int i = 1; i <= pages; i++)
             {
                 var sq = searchQuery.Replace($"{code}1", $"page-{i}/{code}{i}");
