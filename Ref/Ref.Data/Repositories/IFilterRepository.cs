@@ -3,6 +3,7 @@ using Ref.Data.Db;
 using Ref.Data.Models;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -79,13 +80,27 @@ namespace Ref.Data.Repositories
         {
             using (var c = _dbAccess.Connection)
             {
-                return await c.ExecuteAsync(
-                    @"DELETE FROM Filters WHERE Id = @Id AND UserId = @UserId",
-                    new
-                    {
-                        Id = filterId,
-                        UserId = userId
-                    });
+                using (var trans = c.BeginTransaction(IsolationLevel.ReadCommitted))
+                {
+                    await c.ExecuteAsync(
+                        @"DELETE FROM OfferFilters WHERE FilterId = @Id",
+                        new
+                        {
+                            Id = filterId
+                        }, trans);
+
+                    await c.ExecuteAsync(
+                        @"DELETE FROM Filters WHERE Id = @Id AND UserId = @UserId",
+                        new
+                        {
+                            Id = filterId,
+                            UserId = userId
+                        }, trans);
+
+                    trans.Commit();
+
+                    return 0;
+                }
             }
         }
 
@@ -133,12 +148,26 @@ namespace Ref.Data.Repositories
         {
             using (var c = _dbAccess.Connection)
             {
-                return await c.ExecuteAsync(
-                    @"DELETE FROM Filters WHERE Id = @Id",
-                    new
-                    {
-                        Id = filterId
-                    });
+                using (var trans = c.BeginTransaction(IsolationLevel.ReadCommitted))
+                {
+                    await c.ExecuteAsync(
+                        @"DELETE FROM OfferFilters WHERE FilterId = @Id",
+                        new
+                        {
+                            Id = filterId
+                        }, trans);
+
+                    await c.ExecuteAsync(
+                        @"DELETE FROM Filters WHERE Id = @Id",
+                        new
+                        {
+                            Id = filterId
+                        }, trans);
+
+                    trans.Commit();
+
+                    return 0;
+                }
             }
         }
     }

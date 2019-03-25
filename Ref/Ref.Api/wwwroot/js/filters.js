@@ -24,8 +24,8 @@
                             "<td>" + item.notificationFormatted + "</td>" +
                             "<td>" +
                             "<div class=\"btn-group btn-group-sm\">" +
-                            "<button type=\"button\" id=\"btn-filter-del\" class=\"btn btn-sm btn-danger\" data-id=" + item.id + " data-user-id=" + item.userId + "> Usuń</button>" +
-                            "<button type=\"button\" id=\"btn-filter-edit\" class=\"btn btn-sm btn-warning\" data-id=" + item.id + " data-user-id=" + item.userId + "> Edytuj</button>" +
+                            "<button type=\"button\" class=\"btn btn-sm btn-danger btn-filter-del\" data-id=" + item.id + " data-user-id=" + item.userId + "> Usuń</button>" +
+                            "<button type=\"button\" class=\"btn btn-sm btn-warning btn-filter-edit\" data-id=" + item.id + " data-user-id=" + item.userId + " data-toggle=\"modal\" data-target=\"#filter-edit\"> Edytuj</button>" +
                             "</div >" + "</td>" +
                             "</tr>";
                         $(opts.cntFiltersTable).append(rows);
@@ -33,7 +33,7 @@
 
                     APP.filters.deleteFilter({
                         url: '/poc/deletefilter',
-                        btnDelete: '#btn-filter-del'
+                        btnDelete: '.btn-filter-del'
                     });
 
                 } else {
@@ -50,7 +50,7 @@
 
             var filterId = $(this).data("id");
             var userId = $(this).data("user-id");
-            console.log(userId);
+
             swal({
                 title: $.confirmHeader,
                 text: "Usuniętego filtra nie będzie można odzyskać!",
@@ -93,36 +93,9 @@
 
     var addFilter = function (opts) {
 
-        function closeModal() {
-
-            $(opts.cntModal).modal('hide');
-            //hide the modal
-
-            $('body').removeClass('modal-open');
-            //modal-open class is added on body so it has to be removed
-
-            $('.modal-backdrop').remove();
-            //need to remove div with modal-backdrop class
-
-        }
-
-        $(document).on('change keyup', '.required', function (e) {
-            let disabled = true;
-            $(".required").each(function () {
-                let value = this.value;
-                if ((value) && (value.trim() !== '')) {
-                    disabled = false;
-                } else {
-                    disabled = true;
-                    return false;
-                }
-            });
-
-            if (disabled) {
-                $('.toggle-disabled').prop("disabled", true);
-            } else {
-                $('.toggle-disabled').prop("disabled", false);
-            }
+        APP.filters.validateRequired({
+            requiredClass: '.required',
+            disabledClass: '.toggle-disabled'
         });
 
         $(document).on('click', opts.btn, function () {
@@ -132,8 +105,8 @@
             var params = JSON.stringify({
                 userId: userId,
                 cityId: $(opts.cntCity).val(),
-                flatAreaFrom: $(opts.cntPriceFrom).val(),
-                flatAreaTo: $(opts.cntPriceTo).val(),
+                flatAreaFrom: $(opts.cntAreaFrom).val(),
+                flatAreaTo: $(opts.cntAreaTo).val(),
                 priceFrom: $(opts.cntPriceFrom).val(),
                 priceTo: $(opts.cntPriceTo).val(),
                 notification: $(opts.cntNtf).val(),
@@ -146,7 +119,7 @@
                 url: opts.url,
                 data: params,
                 success: function (data) {
-                    console.log(data);
+
                     if (data.succeed) {
 
                         swal($.successHeader, {
@@ -155,7 +128,9 @@
 
                         $(opts.cntForm).trigger("reset");
 
-                        closeModal();
+                        APP.filters.closeModal({
+                            cntModal: opts.cntModal
+                        });
 
                         APP.filters.getUserFilters({
                             url: '/poc/filters',
@@ -165,7 +140,9 @@
 
                     } else {
 
-                        closeModal();
+                        APP.filters.closeModal({
+                            cntModal: opts.cntModal
+                        });
 
                         swal($.errorHeader, data.message, "error");
                     }
@@ -173,6 +150,133 @@
                 }
             });
 
+        });
+
+    };
+
+    var editFilter = function (opts) {
+
+        APP.filters.validateRequired({
+            requiredClass: '.required-edit',
+            disabledClass: '.toggle-disabled-edit'
+        });
+
+        $(document).on('click', opts.btn, function () {
+
+            var filterId = $(this).data("id");
+            var userId = $(this).data("user-id");
+
+            $.get(opts.url + '/' + filterId)
+                .done(function (data) {
+
+                    if (data.succeed) {
+
+                        $(opts.cntName).val(data.filter.name);
+                        $(opts.cntCity).val(data.filter.cityId);
+                        $(opts.cntPriceFrom).val(data.filter.priceFrom);
+                        $(opts.cntPriceTo).val(data.filter.priceTo);
+                        $(opts.cntAreaFrom).val(data.filter.flatAreaFrom);
+                        $(opts.cntAreaTo).val(data.filter.flatAreaTo);
+                        $(opts.cntNtf).val(data.filter.notification);
+
+                        $(document).on('click', opts.btnSave, function () {
+
+                            var params = JSON.stringify({
+                                id: filterId,
+                                userId: userId,
+                                cityId: $(opts.cntCity).val(),
+                                flatAreaFrom: $(opts.cntAreaFrom).val(),
+                                flatAreaTo: $(opts.cntAreaTo).val(),
+                                priceFrom: $(opts.cntPriceFrom).val(),
+                                priceTo: $(opts.cntPriceTo).val(),
+                                notification: $(opts.cntNtf).val(),
+                                name: $(opts.cntName).val()
+                            });
+
+                            $.ajax({
+                                contentType: 'application/json',
+                                type: 'PUT',
+                                url: opts.urlSave,
+                                data: params,
+                                success: function (data) {
+
+                                    if (data.succeed) {
+
+                                        swal($.successHeader, {
+                                            icon: "success"
+                                        });
+
+                                        $(opts.cntForm).trigger("reset");
+
+                                        APP.filters.closeModal({
+                                            cntModal: opts.cntModal
+                                        });
+
+                                        APP.filters.getUserFilters({
+                                            url: '/poc/filters',
+                                            userId: userId,
+                                            cntFiltersTable: '#filters-table'
+                                        });
+
+                                    } else {
+
+                                        APP.filters.closeModal({
+                                            cntModal: opts.cntModal
+                                        });
+
+                                        swal($.errorHeader, data.message, "error");
+                                    }
+
+                                }
+                            });
+
+                        });
+
+                    } else {
+                        swal($.errorHeader, data.message, "error");
+                    }
+
+                });
+
+        });
+
+    };
+
+    var closeModal = function (opts) {
+
+        $(opts.cntModal).modal('hide');
+        //hide the modal
+
+        $('body').removeClass('modal-open');
+        //modal-open class is added on body so it has to be removed
+
+        $('.modal-backdrop').remove();
+        //need to remove div with modal-backdrop class
+    };
+
+    var validateRequired = function (opts) {
+
+        $(document).on('change keyup', opts.requiredClass, function (e) {
+
+            let disabled = true;
+
+            $(opts.requiredClass).each(function () {
+
+                let value = this.value;
+
+                if ((value) && (value.trim() !== '')) {
+                    disabled = false;
+                } else {
+                    disabled = true;
+                    return false;
+                }
+            });
+
+            if (disabled) {
+                $(opts.disabledClass).prop("disabled", true);
+            } else {
+                $(opts.disabledClass).prop("disabled", false);
+            }
         });
 
     };
@@ -186,6 +290,15 @@
         },
         addFilter: function (opts) {
             addFilter(opts);
+        },
+        editFilter: function (opts) {
+            editFilter(opts);
+        },
+        closeModal: function (opts) {
+            closeModal(opts);
+        },
+        validateRequired: function (opts) {
+            validateRequired(opts);
         }
     };
 

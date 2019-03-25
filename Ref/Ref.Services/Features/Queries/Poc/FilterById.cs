@@ -6,19 +6,17 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Ref.Services.Features.Queries.Filters
+namespace Ref.Services.Features.Queries.Poc
 {
-    public class ById
+    public class FilterById
     {
         public class Query : IRequest<Result>
         {
-            public Query(int userId, int filterId)
+            public Query(int filterId)
             {
-                UserId = userId;
                 FilterId = filterId;
             }
 
-            public int UserId { get; private set; }
             public int FilterId { get; private set; }
         }
 
@@ -40,9 +38,7 @@ namespace Ref.Services.Features.Queries.Filters
             {
                 try
                 {
-                    var filter = (await _filterRepository
-                        .FindByAsync(f
-                            => f.Id == request.FilterId && f.UserId == request.UserId))
+                    var filter = (await _filterRepository.FindByAsync(f => f.Id == request.FilterId))
                         .FirstOrDefault();
 
                     if (!(filter is null))

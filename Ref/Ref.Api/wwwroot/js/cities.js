@@ -7,7 +7,8 @@
 
                 $.each(data, function (i, item) {
                     var rows = "<option value='" + item.id + "'>" + item.name + "</option>";
-                    $(opts.cnt).append(rows);
+                    $(opts.cntAdd).append(rows);
+                    $(opts.cntEdit).append(rows);
                 });
 
             });
