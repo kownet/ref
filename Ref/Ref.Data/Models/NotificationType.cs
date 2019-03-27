@@ -22,7 +22,7 @@ namespace Ref.Data.Models
         [Description("Co 8 godzin")]
         Every8Hour = 8,
 
-        [Description("Niezdefiniowany")]
-        Undefinded = 100,
+        [Description("Nie aktywny")]
+        NotActive = 100,
     }
 }

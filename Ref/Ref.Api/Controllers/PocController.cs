@@ -47,6 +47,8 @@ namespace Ref.Api.Controllers
 
             if (!result.Succeed)
                 _logger.LogError(result.Message);
+            else
+                _logger.LogInformation($"Changing email OK for user: {cmd.Id}");
 
             return Ok(result);
         }
@@ -71,6 +73,8 @@ namespace Ref.Api.Controllers
 
             if (!result.Succeed)
                 _logger.LogError(result.Message);
+            else
+                _logger.LogInformation($"Deleting filter OK: {id}");
 
             return Ok(result);
         }
@@ -82,6 +86,8 @@ namespace Ref.Api.Controllers
 
             if (!result.Succeed)
                 _logger.LogError(result.Message);
+            else
+                _logger.LogInformation($"Creating filter OK for user: {cmd.UserId}, filter: {cmd.Name}");
 
             return Ok(result);
         }
@@ -108,6 +114,8 @@ namespace Ref.Api.Controllers
 
             if (!result.Succeed)
                 _logger.LogError(result.Message);
+            else
+                _logger.LogInformation($"Updating filter OK: {cmd.Id}");
 
             return Ok(result);
         }

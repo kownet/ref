@@ -53,9 +53,7 @@ namespace Ref.Coordinator.Core
                 try
                 {
                     var filtersToCheck = await _filterRepository
-                        .FindByAsync(f =>
-                        f.Notification != NotificationType.Undefinded &&
-                        f.LastCheckedAt.HasValue);
+                        .FindByAsync(f => f.Notification != NotificationType.NotActive);
 
                     var grouped = filtersToCheck.GroupBy(f => f.Notification);
 

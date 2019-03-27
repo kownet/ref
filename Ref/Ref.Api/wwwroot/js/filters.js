@@ -17,7 +17,7 @@
 
                     $.each(data.filters, function (i, item) {
                         var rows = "<tr>" +
-                            "<td>" + item.name + "<br><small>ostatnie sprawdzenie: " + item.lastCheckedAtFormatted + "</small>" + "</td>" +
+                            "<td>" + item.name + "<br><small>ostatnie powiadomienie: " + item.lastCheckedAtFormatted + "</small>" + "</td>" +
                             "<td>" + item.city + "</td>" +
                             "<td>" + item.flatAreaFrom + " - " + item.flatAreaTo + "</td>" +
                             "<td>" + item.priceFrom + " - " + item.priceTo + "</td>" +

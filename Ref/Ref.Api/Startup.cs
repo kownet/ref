@@ -36,6 +36,11 @@ namespace Ref.Api
 
             services.AddMediatR(typeof(Register).GetTypeInfo().Assembly);
 
+            services.Configure<IISServerOptions>(opt =>
+            {
+                opt.AutomaticAuthentication = false;
+            });
+
             // configure jwt authentication
             var appSettings = appSettingsSection.Get<AppSettings>();
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);

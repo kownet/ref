@@ -36,7 +36,7 @@ namespace Ref.Api.Controllers
         {
             return Ok(Enum.GetValues(typeof(NotificationType))
                        .Cast<NotificationType>()
-                       .Except(new NotificationType[] { NotificationType.Undefinded })
+                       //.Except(new NotificationType[] { NotificationType.Undefinded })
                        .Select(t => new NotificationTypeResult
                        {
                            Id = ((int)t),
