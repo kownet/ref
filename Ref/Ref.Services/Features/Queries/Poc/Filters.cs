@@ -70,7 +70,7 @@ namespace Ref.Services.Features.Queries.Poc
                         }
                         else
                         {
-                            return new Result { Message = "There are no filters" };
+                            return new Result { Message = "Brak filtrów" };
                         }
                     }
                 }

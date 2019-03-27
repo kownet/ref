@@ -24,8 +24,8 @@
                             "<td>" + item.notificationFormatted + "</td>" +
                             "<td>" +
                             "<div class=\"btn-group btn-group-sm\">" +
-                            "<button type=\"button\" class=\"btn btn-sm btn-danger btn-filter-del\" data-id=" + item.id + " data-user-id=" + item.userId + "> Usuń</button>" +
-                            "<button type=\"button\" class=\"btn btn-sm btn-warning btn-filter-edit\" data-id=" + item.id + " data-user-id=" + item.userId + " data-toggle=\"modal\" data-target=\"#filter-edit\"> Edytuj</button>" +
+                            "<button type=\"button\" class=\"btn btn-sm btn-danger\" id=\"btn-filter-del\" data-id=" + item.id + " data-user-id=" + item.userId + "> Usuń</button>" +
+                            "<button type=\"button\" class=\"btn btn-sm btn-warning\" id=\"btn-filter-edit\" data-id=" + item.id + " data-user-id=" + item.userId + " data-toggle=\"modal\" data-target=\"#filter-edit\"> Edytuj</button>" +
                             "</div >" + "</td>" +
                             "</tr>";
                         $(opts.cntFiltersTable).append(rows);
@@ -33,7 +33,7 @@
 
                     APP.filters.deleteFilter({
                         url: '/poc/deletefilter',
-                        btnDelete: '.btn-filter-del'
+                        btnDelete: '#btn-filter-del'
                     });
 
                 } else {
@@ -161,10 +161,15 @@
             disabledClass: '.toggle-disabled-edit'
         });
 
-        $(document).on('click', opts.btn, function () {
+        var filterId = null;
+        var userId = null;
 
-            var filterId = $(this).data("id");
-            var userId = $(this).data("user-id");
+        $(document).on('click', opts.btn, function (e) {
+
+            e.preventDefault();
+
+            filterId = $(this).data("id");
+            userId = $(this).data("user-id");
 
             $.get(opts.url + '/' + filterId)
                 .done(function (data) {
@@ -179,64 +184,66 @@
                         $(opts.cntAreaTo).val(data.filter.flatAreaTo);
                         $(opts.cntNtf).val(data.filter.notification);
 
-                        $(document).on('click', opts.btnSave, function () {
-
-                            var params = JSON.stringify({
-                                id: filterId,
-                                userId: userId,
-                                cityId: $(opts.cntCity).val(),
-                                flatAreaFrom: $(opts.cntAreaFrom).val(),
-                                flatAreaTo: $(opts.cntAreaTo).val(),
-                                priceFrom: $(opts.cntPriceFrom).val(),
-                                priceTo: $(opts.cntPriceTo).val(),
-                                notification: $(opts.cntNtf).val(),
-                                name: $(opts.cntName).val()
-                            });
-
-                            $.ajax({
-                                contentType: 'application/json',
-                                type: 'PUT',
-                                url: opts.urlSave,
-                                data: params,
-                                success: function (data) {
-
-                                    if (data.succeed) {
-
-                                        swal($.successHeader, {
-                                            icon: "success"
-                                        });
-
-                                        $(opts.cntForm).trigger("reset");
-
-                                        APP.filters.closeModal({
-                                            cntModal: opts.cntModal
-                                        });
-
-                                        APP.filters.getUserFilters({
-                                            url: '/poc/filters',
-                                            userId: userId,
-                                            cntFiltersTable: '#filters-table'
-                                        });
-
-                                    } else {
-
-                                        APP.filters.closeModal({
-                                            cntModal: opts.cntModal
-                                        });
-
-                                        swal($.errorHeader, data.message, "error");
-                                    }
-
-                                }
-                            });
-
-                        });
-
                     } else {
                         swal($.errorHeader, data.message, "error");
                     }
 
                 });
+
+        });
+
+        $(document).on('click', opts.btnSave, function (e) {
+
+            e.preventDefault();
+
+            var params = JSON.stringify({
+                id: filterId,
+                userId: userId,
+                cityId: $(opts.cntCity).val(),
+                flatAreaFrom: $(opts.cntAreaFrom).val(),
+                flatAreaTo: $(opts.cntAreaTo).val(),
+                priceFrom: $(opts.cntPriceFrom).val(),
+                priceTo: $(opts.cntPriceTo).val(),
+                notification: $(opts.cntNtf).val(),
+                name: $(opts.cntName).val()
+            });
+
+            $.ajax({
+                contentType: 'application/json',
+                type: 'PUT',
+                url: opts.urlSave,
+                data: params,
+                success: function (data) {
+
+                    if (data.succeed) {
+
+                        swal($.successHeader, {
+                            icon: "success"
+                        });
+
+                        $(opts.cntForm).trigger("reset");
+
+                        APP.filters.closeModal({
+                            cntModal: opts.cntModal
+                        });
+
+                        APP.filters.getUserFilters({
+                            url: '/poc/filters',
+                            userId: userId,
+                            cntFiltersTable: '#filters-table'
+                        });
+
+                    } else {
+
+                        APP.filters.closeModal({
+                            cntModal: opts.cntModal
+                        });
+
+                        swal($.errorHeader, data.message, "error");
+                    }
+
+                }
+            });
 
         });
 

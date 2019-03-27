@@ -35,14 +35,14 @@ namespace Ref.Services.Features.Queries.Poc
             public async Task<Result> Handle(Query request, CancellationToken cancellationToken)
             {
                 if (string.IsNullOrWhiteSpace(request.Guid))
-                    return new Result { Message = "Please provide GUID to verify your identity." };
+                    return new Result { Message = "Proszę o podanie swojego identyfikatora celem weryfikacji" };
 
                 try
                 {
                     var user = (await _userRepository.FindByAsync(u => u.Guid == request.Guid.ToUpperInvariant())).FirstOrDefault();
 
                     if (user is null)
-                        return new Result { Message = "No such user." };
+                        return new Result { Message = "Nie ma takiego użytkownika" };
                     else
                     {
                         return new Result { UserId = user.Id, Email = user.Email, RegisteredAt = user.RegisteredAt.Format() };

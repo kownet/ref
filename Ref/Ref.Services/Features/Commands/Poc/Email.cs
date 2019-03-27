@@ -31,7 +31,7 @@ namespace Ref.Services.Features.Commands.Poc
             public async Task<Result> Handle(Cmd request, CancellationToken cancellationToken)
             {
                 if (!request.Email.IsValidEmail())
-                    return new Result { Message = "Please provide valid email" };
+                    return new Result { Message = "Proszę podać poprawny adres email." };
 
                 try
                 {
@@ -39,7 +39,7 @@ namespace Ref.Services.Features.Commands.Poc
 
                     if (entity is null)
                     {
-                        return new Result { Message = "No such user" };
+                        return new Result { Message = "Nie ma takiego usera" };
                     }
 
                     entity.Email = request.Email;

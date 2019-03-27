@@ -34,6 +34,8 @@ namespace Ref.Api.Controllers
 
             if (!result.Succeed)
                 _logger.LogError(result.Message);
+            else
+                _logger.LogInformation($"Verification OK for GUID: {q.Guid}");
 
             return Ok(result);
         }

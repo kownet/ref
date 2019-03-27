@@ -61,7 +61,7 @@ namespace Ref.Services.Features.Queries.Poc
                     }
                     else
                     {
-                        return new Result { Message = "No such object" };
+                        return new Result { Message = "Nie ma takiego filtra" };
                     }
                 }
                 catch (Exception ex)

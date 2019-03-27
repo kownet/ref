@@ -39,7 +39,7 @@ namespace Ref.Services.Features.Commands.Poc
 
                     if (entity is null)
                     {
-                        return new Result { Message = "No such filter" };
+                        return new Result { Message = "Nie ma takiego filtra" };
                     }
 
                     await _filterRepository.DeleteAsync(request.FilterId);
