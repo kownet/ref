@@ -2,14 +2,14 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
-using Ref.Cleaner.Core;
 using Ref.Data.Db;
 using Ref.Data.Repositories;
+using Ref.Scrapper.Core;
 using Ref.Shared.Notifications;
 using Ref.Shared.Providers;
 using System;
 
-namespace Ref.Cleaner.DI
+namespace Ref.Scrapper.DI
 {
     public static class DependencyProvider
     {
@@ -48,11 +48,12 @@ namespace Ref.Cleaner.DI
 
             #region Repositories
             services.AddTransient<IOfferRepository, OfferRepository>();
+            services.AddTransient<ISiteRepository, SiteRepository>();
             #endregion
 
             #region App
-            services.AddTransient<IAppCleanerProvider>(
-            s => new AppCleanerProvider(
+            services.AddTransient<IAppScrapperProvider>(
+            s => new AppScrapperProvider(
                 configurationRoot["app:address"],
                 configurationRoot["app:sender"],
                 configurationRoot["app:replyto"],
@@ -60,11 +61,14 @@ namespace Ref.Cleaner.DI
                 configurationRoot["app:adminnotification"],
                 configurationRoot["app:successtries"],
                 appId,
-                configurationRoot["app:daystolive"])
+                configurationRoot["app:sites"],
+                configurationRoot["app:timeout"],
+                configurationRoot["app:chunksize"],
+                configurationRoot["app:scrapppause"])
             );
             #endregion
 
-            services.AddTransient<CleanService>();
+            services.AddTransient<ScrapperService>();
 
             var serviceProvider = services.BuildServiceProvider();
 

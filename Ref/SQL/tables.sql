@@ -45,7 +45,8 @@ CREATE TABLE Offers(
 	[Area] [int] NOT NULL,
 	[Rooms] [int] NULL,
 	[PricePerMeter] [int] NULL,
-	[DateAdded] datetime NOT NULL
+	[DateAdded] datetime NOT NULL,
+	[IsScrapped] bit NOT NULL DEFAULT(0) WITH VALUES
 )
 
 CREATE TABLE OfferFilters(

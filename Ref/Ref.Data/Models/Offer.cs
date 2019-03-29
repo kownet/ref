@@ -16,6 +16,7 @@ namespace Ref.Data.Models
         public int Rooms { get; set; }
         public int PricePerMeter { get; set; }
         public DateTime DateAdded { get; set; }
+        public bool IsScrapped { get; set; }
 
         public bool IsValidToAdd() =>
             !string.IsNullOrWhiteSpace(SiteOfferId) && !string.IsNullOrWhiteSpace(Url) && Price > 0;
