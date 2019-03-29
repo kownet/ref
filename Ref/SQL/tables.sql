@@ -60,3 +60,10 @@ CREATE TABLE AdminInfos(
 	[DateAdded] datetime NOT NULL,
 	[IsActive] [bit] NOT NULL
 )
+
+CREATE TABLE Sites(
+	[Id] [int] PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	[Type] [int] NOT NULL,
+	[Name] nvarchar(32) NOT NULL,
+	[IsActive] [bit] NOT NULL DEFAULT(0),
+)

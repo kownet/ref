@@ -2,3 +2,11 @@ INSERT INTO [dbo].[Cities] ([Name],[NameRaw],[GtCodeSale],[GtCodeRent]) VALUES (
 INSERT INTO [dbo].[Cities] ([Name],[NameRaw],[GtCodeSale],[GtCodeRent]) VALUES ('Poznañ','poznan','v1c9073l3200366a1dwp','v1c9008l3200366a1dwp')
 INSERT INTO [dbo].[Cities] ([Name],[NameRaw],[GtCodeSale],[GtCodeRent]) VALUES ('Kraków','krakow','v1c9073l3200208a1dwp','v1c9008l3200208p')
 INSERT INTO [dbo].[Cities] ([Name],[NameRaw],[GtCodeSale],[GtCodeRent]) VALUES ('Wroc³aw','wroclaw','v1c9073l3200114a1dwp','v1c9008l3200114p')
+
+INSERT INTO [dbo].[Sites] ([Type],[Name],[IsActive]) VALUES (0,'otodom',1)
+INSERT INTO [dbo].[Sites] ([Type],[Name],[IsActive]) VALUES (1,'olx',1)
+INSERT INTO [dbo].[Sites] ([Type],[Name],[IsActive]) VALUES (2,'adresowo',1)
+INSERT INTO [dbo].[Sites] ([Type],[Name],[IsActive]) VALUES (3,'domiporta',1)
+INSERT INTO [dbo].[Sites] ([Type],[Name],[IsActive]) VALUES (4,'gratka',1)
+INSERT INTO [dbo].[Sites] ([Type],[Name],[IsActive]) VALUES (5,'morizon',1)
+INSERT INTO [dbo].[Sites] ([Type],[Name],[IsActive]) VALUES (6,'gumtree',1)

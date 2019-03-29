@@ -22,6 +22,7 @@ namespace Ref.App.Core
 
         private readonly ICitiesRepository _citiesRepository;
         private readonly IOfferRepository _offerRepository;
+        private readonly ISiteRepository _siteRepository;
 
         private readonly IPushOverNotification _pushOverNotification;
 
@@ -31,6 +32,7 @@ namespace Ref.App.Core
             IAppProvider appProvider,
             ICitiesRepository citiesRepository,
             IOfferRepository offerRepository,
+            ISiteRepository siteRepository,
             IPushOverNotification pushOverNotification)
         {
             _logger = logger;
@@ -38,6 +40,7 @@ namespace Ref.App.Core
             _appProvider = appProvider;
             _citiesRepository = citiesRepository;
             _offerRepository = offerRepository;
+            _siteRepository = siteRepository;
             _pushOverNotification = pushOverNotification;
         }
 
@@ -45,9 +48,14 @@ namespace Ref.App.Core
         {
             var successTries = 0;
 
-            var availableSites = _appProvider.Sites().Select(s => (SiteType)s);
+            var sitesDefined = _appProvider.Sites().Select(s => (SiteType)s);
+
+            var availableSites = (await _siteRepository.GetAllAsync())
+                .Where(s => sitesDefined.Contains(s.Type))
+                .Where(s => s.IsActive);
 
             var cities = await _citiesRepository.GetAllAsync();
+
             var dealTypes = _appProvider.Deals().Select(s => (DealType)s);
 
             while (successTries < _appProvider.SuccessTries())
@@ -58,62 +66,66 @@ namespace Ref.App.Core
                     {
                         foreach (var city in cities)
                         {
-                            foreach (SiteType siteType in availableSites)
+                            foreach (var site in availableSites)
                             {
                                 foreach (DealType dealType in dealTypes)
                                 {
                                     var old = await _offerRepository
                                         .FindByAsync(c =>
                                             c.CityId == city.Id &&
-                                            c.Site == siteType &&
+                                            c.Site == site.Type &&
                                             c.Deal == dealType);
 
                                     var oldest = old.ToList();
 
-                                    var result = _siteAccessor(siteType).Scrapp(city, dealType);
+                                    var result = _siteAccessor(site.Type).Scrapp(city, dealType);
 
                                     if (result.WeAreBanned)
                                     {
-                                        _logger.LogError(Labels.BannedMsg(siteType.ToString()));
+                                        _logger.LogError(Labels.BannedMsg(site.Type.ToString()));
+
+                                        site.IsActive = false;
+
+                                        await _siteRepository.UpdateAsync(site);
 
                                         if(_appProvider.AdminNotification())
                                         {
                                             _pushOverNotification.Send(
                                                 Labels.BannedMsgTitle,
-                                                Labels.BannedMsg(siteType.ToString()));
+                                                Labels.BannedMsg(site.Type.ToString()));
                                         }
                                     }
 
                                     if (result.ThereAreNoRecords)
                                     {
-                                        _logger.LogError(Labels.NoRecordsMsg(siteType.ToString()));
+                                        _logger.LogError(Labels.NoRecordsMsg(site.Type.ToString()));
                                         
                                         if(_appProvider.AdminNotification())
                                         {
                                             _pushOverNotification.Send(
                                                 Labels.NoRecordsMsgTitle,
-                                                Labels.NoRecordsMsg(siteType.ToString()));
+                                                Labels.NoRecordsMsg(site.Type.ToString()));
                                         }
                                     }
 
                                     if (result.ExceptionAccured)
                                     {
-                                        _logger.LogError(Labels.ExceptionMsg(siteType.ToString(), result.ExceptionMessage));
+                                        _logger.LogError(Labels.ExceptionMsg(site.Type.ToString(), result.ExceptionMessage));
                                         
                                         if(_appProvider.AdminNotification())
                                         {
                                             _pushOverNotification.Send(
                                                 Labels.ExceptionMsgTitle,
-                                                Labels.ExceptionMsg(siteType.ToString(), result.ExceptionMessage));
+                                                Labels.ExceptionMsg(site.Type.ToString(), result.ExceptionMessage));
                                         }
                                     }
 
                                     var newestFromCriteria = result.Offers.ToList();
 
-                                    if (siteType != SiteType.Adresowo &&
-                                        siteType != SiteType.DomiPorta &&
-                                        siteType != SiteType.Gratka &&
-                                        siteType != SiteType.Morizon)
+                                    if (site.Type != SiteType.Adresowo &&
+                                        site.Type != SiteType.DomiPorta &&
+                                        site.Type != SiteType.Gratka &&
+                                        site.Type != SiteType.Morizon)
                                     {
                                         newestFromCriteria = newestFromCriteria
                                             .DistinctBy(p => p.Header)
@@ -130,7 +142,7 @@ namespace Ref.App.Core
                                     }
 
                                     _logger.LogTrace(
-                                        $"Site {siteType.ToString()}, Deal {dealType.ToString()}, " +
+                                        $"Site {site.Type.ToString()}, Deal {dealType.ToString()}, " +
                                         $"City {city.NameRaw}, " +
                                         $"collected {newestFromCriteria.Count()} records," +
                                         $" {newestFrom.Count()} new.");
