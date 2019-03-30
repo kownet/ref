@@ -1,33 +1,24 @@
 ﻿using HtmlAgilityPack;
-using Ref.Data.Models;
 using Ref.Shared.Extensions;
 using Ref.Shared.Providers;
 using Ref.Shared.Utils;
 using Ref.Sites.Helpers;
-using Ref.Sites.Pages;
-using Ref.Sites.QueryStrings;
 using System;
 using System.IO;
 using System.Net;
 using System.Text;
 using System.Threading;
 
-namespace Ref.Sites.Scrapper
+namespace Ref.Sites.Scrapper.Single
 {
-    public abstract class SiteToScrapp
+    public abstract class SingleSiteToScrapp
     {
-        protected readonly IAppProvider AppProvider;
-        protected readonly Func<SiteType, IPages> PageProvider;
-        protected readonly Func<SiteType, IQueryString> QueryStringProvider;
+        protected readonly IAppScrapperProvider AppProvider;
 
-        public SiteToScrapp(
-            IAppProvider appProvider,
-            Func<SiteType, IPages> pageProvider,
-            Func<SiteType, IQueryString> queryStringProvider)
+        public SingleSiteToScrapp(
+            IAppScrapperProvider appProvider)
         {
             AppProvider = appProvider;
-            PageProvider = pageProvider;
-            QueryStringProvider = queryStringProvider;
         }
 
         protected SiteToScrappResponse ScrapThis(string url, string specialEncoding = "")

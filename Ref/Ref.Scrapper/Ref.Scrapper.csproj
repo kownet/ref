@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Ref.Data\Ref.Data.csproj" />
+    <ProjectReference Include="..\Ref.Sites\Ref.Sites.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -5,6 +5,7 @@ using Ref.Shared.Extensions;
 using Ref.Shared.Notifications;
 using Ref.Shared.Providers;
 using Ref.Shared.Utils;
+using Ref.Sites.Scrapper.Single;
 using System;
 using System.Linq;
 using System.Threading;
@@ -16,6 +17,7 @@ namespace Ref.Scrapper.Core
     {
         private readonly ILogger<ScrapperService> _logger;
 
+        private readonly Func<SiteType, ISingleSiteToScrapp> _siteAccessor;
         private readonly IAppScrapperProvider _appProvider;
 
         private readonly IOfferRepository _offerRepository;
@@ -25,12 +27,14 @@ namespace Ref.Scrapper.Core
 
         public ScrapperService(
             ILogger<ScrapperService> logger,
+            Func<SiteType, ISingleSiteToScrapp> siteAccessor,
             IAppScrapperProvider appProvider,
             IOfferRepository offerRepository,
             ISiteRepository siteRepository,
             IPushOverNotification pushOverNotification)
         {
             _logger = logger;
+            _siteAccessor = siteAccessor;
             _appProvider = appProvider;
             _offerRepository = offerRepository;
             _siteRepository = siteRepository;
@@ -56,7 +60,7 @@ namespace Ref.Scrapper.Core
                         var toScrapp = await _offerRepository
                             .FindByAsync(o => !o.IsScrapped && o.Site == site.Type);
 
-                        if(toScrapp.AnyAndNotNull())
+                        if (toScrapp.AnyAndNotNull())
                         {
                             _logger.LogTrace($"Found {toScrapp.Count()} for site {site.Type.ToString()}");
 
@@ -66,6 +70,8 @@ namespace Ref.Scrapper.Core
                             {
                                 foreach (var offer in chunk)
                                 {
+                                    var result = _siteAccessor(site.Type).SingleScrapp(offer);
+
                                     Thread.Sleep(_appProvider.ScrappPause());
                                 }
 

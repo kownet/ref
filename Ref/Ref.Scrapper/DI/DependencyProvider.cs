@@ -3,11 +3,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using Ref.Data.Db;
+using Ref.Data.Models;
 using Ref.Data.Repositories;
 using Ref.Scrapper.Core;
 using Ref.Shared.Notifications;
 using Ref.Shared.Providers;
+using Ref.Sites.Scrapper.Single;
 using System;
+using System.Collections.Generic;
 
 namespace Ref.Scrapper.DI
 {
@@ -66,6 +69,39 @@ namespace Ref.Scrapper.DI
                 configurationRoot["app:chunksize"],
                 configurationRoot["app:scrapppause"])
             );
+            #endregion
+
+            #region Sites
+            services.AddTransient<OtoDomSingle>();
+            services.AddTransient<OlxSingle>();
+            services.AddTransient<AdresowoSingle>();
+            services.AddTransient<DomiportaSingle>();
+            services.AddTransient<GratkaSingle>();
+            services.AddTransient<MorizonSingle>();
+            services.AddTransient<GumtreeSingle>();
+
+            services.AddTransient<Func<SiteType, ISingleSiteToScrapp>>(sp => key =>
+            {
+                switch (key)
+                {
+                    case SiteType.OtoDom:
+                        return sp.GetService<OtoDomSingle>();
+                    case SiteType.Olx:
+                        return sp.GetService<OlxSingle>();
+                    case SiteType.Adresowo:
+                        return sp.GetService<AdresowoSingle>();
+                    case SiteType.DomiPorta:
+                        return sp.GetService<DomiportaSingle>();
+                    case SiteType.Gratka:
+                        return sp.GetService<GratkaSingle>();
+                    case SiteType.Morizon:
+                        return sp.GetService<MorizonSingle>();
+                    case SiteType.Gumtree:
+                        return sp.GetService<GumtreeSingle>();
+                    default:
+                        throw new KeyNotFoundException();
+                }
+            });
             #endregion
 
             services.AddTransient<ScrapperService>();
