@@ -81,7 +81,7 @@ namespace Ref.Scrapper.Core
                                         await _offerRepository.UpdateAsync(offer);
                                     }
 
-                                    if(result.IsDeleted)
+                                    if(result.IsDeleted || !result.Succeed)
                                     {
                                         await _offerRepository.SetDeletedAsync(offer.Id);
                                     }
