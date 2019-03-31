@@ -117,7 +117,7 @@ namespace Ref.Data.Repositories
                     {
                         offer.Id,
                         offer.Content,
-                        offer.Floor,
+                        Floor = offer.Floor.HasValue ? offer.Floor.Value : (int?)null,
                         offer.IsScrapped
                     });
             }

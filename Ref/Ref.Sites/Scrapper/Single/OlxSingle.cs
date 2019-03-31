@@ -1,6 +1,8 @@
 ﻿using Ref.Data.Models;
 using Ref.Shared.Providers;
 using Ref.Sites.Helpers;
+using ScrapySharp.Extensions;
+using System.Linq;
 
 namespace Ref.Sites.Scrapper.Single
 {
@@ -20,6 +22,16 @@ namespace Ref.Sites.Scrapper.Single
                 return result;
 
             var doc = scrap.HtmlNode;
+
+            var content = doc.CssSelect("#textContent").FirstOrDefault();
+
+            if (!(content is null))
+            {
+                if (!string.IsNullOrWhiteSpace(content.InnerText))
+                {
+                    result.Content = content.InnerText.Trim();
+                }
+            }
 
             return result;
         }
