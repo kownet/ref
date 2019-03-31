@@ -2,7 +2,7 @@
 {
     public static class Labels
     {
-        public static string App => "[REF]";
+        public static string App => "[PewneMieszkanie.pl]";
 
         public static string ErrorMsgTitle => $"{App} Error";
         public static string BannedMsgTitle => $"{App} Banned";
@@ -12,10 +12,10 @@
         public static string SuccessEmailMsgTitle => $"{App} Email sent";
 
         public static string NoRecordsMsgTitle => $"{App} Pusto";
-        public static string NoRecordsMsg(string site) => $"Brak wyników na: {site}.";
+        public static string NoRecordsMsg(string site, string city) => $"Brak wyników na: {site}, dla {city}.";
 
         public static string ExceptionMsgTitle => $"{App} Exception";
-        public static string ExceptionMsg(string site, string message) => $"Site: {site}. Message: {message}.";
+        public static string ExceptionMsg(string site, string message, string city) => $"Site: {site}. City: {city}. Message: {message}.";
 
         public static string ErrorEmailMsg(string client) => $"Nie wysłano wiadomości do: {client}";
 

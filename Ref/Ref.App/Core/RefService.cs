@@ -98,25 +98,25 @@ namespace Ref.App.Core
 
                                     if (result.ThereAreNoRecords)
                                     {
-                                        _logger.LogError(Labels.NoRecordsMsg(site.Type.ToString()));
+                                        _logger.LogError(Labels.NoRecordsMsg(site.Type.ToString(), city.Name));
                                         
                                         if(_appProvider.AdminNotification())
                                         {
                                             _pushOverNotification.Send(
                                                 Labels.NoRecordsMsgTitle,
-                                                Labels.NoRecordsMsg(site.Type.ToString()));
+                                                Labels.NoRecordsMsg(site.Type.ToString(), city.Name));
                                         }
                                     }
 
                                     if (result.ExceptionAccured)
                                     {
-                                        _logger.LogError(Labels.ExceptionMsg(site.Type.ToString(), result.ExceptionMessage));
+                                        _logger.LogError(Labels.ExceptionMsg(site.Type.ToString(), result.ExceptionMessage, city.Name));
                                         
                                         if(_appProvider.AdminNotification())
                                         {
                                             _pushOverNotification.Send(
                                                 Labels.ExceptionMsgTitle,
-                                                Labels.ExceptionMsg(site.Type.ToString(), result.ExceptionMessage));
+                                                Labels.ExceptionMsg(site.Type.ToString(), result.ExceptionMessage, city.Name));
                                         }
                                     }
 
