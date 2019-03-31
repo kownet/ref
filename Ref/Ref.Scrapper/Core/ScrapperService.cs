@@ -51,6 +51,8 @@ namespace Ref.Scrapper.Core
                 .Where(s => sitesDefined.Contains(s.Type))
                 .Where(s => s.IsActive);
 
+            var dateSince = DateTime.Now.AddHours(-1);
+
             while (successTries < _appProvider.SuccessTries())
             {
                 try
@@ -58,7 +60,7 @@ namespace Ref.Scrapper.Core
                     foreach (var site in availableSites)
                     {
                         var toScrapp = await _offerRepository
-                            .FindByAsync(o => !o.IsScrapped && o.Site == site.Type);
+                            .FindByAsync(o => !o.IsScrapped && o.Site == site.Type && o.DateAdded >= dateSince);
 
                         if (toScrapp.AnyAndNotNull())
                         {
