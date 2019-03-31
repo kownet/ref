@@ -13,5 +13,7 @@ namespace Ref.Services.Features.Shared
         public int PriceFrom { get; set; }
         public int PriceTo { get; set; }
         public NotificationType Notification { get; set; }
+        public string ShouldContain { get; set; }
+        public string ShouldNotContain { get; set; }
     }
 }

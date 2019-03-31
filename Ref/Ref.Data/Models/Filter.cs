@@ -17,5 +17,7 @@ namespace Ref.Data.Models
         public MarketType Market { get; set; }
         public NotificationType Notification { get; set; }
         public DateTime? LastCheckedAt { get; set; }
+        public string ShouldContain { get; set; }
+        public string ShouldNotContain { get; set; }
     }
 }

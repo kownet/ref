@@ -35,7 +35,7 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 return await c.QueryAsync<Filter>(
-                    @"SELECT Id, UserId, Property, Deal, Market, CityId, FlatAreaFrom, FlatAreaTo, PriceFrom, PriceTo, Name, Notification, LastCheckedAt FROM Filters");
+                    @"SELECT Id, UserId, Property, Deal, Market, CityId, FlatAreaFrom, FlatAreaTo, PriceFrom, PriceTo, Name, Notification, LastCheckedAt, ShouldContain, ShouldNotContain FROM Filters");
             }
         }
 
@@ -44,7 +44,7 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 var result = (await c.QueryAsync<Filter>(
-                    @"SELECT Id, UserId, Property, Deal, Market, CityId, FlatAreaFrom, FlatAreaTo, PriceFrom, PriceTo, Name, Notification, LastCheckedAt FROM Filters")).AsQueryable();
+                    @"SELECT Id, UserId, Property, Deal, Market, CityId, FlatAreaFrom, FlatAreaTo, PriceFrom, PriceTo, Name, Notification, LastCheckedAt, ShouldContain, ShouldNotContain FROM Filters")).AsQueryable();
 
                 return result.Where(predicate);
             }
@@ -55,8 +55,8 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 return await c.ExecuteAsync(
-                    @"INSERT INTO Filters (UserId, Property, Deal, Market, FlatAreaFrom, FlatAreaTo, PriceFrom, PriceTo, CityId, Name, Notification, LastCheckedAt)
-                        VALUES(@UserId, @Property, @Deal, @Market, @FlatAreaFrom, @FlatAreaTo, @PriceFrom, @PriceTo, @CityId, @Name, @Notification, @LastCheckedAt);
+                    @"INSERT INTO Filters (UserId, Property, Deal, Market, FlatAreaFrom, FlatAreaTo, PriceFrom, PriceTo, CityId, Name, Notification, LastCheckedAt, ShouldContain, ShouldNotContain)
+                        VALUES(@UserId, @Property, @Deal, @Market, @FlatAreaFrom, @FlatAreaTo, @PriceFrom, @PriceTo, @CityId, @Name, @Notification, @LastCheckedAt, @ShouldContain, @ShouldNotContain);
                     SELECT CAST(SCOPE_IDENTITY() as int)",
                     new
                     {
@@ -71,7 +71,9 @@ namespace Ref.Data.Repositories
                         filter.CityId,
                         filter.Name,
                         filter.Notification,
-                        filter.LastCheckedAt
+                        filter.LastCheckedAt,
+                        filter.ShouldContain,
+                        filter.ShouldNotContain
                     });
             }
         }
@@ -109,7 +111,7 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 return await c.ExecuteAsync(
-                    @"UPDATE Filters SET Property = @Property, Deal = @Deal, Market = @Market, CityId = @CityId, FlatAreaFrom = @FlatAreaFrom, FlatAreaTo = @FlatAreaTo, PriceFrom = @PriceFrom, PriceTo = @PriceTo, Name = @Name, Notification = @Notification  
+                    @"UPDATE Filters SET Property = @Property, Deal = @Deal, Market = @Market, CityId = @CityId, FlatAreaFrom = @FlatAreaFrom, FlatAreaTo = @FlatAreaTo, PriceFrom = @PriceFrom, PriceTo = @PriceTo, Name = @Name, Notification = @Notification, ShouldContain = @ShouldContain, ShouldNotContain = @ShouldNotContain 
                         WHERE Id = @Id AND UserId = @UserId",
                     new
                     {
@@ -124,7 +126,9 @@ namespace Ref.Data.Repositories
                         filter.PriceFrom,
                         filter.PriceTo,
                         filter.Name,
-                        filter.Notification
+                        filter.Notification,
+                        filter.ShouldContain,
+                        filter.ShouldNotContain
                     });
             }
         }
@@ -134,7 +138,7 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 return await c.QueryFirstOrDefaultAsync<Filter>(
-                    @"SELECT Id, UserId, Property, Deal, Market, CityId, FlatAreaFrom, FlatAreaTo, PriceFrom, PriceTo, Name, Notification, LastCheckedAt FROM Filters 
+                    @"SELECT Id, UserId, Property, Deal, Market, CityId, FlatAreaFrom, FlatAreaTo, PriceFrom, PriceTo, Name, Notification, LastCheckedAt, ShouldContain, ShouldNotContain FROM Filters 
                         WHERE Id = @Id AND UserId = @UserId",
                     new
                     {

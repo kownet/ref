@@ -21,6 +21,8 @@ namespace Ref.Services.Features.Commands.Filters
             public int PriceTo { get; set; }
             public string Name { get; set; }
             public NotificationType Notification { get; set; }
+            public string ShouldContain { get; set; }
+            public string ShouldNotContain { get; set; }
         }
 
         public class Result : BaseResult { }
@@ -59,7 +61,9 @@ namespace Ref.Services.Features.Commands.Filters
                         Notification = request.Notification,
                         CityId = request.CityId,
                         Name = request.Name,
-                        LastCheckedAt = entity.LastCheckedAt
+                        LastCheckedAt = entity.LastCheckedAt,
+                        ShouldContain = request.ShouldContain,
+                        ShouldNotContain = request.ShouldNotContain
                     });
 
                     return new Result();

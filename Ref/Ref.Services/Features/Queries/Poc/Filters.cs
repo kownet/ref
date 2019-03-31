@@ -42,6 +42,8 @@ namespace Ref.Services.Features.Queries.Poc
             public string NotificationFormatted => Notification.GetDescription();
             public DateTime? LastCheckedAt { get; set; }
             public string LastCheckedAtFormatted => LastCheckedAt.Format("niesprawdzany");
+            public string ShouldContain { get; set; }
+            public string ShouldNotContain { get; set; }
         }
 
         public class Handler : IRequestHandler<Query, Result>
@@ -59,7 +61,7 @@ namespace Ref.Services.Features.Queries.Poc
                 {
                     using (var c = _dbAccess.Connection)
                     {
-                        var entities = await c.QueryAsync<FilterPoc>(@"SELECT F.Id, F.UserId, F.Name, C.Name as City, F.FlatAreaFrom, F.FlatAreaTo, F.PriceFrom, F.PriceTo, F.Notification, F.LastCheckedAt 
+                        var entities = await c.QueryAsync<FilterPoc>(@"SELECT F.Id, F.UserId, F.Name, C.Name as City, F.FlatAreaFrom, F.FlatAreaTo, F.PriceFrom, F.PriceTo, F.Notification, F.LastCheckedAt, F.ShouldContain, F.ShouldNotContain 
                                         FROM Filters F
                                         INNER JOIN Cities C on F.CityId = C.Id
                                         WHERE F.UserId = @UserId", new { request.UserId });

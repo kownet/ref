@@ -30,7 +30,9 @@ CREATE TABLE Filters(
 	[PriceFrom] [int] NOT NULL,
 	[Name] nvarchar(128) NULL,
 	[Notification] [int] NOT NULL DEFAULT(100),
-	[LastCheckedAt] datetime NULL
+	[LastCheckedAt] datetime NULL,
+	[ShouldContain] nvarchar(128) NULL,
+	[ShouldNotContain] nvarchar(128) NULL
 )
 
 CREATE TABLE Offers(

@@ -59,7 +59,9 @@ namespace Ref.Services.Features.Queries.Filters
                                 PriceTo = filter.PriceTo,
                                 UserId = filter.UserId,
                                 Name = filter.Name,
-                                Notification = filter.Notification
+                                Notification = filter.Notification,
+                                ShouldContain = filter.ShouldContain,
+                                ShouldNotContain = filter.ShouldNotContain
                             }
                         };
                     }
