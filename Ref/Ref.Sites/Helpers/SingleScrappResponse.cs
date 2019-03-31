@@ -4,6 +4,8 @@
     {
         public int? Floor { get; set; }
         public string Content { get; set; }
-        public bool Succeed => !string.IsNullOrWhiteSpace(Content);
+        public bool IsDeleted { get; set; }
+
+        public bool Succeed => !string.IsNullOrWhiteSpace(Content) && !IsDeleted;
     }
 }

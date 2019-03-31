@@ -10,7 +10,8 @@ namespace Ref.Sites.Scrapper.Single
 {
     public class OtoDomSingle : SingleSiteToScrapp, ISingleSiteToScrapp
     {
-        public OtoDomSingle(IAppScrapperProvider appProvider) : base(appProvider)
+        public OtoDomSingle(IAppScrapperProvider appProvider)
+            : base(appProvider)
         {
         }
 
@@ -31,7 +32,7 @@ namespace Ref.Sites.Scrapper.Single
 
             if (!(content is null))
             {
-                if (!string.IsNullOrWhiteSpace(content.InnerText))
+                if (!string.IsNullOrWhiteSpace(content.InnerText.Trim()))
                 {
                     result.Content = content.InnerText.Replace("Opis", "");
                 }
@@ -47,11 +48,11 @@ namespace Ref.Sites.Scrapper.Single
                 {
                     foreach (var element in elements)
                     {
-                        if (!string.IsNullOrWhiteSpace(element.InnerText))
+                        if (!string.IsNullOrWhiteSpace(element.InnerText.Trim()))
                         {
                             if(element.InnerText.Contains("Piętro"))
                             {
-                                if (int.TryParse(Regex.Replace(element.InnerText, regex, string.Empty).Trim(), out int a))
+                                if (int.TryParse(Regex.Replace(element.InnerText.Trim(), regex, string.Empty).Trim(), out int a))
                                 {
                                     result.Floor = a;
                                 }

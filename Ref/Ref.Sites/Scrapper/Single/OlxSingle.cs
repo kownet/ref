@@ -8,7 +8,8 @@ namespace Ref.Sites.Scrapper.Single
 {
     public class OlxSingle : SingleSiteToScrapp, ISingleSiteToScrapp
     {
-        public OlxSingle(IAppScrapperProvider appProvider) : base(appProvider)
+        public OlxSingle(IAppScrapperProvider appProvider)
+            : base(appProvider)
         {
         }
 

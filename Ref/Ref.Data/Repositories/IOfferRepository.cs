@@ -18,6 +18,7 @@ namespace Ref.Data.Repositories
         void BulkInsert(IList<Offer> offers);
         void BulkDelete(IList<int> offers);
         Task<int> UpdateAsync(Offer offer);
+        Task<int> SetDeletedAsync(int offerId);
     }
 
     public class OfferRepository : IOfferRepository
@@ -104,6 +105,20 @@ namespace Ref.Data.Repositories
                     @"SELECT Id, CityId, SiteOfferId, Site, Deal, Url, Header, Price, DateAdded, Area, Rooms, PricePerMeter, IsScrapped, Floor, Content FROM Offers")).AsQueryable();
 
                 return result.Where(predicate);
+            }
+        }
+
+        public async Task<int> SetDeletedAsync(int offerId)
+        {
+            using (var c = _dbAccess.Connection)
+            {
+                return await c.ExecuteAsync(
+                    @"UPDATE Offers SET IsScrapped = @IsScrapped WHERE Id = @Id",
+                    new
+                    {
+                        Id = offerId,
+                        IsScrapped = true
+                    });
             }
         }
 
