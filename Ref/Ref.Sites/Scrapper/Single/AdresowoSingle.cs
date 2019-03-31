@@ -30,7 +30,7 @@ namespace Ref.Sites.Scrapper.Single
             {
                 if (!string.IsNullOrWhiteSpace(content.InnerText))
                 {
-                    if(content.InnerText.Contains("Usunięte"))
+                    if (content.InnerText.Contains("Usunięte"))
                     {
                         result.IsDeleted = true;
                     }
