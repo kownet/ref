@@ -17,6 +17,7 @@ namespace Ref.Data.Repositories
         Task<IQueryable<Offer>> FindByAsync(Expression<Func<Offer, bool>> predicate);
         void BulkInsert(IList<Offer> offers);
         void BulkDelete(IList<int> offers);
+        Task<int> UpdateAsync(Offer offer);
     }
 
     public class OfferRepository : IOfferRepository
@@ -78,6 +79,8 @@ namespace Ref.Data.Repositories
                         sbc.ColumnMappings.Add("PricePerMeter", "PricePerMeter");
                         sbc.ColumnMappings.Add("DateAdded", "DateAdded");
                         sbc.ColumnMappings.Add("IsScrapped", "IsScrapped");
+                        sbc.ColumnMappings.Add("Floor", "Floor");
+                        sbc.ColumnMappings.Add("Content", "Content");
 
                         sbc.WriteToServer(dt);
                     }
@@ -98,9 +101,25 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 var result = (await c.QueryAsync<Offer>(
-                    @"SELECT Id, CityId, SiteOfferId, Site, Deal, Url, Header, Price, DateAdded, Area, Rooms, PricePerMeter, IsScrapped FROM Offers")).AsQueryable();
+                    @"SELECT Id, CityId, SiteOfferId, Site, Deal, Url, Header, Price, DateAdded, Area, Rooms, PricePerMeter, IsScrapped, Floor, Content FROM Offers")).AsQueryable();
 
                 return result.Where(predicate);
+            }
+        }
+
+        public async Task<int> UpdateAsync(Offer offer)
+        {
+            using (var c = _dbAccess.Connection)
+            {
+                return await c.ExecuteAsync(
+                    @"UPDATE Offers SET Content = @Content, Floor = @Floor, IsScrapped = @IsScrapped WHERE Id = @Id",
+                    new
+                    {
+                        offer.Id,
+                        offer.Content,
+                        offer.Floor,
+                        offer.IsScrapped
+                    });
             }
         }
     }

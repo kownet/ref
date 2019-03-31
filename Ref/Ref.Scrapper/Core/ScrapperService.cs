@@ -72,6 +72,15 @@ namespace Ref.Scrapper.Core
                                 {
                                     var result = _siteAccessor(site.Type).SingleScrapp(offer);
 
+                                    if(result.Succeed)
+                                    {
+                                        offer.Floor = result.Floor;
+                                        offer.Content = result.Content;
+                                        offer.IsScrapped = true;
+
+                                        await _offerRepository.UpdateAsync(offer);
+                                    }
+
                                     Thread.Sleep(_appProvider.ScrappPause());
                                 }
 
