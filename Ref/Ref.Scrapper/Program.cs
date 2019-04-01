@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Ref.Scrapper.Core;
 using Ref.Scrapper.DI;
+using Ref.Shared.Extensions;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -10,24 +11,29 @@ namespace Ref.Scrapper
 {
     class Program
     {
-        private static readonly string appId = "scrapper";
+        private static string appId = "";
 
         static async Task<int> Main(string[] args)
         {
-            NLog.LogManager.Configuration.Variables["fileName"] = $"ref-{appId}-{DateTime.UtcNow.ToString("ddMMyyyy")}.log";
-            NLog.LogManager.Configuration.Variables["archiveFileName"] = $"ref-{appId}-{DateTime.UtcNow.ToString("ddMMyyyy")}.log";
+            if (args.AnyAndNotNull())
+            {
+                appId = $"{args[0]}";
 
-            var builder = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile($"appsettings.{appId}.json");
+                NLog.LogManager.Configuration.Variables["fileName"] = $"ref-{appId}-{DateTime.UtcNow.ToString("ddMMyyyy")}.log";
+                NLog.LogManager.Configuration.Variables["archiveFileName"] = $"ref-{appId}-{DateTime.UtcNow.ToString("ddMMyyyy")}.log";
 
-            var configuration = builder.Build();
+                var builder = new ConfigurationBuilder()
+                        .SetBasePath(Directory.GetCurrentDirectory())
+                        .AddJsonFile($"appsettings.{appId}.json");
 
-            var servicesProvider = DependencyProvider.Get(configuration, appId);
+                var configuration = builder.Build();
 
-            await servicesProvider.GetRequiredService<ScrapperService>().Scrapp();
+                var servicesProvider = DependencyProvider.Get(configuration, appId);
 
-            NLog.LogManager.Shutdown();
+                await servicesProvider.GetRequiredService<ScrapperService>().Scrapp();
+
+                NLog.LogManager.Shutdown();
+            }
 
             return 0;
         }
