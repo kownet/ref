@@ -53,7 +53,7 @@ namespace Ref.Scrapper.Core
 
             var dateSince = DateTime.Now.AddHours(-1);
 
-            while (successTries < _appProvider.SuccessTries())
+            while (true)
             {
                 try
                 {
@@ -102,6 +102,9 @@ namespace Ref.Scrapper.Core
                 {
                     successTries++;
 
+                    if (successTries > _appProvider.SuccessTries())
+                        Environment.Exit(-100);
+
                     var msgHeader = $"[no. {successTries}]";
 
                     var msgException = $"{msgHeader} Message: {ex.GetFullMessage()}, StackTrace: {ex.StackTrace}";
@@ -115,8 +118,6 @@ namespace Ref.Scrapper.Core
                     Thread.Sleep(_appProvider.PauseTime());
                 }
             }
-
-            return 0;
         }
     }
 }
