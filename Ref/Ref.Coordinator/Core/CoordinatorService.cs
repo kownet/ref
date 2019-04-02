@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Ref.Data.Components;
 using Ref.Data.Models;
 using Ref.Data.Repositories;
 using Ref.Shared.Extensions;
@@ -19,28 +20,29 @@ namespace Ref.Coordinator.Core
 
         private readonly IAppCoordinatorProvider _appProvider;
 
-        private readonly IFilterRepository _filterRepository;
         private readonly IOfferRepository _offerRepository;
         private readonly IOfferFilterRepository _offerFilterRepository;
         private readonly IUserRepository _userRepository;
+
+        private readonly IUserSubscriptionReport _userSubscriptionReport;
 
         private readonly IPushOverNotification _pushOverNotification;
 
         public CoordinatorService(
             ILogger<CoordinatorService> logger,
             IAppCoordinatorProvider appProvider,
-            IFilterRepository filterRepository,
             IOfferRepository offerRepository,
             IOfferFilterRepository offerFilterRepository,
             IUserRepository userRepository,
+            IUserSubscriptionReport userSubscriptionReport,
             IPushOverNotification pushOverNotification)
         {
             _logger = logger;
             _appProvider = appProvider;
-            _filterRepository = filterRepository;
             _offerRepository = offerRepository;
             _offerFilterRepository = offerFilterRepository;
             _userRepository = userRepository;
+            _userSubscriptionReport = userSubscriptionReport;
             _pushOverNotification = pushOverNotification;
         }
 
@@ -52,8 +54,7 @@ namespace Ref.Coordinator.Core
             {
                 try
                 {
-                    var filtersToCheck = await _filterRepository
-                        .FindByAsync(f => f.Notification != NotificationType.NotActive);
+                    var filtersToCheck = await _userSubscriptionReport.GetAllActiveAsync();
 
                     var grouped = filtersToCheck.GroupBy(f => f.Notification);
 
@@ -116,7 +117,7 @@ namespace Ref.Coordinator.Core
             }
         }
 
-        private async Task<int> MatchOffers(IEnumerable<Filter> filters)
+        private async Task<int> MatchOffers(IEnumerable<UserSubscription> filters)
         {
             foreach (var filter in filters)
             {

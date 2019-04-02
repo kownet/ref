@@ -59,7 +59,9 @@ namespace Ref.Services.Features.Commands.Users
                         PasswordSalt = passwordSalt,
                         Role = Role.User,
                         RegisteredAt = DateTime.Now,
-                        Subscription = SubscriptionType.Normal
+                        Subscription = SubscriptionType.Normal,
+                        IsActive = true,
+                        Guid = Guid.NewGuid().ToString().ToUpperInvariant()
                     });
 
                     return new Result

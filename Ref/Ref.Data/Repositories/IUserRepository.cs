@@ -33,7 +33,7 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 return await c.ExecuteAsync(
-                    @"INSERT INTO Users (Email, PasswordHash, PasswordSalt, Role, RegisteredAt, Guid) VALUES(@Email, @PasswordHash, @PasswordSalt, @Role, @RegisteredAt, @Guid);
+                    @"INSERT INTO Users (Email, PasswordHash, PasswordSalt, Role, RegisteredAt, Guid, IsActive) VALUES(@Email, @PasswordHash, @PasswordSalt, @Role, @RegisteredAt, @Guid, @IsActive);
                     SELECT CAST(SCOPE_IDENTITY() as int)",
                     new
                     {
@@ -42,6 +42,7 @@ namespace Ref.Data.Repositories
                         user.PasswordSalt,
                         user.Role,
                         RegisteredAt = DateTime.Now,
+                        IsActive = true,
                         Guid = Guid.NewGuid().ToString().ToUpperInvariant()
                     });
             }
@@ -65,7 +66,7 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 var result = (await c.QueryAsync<User>(
-                    @"SELECT Id, Email, PasswordHash, PasswordSalt, Role, Guid, RegisteredAt FROM Users")).AsQueryable();
+                    @"SELECT Id, Email, PasswordHash, PasswordSalt, Role, Guid, RegisteredAt, IsActive FROM Users")).AsQueryable();
 
                 return result.Where(predicate);
             }
@@ -76,7 +77,7 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 return await c.QuerySingleOrDefaultAsync<User>(
-                    @"SELECT Id, Email, PasswordHash, PasswordSalt, Role, Guid FROM Users WHERE Id = @Id",
+                    @"SELECT Id, Email, PasswordHash, PasswordSalt, Role, Guid, RegisteredAt, IsActive FROM Users WHERE Id = @Id",
                     new
                     {
                         Id = userId
@@ -88,7 +89,7 @@ namespace Ref.Data.Repositories
         {
             using (var c = _dbAccess.Connection)
             {
-                return await c.QueryAsync<User>(@"SELECT Id, Email, Guid FROM Users");
+                return await c.QueryAsync<User>(@"SELECT Id, Email, Guid, RegisteredAt, IsActive FROM Users");
             }
         }
 
@@ -97,7 +98,7 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 return await c.ExecuteAsync(
-                    @"UPDATE Users SET Email = @Email, PasswordHash = @PasswordHash, PasswordSalt = @PasswordSalt, Role = @Role, Guid = @Guid WHERE Id = @Id",
+                    @"UPDATE Users SET Email = @Email, PasswordHash = @PasswordHash, PasswordSalt = @PasswordSalt, Role = @Role, Guid = @Guid, IsActive = @IsActive WHERE Id = @Id",
                     new
                     {
                         user.Email,
@@ -105,7 +106,8 @@ namespace Ref.Data.Repositories
                         user.PasswordSalt,
                         user.Id,
                         user.Role,
-                        user.Guid
+                        user.Guid,
+                        user.IsActive
                     });
             }
         }

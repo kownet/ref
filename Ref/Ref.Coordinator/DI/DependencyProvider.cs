@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using Ref.Coordinator.Core;
+using Ref.Data.Components;
 using Ref.Data.Db;
 using Ref.Data.Repositories;
 using Ref.Shared.Notifications;
@@ -48,9 +49,10 @@ namespace Ref.Coordinator.DI
 
             #region Repositories
             services.AddTransient<IUserRepository, UserRepository>();
-            services.AddTransient<IFilterRepository, FilterRepository>();
             services.AddTransient<IOfferRepository, OfferRepository>();
             services.AddTransient<IOfferFilterRepository, OfferFilterRepository>();
+
+            services.AddTransient<IUserSubscriptionReport, UserSubscriptionReport>();
             #endregion
 
             #region App

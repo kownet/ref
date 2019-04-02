@@ -6,7 +6,8 @@ CREATE TABLE Users(
 	[Role] nvarchar(32) NOT NULL,
 	[Subscription] int NOT NULL DEFAULT(100),
 	[RegisteredAt] datetime NOT NULL,
-	[Guid] varchar(255) NOT NULL
+	[Guid] varchar(255) NOT NULL,
+	[IsActive] bit NOT NULL DEFAULT(1)
 )
 
 CREATE TABLE Cities(

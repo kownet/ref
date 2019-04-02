@@ -14,5 +14,6 @@ namespace Ref.Data.Models
         public SubscriptionType Subscription { get; set; }
         public DateTime RegisteredAt { get; set; }
         public string Guid { get; set; }
+        public bool IsActive { get; set; }
     }
 }
