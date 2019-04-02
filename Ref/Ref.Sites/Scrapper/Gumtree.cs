@@ -84,6 +84,67 @@ namespace Ref.Sites.Scrapper
             };
         }
 
+        private List<Offer> Crawl(int pages, string searchQuery, HtmlNode doc, string code)
+        {
+            var result = new List<Offer>();
+
+            /// order by desc, no need to grab all sites
+            if (pages > AppProvider.Pages())
+                pages = AppProvider.Pages();
+
+            for (int i = 1; i <= pages; i++)
+            {
+                var sq = searchQuery.Replace($"{code}1", $"page-{i}/{code}{i}");
+
+                var scrap = ScrapThis($@"{sq}");
+
+                if (!scrap.Succeed)
+                    return result;
+
+                doc = scrap.HtmlNode;
+
+                var listing = doc.CssSelect(".result-link");
+
+                if (!(listing is null))
+                {
+                    if (listing.AnyAndNotNull())
+                    {
+                        foreach (var article in listing)
+                        {
+                            var ad = new Offer
+                            {
+                                DateAdded = DateTime.Now
+                            };
+
+                            if (int.TryParse(article.ByClass("amount", @"[^0-9,.-]"), out int price))
+                            {
+                                ad.Price = price;
+                            }
+
+                            var link = article.CssSelect(".href-link").FirstOrDefault();
+
+                            if (!(link is null))
+                            {
+                                ad.Url = $"https://www.gumtree.pl{link.ByAttribute("href")}";
+                                ad.Header = link.InnerText;
+
+                                if (!string.IsNullOrWhiteSpace(ad.Url))
+                                {
+                                    ad.SiteOfferId = ad.Url.Split("/").Last();
+                                }
+                            }
+
+                            if (ad.IsValidToAdd())
+                                result.Add(ad);
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        #region Standalone
         public SiteResponse Search(SearchFilter filter)
         {
             var result = new List<Ad>();
@@ -166,65 +227,6 @@ namespace Ref.Sites.Scrapper
                 FilterDesc = filter.Description()
             };
         }
-
-        private List<Offer> Crawl(int pages, string searchQuery, HtmlNode doc, string code)
-        {
-            var result = new List<Offer>();
-
-            /// order by desc, no need to grab all sites
-            if (pages > AppProvider.Pages())
-                pages = AppProvider.Pages();
-
-            for (int i = 1; i <= pages; i++)
-            {
-                var sq = searchQuery.Replace($"{code}1", $"page-{i}/{code}{i}");
-
-                var scrap = ScrapThis($@"{sq}");
-
-                if (!scrap.Succeed)
-                    return result;
-
-                doc = scrap.HtmlNode;
-
-                var listing = doc.CssSelect(".result-link");
-
-                if (!(listing is null))
-                {
-                    if (listing.AnyAndNotNull())
-                    {
-                        foreach (var article in listing)
-                        {
-                            var ad = new Offer
-                            {
-                                DateAdded = DateTime.Now
-                            };
-
-                            if (int.TryParse(article.ByClass("amount", @"[^0-9,.-]"), out int price))
-                            {
-                                ad.Price = price;
-                            }
-
-                            var link = article.CssSelect(".href-link").FirstOrDefault();
-
-                            if (!(link is null))
-                            {
-                                ad.Url = $"https://www.gumtree.pl{link.ByAttribute("href")}";
-                                ad.Header = link.InnerText;
-
-                                if (!string.IsNullOrWhiteSpace(ad.Url))
-                                {
-                                    ad.SiteOfferId = ad.Url.Split("/").Last();
-                                }
-                            }
-
-                            if (ad.IsValidToAdd())
-                                result.Add(ad);
-                        }
-                    }
-                }
-            }
-
-            return result;
-        }
+        #endregion
     }
 }

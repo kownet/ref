@@ -66,6 +66,83 @@ namespace Ref.Sites.Scrapper
             };
         }
 
+        private List<Offer> Crawl(int pages, string searchQuery, HtmlNode doc)
+        {
+            var result = new List<Offer>();
+
+            for (int i = 1; i <= pages; i++)
+            {
+                var scrap = ScrapThis($@"{searchQuery}&page={i}");
+
+                if (!scrap.Succeed)
+                    return result;
+
+                doc = scrap.HtmlNode;
+
+                var listing = doc.CssSelect(".section-listing__row-content");
+
+                if (!(listing is null))
+                {
+                    var articles = listing.CssSelect("article");
+
+                    if (!(articles is null))
+                    {
+                        if (articles.AnyAndNotNull())
+                        {
+                            foreach (var article in articles)
+                            {
+                                var ad = new Offer
+                                {
+                                    SiteOfferId = article.ByAttribute("data-tracking-id"),
+                                    Url = article.ByAttribute("data-url"),
+                                    Header = article.ByClass("offer-item-title"),
+                                    DateAdded = DateTime.Now
+                                };
+
+                                if (int.TryParse(article.ByClass("offer-item-price", @"[^0-9,.-]"), out int price))
+                                {
+                                    ad.Price = price;
+                                }
+
+                                var areaRaw = article.ByClass("offer-item-area", @"[^0-9,.-]");
+
+                                if (!string.IsNullOrWhiteSpace(areaRaw))
+                                {
+                                    areaRaw.Replace(",", "");
+                                    
+                                    if(areaRaw.Length >= 2)
+                                    {
+                                        areaRaw = areaRaw.Substring(0, 2);
+
+                                        if (int.TryParse(areaRaw, out int area))
+                                        {
+                                            ad.Area = area;
+                                        }
+                                    }
+                                }
+
+                                if (int.TryParse(article.ByClass("offer-item-rooms", @"[^0-9,.-]"), out int rooms))
+                                {
+                                    ad.Rooms = rooms;
+                                }
+
+                                if (int.TryParse(article.ByClass("offer-item-price-per-m", @"[^0-9,.-]"), out int ppm))
+                                {
+                                    ad.PricePerMeter = ppm;
+                                }
+
+                                if (ad.IsValidToAdd())
+                                    result.Add(ad);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        #region Standalone
         public SiteResponse Search(SearchFilter filter)
         {
             var result = new List<Ad>();
@@ -142,81 +219,6 @@ namespace Ref.Sites.Scrapper
                 FilterDesc = filter.Description()
             };
         }
-
-        private List<Offer> Crawl(int pages, string searchQuery, HtmlNode doc)
-        {
-            var result = new List<Offer>();
-
-            for (int i = 1; i <= pages; i++)
-            {
-                var scrap = ScrapThis($@"{searchQuery}&page={i}");
-
-                if (!scrap.Succeed)
-                    return result;
-
-                doc = scrap.HtmlNode;
-
-                var listing = doc.CssSelect(".section-listing__row-content");
-
-                if (!(listing is null))
-                {
-                    var articles = listing.CssSelect("article");
-
-                    if (!(articles is null))
-                    {
-                        if (articles.AnyAndNotNull())
-                        {
-                            foreach (var article in articles)
-                            {
-                                var ad = new Offer
-                                {
-                                    SiteOfferId = article.ByAttribute("data-tracking-id"),
-                                    Url = article.ByAttribute("data-url"),
-                                    Header = article.ByClass("offer-item-title"),
-                                    DateAdded = DateTime.Now
-                                };
-
-                                if (int.TryParse(article.ByClass("offer-item-price", @"[^0-9,.-]"), out int price))
-                                {
-                                    ad.Price = price;
-                                }
-
-                                var areaRaw = article.ByClass("offer-item-area", @"[^0-9,.-]");
-
-                                if (!string.IsNullOrWhiteSpace(areaRaw))
-                                {
-                                    areaRaw.Replace(",", "");
-                                    
-                                    if(areaRaw.Length >= 2)
-                                    {
-                                        areaRaw = areaRaw.Substring(0, 2);
-
-                                        if (int.TryParse(areaRaw, out int area))
-                                        {
-                                            ad.Area = area;
-                                        }
-                                    }
-                                }
-
-                                if (int.TryParse(article.ByClass("offer-item-rooms", @"[^0-9,.-]"), out int rooms))
-                                {
-                                    ad.Rooms = rooms;
-                                }
-
-                                if (int.TryParse(article.ByClass("offer-item-price-per-m", @"[^0-9,.-]"), out int ppm))
-                                {
-                                    ad.PricePerMeter = ppm;
-                                }
-
-                                if (ad.IsValidToAdd())
-                                    result.Add(ad);
-                            }
-                        }
-                    }
-                }
-            }
-
-            return result;
-        }
+        #endregion
     }
 }

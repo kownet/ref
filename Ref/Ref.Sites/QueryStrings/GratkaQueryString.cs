@@ -1,7 +1,6 @@
 ﻿using Ref.Data.Models;
 using Ref.Data.Repositories.Standalone;
 using Ref.Sites.Helpers;
-using System;
 
 namespace Ref.Sites.QueryStrings
 {
@@ -13,8 +12,13 @@ namespace Ref.Sites.QueryStrings
             var deal = dealType == DealType.Sale ? "sprzedaz" : "wynajem";
             var market = "wtorny";
 
+            var cityName = city.NameRaw;
+
+            if (city.NameRaw.Contains(' '))
+                cityName = city.NameRaw.Replace(' ', '-');
+
             var result =
-                $"https://gratka.pl/nieruchomosci/{type}/{city.NameRaw}/{deal}?";
+                $"https://gratka.pl/nieruchomosci/{type}/{cityName}/{deal}?";
 
             result = result + $"&rynek={market}";
 

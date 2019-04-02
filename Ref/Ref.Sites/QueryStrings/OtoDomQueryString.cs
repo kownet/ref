@@ -14,8 +14,13 @@ namespace Ref.Sites.QueryStrings
             var newest = 1; // from last 24hours
             var market = "secondary";
 
+            var cityName = city.NameRaw;
+
+            if (city.NameRaw.Contains(' '))
+                cityName = city.NameRaw.Replace(' ', '-');
+
             var result =
-                $"https://www.otodom.pl/{deal}/{type}/{city.NameRaw}/?";
+                $"https://www.otodom.pl/{deal}/{type}/{cityName}/?";
 
             var divider = "search%5B";
 

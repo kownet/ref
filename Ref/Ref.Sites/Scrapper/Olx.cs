@@ -77,6 +77,101 @@ namespace Ref.Sites.Scrapper
             };
         }
 
+        private List<Offer> Crawl(int pages, string searchQuery, HtmlNode doc)
+        {
+            var result = new List<Offer>();
+
+            /// order by desc, no need to grab all sites
+            if (pages > AppProvider.Pages())
+                pages = AppProvider.Pages();
+
+            for (int i = 1; i <= pages; i++)
+            {
+                var scrap = ScrapThis($@"{searchQuery}&page={i}");
+
+                if (!scrap.Succeed)
+                    return result;
+
+                doc = scrap.HtmlNode;
+
+                var listing = doc.CssSelect(".offer-wrapper");
+
+                if (!(listing is null))
+                {
+                    if (listing.AnyAndNotNull())
+                    {
+                        foreach (var offer in listing)
+                        {
+                            var ad = new Offer
+                            {
+                                DateAdded = DateTime.Now
+                            };
+
+                            var table = offer.CssSelect("table").FirstOrDefault();
+
+                            if (!(table is null))
+                            {
+                                ad.SiteOfferId = table.ByAttribute("data-id");
+
+                                var link = table.CssSelect(".linkWithHash").FirstOrDefault();
+
+                                if (!(link is null))
+                                {
+                                    var url = link.ByAttribute("href");
+
+                                    ad.Url = url;
+                                    ad.Header = Parse(url);
+                                }
+
+                                if (int.TryParse(table.ByClass("price", @"[^0-9,.-]"), out int price))
+                                {
+                                    ad.Price = price;
+                                }
+                            }
+
+                            if (ad.IsValidToAdd())
+                                result.Add(ad);
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        #region Private
+        private readonly string _olxBanner = "https://www.olx.pl/oferta/";
+        private readonly string _otodomBanner = "https://www.otodom.pl/oferta/";
+
+        private string Parse(string header)
+        {
+            if (header.Contains(_olxBanner))
+            {
+                var link = header.Replace(_olxBanner, string.Empty);
+
+                var split = link.Split('-');
+
+                Array.Resize(ref split, split.Length - 2);
+
+                return string.Join(" ", split).FirstCharToUpper();
+            }
+
+            if (header.Contains(_otodomBanner))
+            {
+                var link = header.Replace(_otodomBanner, string.Empty);
+
+                var split = link.Split('-');
+
+                Array.Resize(ref split, split.Length - 1);
+
+                return string.Join(" ", split).FirstCharToUpper();
+            }
+
+            else return string.Empty;
+        }
+        #endregion
+
+        #region Standalone
         public SiteResponse Search(SearchFilter filter)
         {
             var result = new List<Ad>();
@@ -173,97 +268,6 @@ namespace Ref.Sites.Scrapper
                 FilterDesc = filter.Description()
             };
         }
-
-        private List<Offer> Crawl(int pages, string searchQuery, HtmlNode doc)
-        {
-            var result = new List<Offer>();
-
-            /// order by desc, no need to grab all sites
-            if (pages > AppProvider.Pages())
-                pages = AppProvider.Pages();
-
-            for (int i = 1; i <= pages; i++)
-            {
-                var scrap = ScrapThis($@"{searchQuery}&page={i}");
-
-                if (!scrap.Succeed)
-                    return result;
-
-                doc = scrap.HtmlNode;
-
-                var listing = doc.CssSelect(".offer-wrapper");
-
-                if (!(listing is null))
-                {
-                    if (listing.AnyAndNotNull())
-                    {
-                        foreach (var offer in listing)
-                        {
-                            var ad = new Offer
-                            {
-                                DateAdded = DateTime.Now
-                            };
-
-                            var table = offer.CssSelect("table").FirstOrDefault();
-
-                            if (!(table is null))
-                            {
-                                ad.SiteOfferId = table.ByAttribute("data-id");
-
-                                var link = table.CssSelect(".linkWithHash").FirstOrDefault();
-
-                                if (!(link is null))
-                                {
-                                    var url = link.ByAttribute("href");
-
-                                    ad.Url = url;
-                                    ad.Header = Parse(url);
-                                }
-
-                                if (int.TryParse(table.ByClass("price", @"[^0-9,.-]"), out int price))
-                                {
-                                    ad.Price = price;
-                                }
-                            }
-
-                            if (ad.IsValidToAdd())
-                                result.Add(ad);
-                        }
-                    }
-                }
-            }
-
-            return result;
-        }
-
-        private readonly string _olxBanner = "https://www.olx.pl/oferta/";
-        private readonly string _otodomBanner = "https://www.otodom.pl/oferta/";
-
-        private string Parse(string header)
-        {
-            if (header.Contains(_olxBanner))
-            {
-                var link = header.Replace(_olxBanner, string.Empty);
-
-                var split = link.Split('-');
-
-                Array.Resize(ref split, split.Length - 2);
-
-                return string.Join(" ", split).FirstCharToUpper();
-            }
-
-            if (header.Contains(_otodomBanner))
-            {
-                var link = header.Replace(_otodomBanner, string.Empty);
-
-                var split = link.Split('-');
-
-                Array.Resize(ref split, split.Length - 1);
-
-                return string.Join(" ", split).FirstCharToUpper();
-            }
-
-            else return string.Empty;
-        }
+        #endregion
     }
 }

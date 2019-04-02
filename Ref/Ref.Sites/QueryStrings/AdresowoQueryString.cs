@@ -12,8 +12,13 @@ namespace Ref.Sites.QueryStrings
             var type = "mieszkania";
             var market = "fuz_l";
 
+            var cityName = city.NameRaw;
+
+            if (city.NameRaw.Contains(' '))
+                cityName = city.NameRaw.Replace(' ', '-');
+
             var result =
-                $"https://adresowo.pl/{type}/{city.NameRaw}/{market}";
+                $"https://adresowo.pl/{type}/{cityName}/{market}";
 
             return result;
         }

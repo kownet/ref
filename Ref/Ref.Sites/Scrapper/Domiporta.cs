@@ -67,6 +67,97 @@ namespace Ref.Sites.Scrapper
             };
         }
 
+        private List<Offer> Crawl(int pages, string searchQuery, HtmlNode doc)
+        {
+            var result = new List<Offer>();
+
+            /// order by desc, no need to grab all sites
+            if (pages > AppProvider.Pages())
+                pages = AppProvider.Pages();
+
+            for (int i = 1; i <= pages; i++)
+            {
+                var scrap = ScrapThis($@"{searchQuery}&PageNumber={i}");
+
+                if (!scrap.Succeed)
+                    return result;
+
+                doc = scrap.HtmlNode;
+
+                var listing = doc.CssSelect(".listing").FirstOrDefault();
+
+                if (!(listing is null))
+                {
+                    var articles = listing.CssSelect("article");
+
+                    if (!(articles is null))
+                    {
+                        if (articles.AnyAndNotNull())
+                        {
+                            foreach (var article in articles)
+                            {
+                                var ad = new Offer
+                                {
+                                    DateAdded = DateTime.Now
+                                };
+
+                                if (int.TryParse(article.ByClass("sneakpeak__details_price", @"[^0-9,.-]"), out int price))
+                                {
+                                    ad.Price = price;
+                                }
+
+                                var areaRaw = article.ByClass("sneakpeak__details_item--area", @"[^0-9,.-]");
+
+                                if (!string.IsNullOrWhiteSpace(areaRaw))
+                                {
+                                    if(areaRaw.Length >= 2)
+                                    {
+                                        areaRaw = areaRaw.Replace(",", "").Substring(0, 2);
+
+                                        if (int.TryParse(areaRaw, out int area))
+                                        {
+                                            ad.Area = area;
+                                        }
+                                    }
+                                }
+
+                                if (int.TryParse(article.ByClass("sneakpeak__details_item--price", @"[^0-9,.-]"), out int ppm))
+                                {
+                                    ad.PricePerMeter = ppm;
+                                }
+
+                                var idPin = article.CssSelect(".sneakpeak__pin").FirstOrDefault();
+
+                                if (!(idPin is null))
+                                {
+                                    var idInput = idPin.CssSelect("input").FirstOrDefault();
+
+                                    if (!(idInput is null))
+                                    {
+                                        ad.SiteOfferId = idInput.ByAttribute("value");
+                                    }
+                                }
+
+                                var cnt = article.CssSelect(".sneakpeak__picture_container").FirstOrDefault();
+
+                                if (!(cnt is null))
+                                {
+                                    ad.Url = $"https://www.domiporta.pl{cnt.ByAttribute("href")}";
+                                    ad.Header = HttpUtility.HtmlDecode(cnt.ByAttribute("title"));
+                                }
+
+                                if (ad.IsValidToAdd())
+                                    result.Add(ad);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        #region Standalone
         public SiteResponse Search(SearchFilter filter)
         {
             var result = new List<Ad>();
@@ -159,95 +250,6 @@ namespace Ref.Sites.Scrapper
                 FilterDesc = filter.Description()
             };
         }
-
-        private List<Offer> Crawl(int pages, string searchQuery, HtmlNode doc)
-        {
-            var result = new List<Offer>();
-
-            /// order by desc, no need to grab all sites
-            if (pages > AppProvider.Pages())
-                pages = AppProvider.Pages();
-
-            for (int i = 1; i <= pages; i++)
-            {
-                var scrap = ScrapThis($@"{searchQuery}&PageNumber={i}");
-
-                if (!scrap.Succeed)
-                    return result;
-
-                doc = scrap.HtmlNode;
-
-                var listing = doc.CssSelect(".listing").FirstOrDefault();
-
-                if (!(listing is null))
-                {
-                    var articles = listing.CssSelect("article");
-
-                    if (!(articles is null))
-                    {
-                        if (articles.AnyAndNotNull())
-                        {
-                            foreach (var article in articles)
-                            {
-                                var ad = new Offer
-                                {
-                                    DateAdded = DateTime.Now
-                                };
-
-                                if (int.TryParse(article.ByClass("sneakpeak__details_price", @"[^0-9,.-]"), out int price))
-                                {
-                                    ad.Price = price;
-                                }
-
-                                var areaRaw = article.ByClass("sneakpeak__details_item--area", @"[^0-9,.-]");
-
-                                if (!string.IsNullOrWhiteSpace(areaRaw))
-                                {
-                                    if(areaRaw.Length >= 2)
-                                    {
-                                        areaRaw = areaRaw.Replace(",", "").Substring(0, 2);
-
-                                        if (int.TryParse(areaRaw, out int area))
-                                        {
-                                            ad.Area = area;
-                                        }
-                                    }
-                                }
-
-                                if (int.TryParse(article.ByClass("sneakpeak__details_item--price", @"[^0-9,.-]"), out int ppm))
-                                {
-                                    ad.PricePerMeter = ppm;
-                                }
-
-                                var idPin = article.CssSelect(".sneakpeak__pin").FirstOrDefault();
-
-                                if (!(idPin is null))
-                                {
-                                    var idInput = idPin.CssSelect("input").FirstOrDefault();
-
-                                    if (!(idInput is null))
-                                    {
-                                        ad.SiteOfferId = idInput.ByAttribute("value");
-                                    }
-                                }
-
-                                var cnt = article.CssSelect(".sneakpeak__picture_container").FirstOrDefault();
-
-                                if (!(cnt is null))
-                                {
-                                    ad.Url = $"https://www.domiporta.pl{cnt.ByAttribute("href")}";
-                                    ad.Header = HttpUtility.HtmlDecode(cnt.ByAttribute("title"));
-                                }
-
-                                if (ad.IsValidToAdd())
-                                    result.Add(ad);
-                            }
-                        }
-                    }
-                }
-            }
-
-            return result;
-        }
+        #endregion
     }
 }

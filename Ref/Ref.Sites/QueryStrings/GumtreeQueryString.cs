@@ -17,8 +17,16 @@ namespace Ref.Sites.QueryStrings
 
             var page = 1;
 
+            var cityName = city.NameRaw;
+
+            if (city.NameRaw.Contains('-'))
+                cityName = city.NameRaw.Replace('-', '+');
+
+            if(city.NameRaw.Contains(' '))
+                cityName = city.NameRaw.Replace(' ', '-');
+
             var result =
-                $"https://www.gumtree.pl/{type}{deal}/{city.NameRaw}/{houseOrFlat}{code}{page}?";
+                $"https://www.gumtree.pl/{type}{deal}/{cityName}/{houseOrFlat}{code}{page}?";
 
             result = result + $"&sort=dt&order=desc";
 

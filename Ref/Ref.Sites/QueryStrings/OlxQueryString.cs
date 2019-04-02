@@ -13,8 +13,13 @@ namespace Ref.Sites.QueryStrings
             var deal = dealType == DealType.Sale ? "sprzedaz" : "wynajem";
             var market = "secondary";
 
+            var cityName = city.NameRaw;
+
+            if (city.NameRaw.Contains(' '))
+                cityName = city.NameRaw.Replace(' ', '-');
+
             var result =
-                $"https://www.olx.pl/nieruchomosci/{type}/{deal}/{city.NameRaw}/?";
+                $"https://www.olx.pl/nieruchomosci/{type}/{deal}/{cityName}/?";
 
             var divider = "search%5B";
 

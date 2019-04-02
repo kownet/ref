@@ -13,6 +13,11 @@ namespace Ref.Sites.QueryStrings
             var market = "2";
             var newest = 1;
 
+            var cityName = city.NameRaw;
+
+            if (city.NameRaw.Contains(' '))
+                cityName = city.NameRaw.Replace(' ', '-');
+
             var domain = "https://www.morizon.pl";
 
             if (dealType == DealType.Rent)
@@ -21,7 +26,7 @@ namespace Ref.Sites.QueryStrings
             }
 
             var result =
-                $"{domain}/{type}/{city.NameRaw}/?";
+                $"{domain}/{type}/{cityName}/?";
 
             var divider = "ps%5B";
 
