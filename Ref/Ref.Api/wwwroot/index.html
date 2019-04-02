@@ -167,7 +167,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="filter-area">Cena</label>
+                            <label for="filter-price">Cena</label>
                             <div class="row">
                                 <div class="col-md-6">
                                     <input type="number" class="form-control required" id="filter-add-price-from" placeholder="od" min="0" max="100000000" step="5" value="0" required="" oninput="this.value = Math.abs(this.value)">
@@ -178,10 +178,14 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="filter-name">Powiadomienia</label>
+                            <label for="filter-notification">Powiadomienia</label>
                             <select class="custom-select custom-select-sm required" id="filter-add-notification">
                                 <option value="" selected disabled>Wybierz</option>
                             </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="filter-keywords-contain">Słowa kluczowe (zawiera)</label>
+                            <textarea class="form-control" id="filter-add-should-contain" rows="2"></textarea>
                         </div>
                     </form>
                 </div>
@@ -227,7 +231,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="filter-area">Cena</label>
+                            <label for="filter-price">Cena</label>
                             <div class="row">
                                 <div class="col-md-6">
                                     <input type="number" class="form-control required-edit" id="filter-edit-price-from" placeholder="od" min="0" max="100000000" step="5" value="0" required="" oninput="this.value = Math.abs(this.value)">
@@ -238,10 +242,14 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="filter-name">Powiadomienia</label>
+                            <label for="filter-notification">Powiadomienia</label>
                             <select class="custom-select custom-select-sm required-edit" id="filter-edit-notification">
                                 <option value="" selected disabled>Wybierz</option>
                             </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="filter-keywords-contain">Słowa kluczowe (zawiera)</label>
+                            <textarea  class="form-control" id="filter-edit-should-contain" rows="2"></textarea>
                         </div>
                     </form>
                 </div>
@@ -303,7 +311,8 @@
             cntPriceTo: '#filter-add-price-to',
             cntNtf: '#filter-add-notification',
             cntModal: '#filter-add',
-            cntForm: '#filter-add-form'
+            cntForm: '#filter-add-form',
+            cntShouldContain: '#filter-add-should-contain'
         });
 
         APP.filters.editFilter({
@@ -320,7 +329,8 @@
             cntPriceTo: '#filter-edit-price-to',
             cntNtf: '#filter-edit-notification',
             cntModal: '#filter-edit',
-            cntForm: '#filter-edit-form'
+            cntForm: '#filter-edit-form',
+            cntShouldContain: '#filter-edit-should-contain'
         });
 
         APP.admininfos.getAll({

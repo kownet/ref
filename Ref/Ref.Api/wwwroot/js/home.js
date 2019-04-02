@@ -20,7 +20,7 @@
                 success: function (data) {
 
                     if (data.succeed) {
-                        console.log(data);
+                        
                         if (data.isActive) {
 
                             $(opts.cntInputEmail).val(data.email);

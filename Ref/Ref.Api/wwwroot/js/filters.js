@@ -16,6 +16,13 @@
                     $(opts.cntFiltersTable).empty();
 
                     $.each(data.filters, function (i, item) {
+
+                        var keywordsContain = !item.shouldContain
+                            ? ""
+                            : "<tr class=\"tr-small\">" +
+                                "<td colspan=\"6\">&nbsp;<i>Ogłoszenia powinny zawierać słowa:</i> '" + item.shouldContain + "'</td>" +
+                               "</tr>";
+
                         var rows = "<tr>" +
                             "<td>" + item.name + "<br><small>ostatnie powiadomienie: " + item.lastCheckedAtFormatted + "</small>" + "</td>" +
                             "<td>" + item.city + "</td>" +
@@ -27,7 +34,9 @@
                             "<button type=\"button\" class=\"btn btn-sm btn-danger\" id=\"btn-filter-del\" data-id=" + item.id + " data-user-id=" + item.userId + "> Usuń</button>" +
                             "<button type=\"button\" class=\"btn btn-sm btn-warning\" id=\"btn-filter-edit\" data-id=" + item.id + " data-user-id=" + item.userId + " data-toggle=\"modal\" data-target=\"#filter-edit\"> Edytuj</button>" +
                             "</div >" + "</td>" +
-                            "</tr>";
+                            "</tr>" +
+                            keywordsContain;
+
                         $(opts.cntFiltersTable).append(rows);
                     });
 
@@ -110,7 +119,8 @@
                 priceFrom: $(opts.cntPriceFrom).val(),
                 priceTo: $(opts.cntPriceTo).val(),
                 notification: $(opts.cntNtf).val(),
-                name: $(opts.cntName).val()
+                name: $(opts.cntName).val(),
+                shouldContain: $(opts.cntShouldContain).val()
             });
 
             $.ajax({
@@ -183,6 +193,7 @@
                         $(opts.cntAreaFrom).val(data.filter.flatAreaFrom);
                         $(opts.cntAreaTo).val(data.filter.flatAreaTo);
                         $(opts.cntNtf).val(data.filter.notification);
+                        $(opts.cntShouldContain).val(data.filter.shouldContain);
 
                     } else {
                         swal($.errorHeader, data.message, "error");
@@ -205,7 +216,8 @@
                 priceFrom: $(opts.cntPriceFrom).val(),
                 priceTo: $(opts.cntPriceTo).val(),
                 notification: $(opts.cntNtf).val(),
-                name: $(opts.cntName).val()
+                name: $(opts.cntName).val(),
+                shouldContain: $(opts.cntShouldContain).val()
             });
 
             $.ajax({
