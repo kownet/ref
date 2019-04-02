@@ -9,3 +9,5 @@ $.homeUrl = "https://pewnemieszkanie.pl";
 $.successHeader = "Zrobione!";
 $.errorHeader = "Błąd!";
 $.confirmHeader = "Czy na pewno?";
+
+$.notActiveUserMessage = "Okres próbny minął. Proszę o kontakt na tomek@kownet.info";

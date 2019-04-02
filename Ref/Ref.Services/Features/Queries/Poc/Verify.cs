@@ -21,6 +21,7 @@ namespace Ref.Services.Features.Queries.Poc
             public int UserId { get; set; }
             public string Email { get; set; }
             public string RegisteredAt { get; set; }
+            public bool IsActive { get; set; }
         }
 
         public class Handler : IRequestHandler<Query, Result>
@@ -45,7 +46,7 @@ namespace Ref.Services.Features.Queries.Poc
                         return new Result { Message = "Nie ma takiego użytkownika" };
                     else
                     {
-                        return new Result { UserId = user.Id, Email = user.Email, RegisteredAt = user.RegisteredAt.Format() };
+                        return new Result { UserId = user.Id, Email = user.Email, RegisteredAt = user.RegisteredAt.Format(), IsActive = user.IsActive };
                     }
                 }
                 catch (Exception ex)

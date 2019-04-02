@@ -20,22 +20,42 @@
                 success: function (data) {
 
                     if (data.succeed) {
-                        $(opts.cntInputEmail).val(data.email);
-                        $(opts.cntRegisteredAtInfo).text('Data rejestracji: ' + data.registeredAt);
-                        $(opts.cntUserId).val(data.userId);
+                        console.log(data);
+                        if (data.isActive) {
 
-                        APP.users.updateEmail({
-                            url: '/poc/email',
-                            userId: data.userId,
-                            cntInputEmail: '#input-email',
-                            btnSave: '#input-email-save'
-                        });
+                            $(opts.cntInputEmail).val(data.email);
+                            $(opts.cntRegisteredAtInfo).text('Data rejestracji: ' + data.registeredAt);
+                            $(opts.cntUserId).val(data.userId);
 
-                        APP.filters.getUserFilters({
-                            url: '/poc/filters',
-                            userId: data.userId,
-                            cntFiltersTable: '#filters-table'
-                        });
+                            APP.users.updateEmail({
+                                url: '/poc/email',
+                                userId: data.userId,
+                                cntInputEmail: '#input-email',
+                                btnSave: '#input-email-save'
+                            });
+
+                            APP.filters.getUserFilters({
+                                url: '/poc/filters',
+                                userId: data.userId,
+                                cntFiltersTable: '#filters-table'
+                            });
+
+                        } else {
+
+                            swal({
+                                title: $.errorHeader,
+                                text: $.notActiveUserMessage,
+                                icon: "error",
+                                dangerMode: true
+                            }).then((goOut) => {
+                                if (goOut) {
+
+                                    goBackIfError();
+
+                                }
+                            });
+
+                        }
 
                     } else {
                         swal($.errorHeader, data.message, "error");
