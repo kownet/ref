@@ -61,10 +61,10 @@ namespace Ref.Coordinator.Core
                     foreach (var group in grouped)
                     {
                         var oldFiltersToCheckGroup = group
-                            .Where(f => 
+                            .Where(f =>
                                 f.LastCheckedAt.Value <= DateTime.Now.AddHours(-ResolveTimeInterval(group.Key)));
 
-                        if(oldFiltersToCheckGroup.AnyAndNotNull())
+                        if (oldFiltersToCheckGroup.AnyAndNotNull())
                         {
                             _logger.LogTrace($"There are {oldFiltersToCheckGroup.Count()} filters to check.");
 
@@ -134,7 +134,29 @@ namespace Ref.Coordinator.Core
 
                 if (matchCriteriaOffers.AnyAndNotNull())
                 {
-                    var offerFilters = matchCriteriaOffers.Select(o => new OfferFilter
+                    var matchedOfferByKeyword = new List<Offer>();
+
+                    if (!string.IsNullOrWhiteSpace(filter.ShouldContain))
+                    {
+                        var keywords = filter.ShouldContain.Split(' ').ToArray();
+
+                        foreach (var matched in matchCriteriaOffers)
+                        {
+                            if(!string.IsNullOrWhiteSpace(matched.Content))
+                            {
+                                var offerContainAnyOfKeyword = keywords.Any(matched.Content.Contains);
+
+                                if (offerContainAnyOfKeyword)
+                                    matchedOfferByKeyword.Add(matched);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        matchedOfferByKeyword.AddRange(matchCriteriaOffers);
+                    }
+
+                    var offerFilters = matchedOfferByKeyword.Select(o => new OfferFilter
                     {
                         FilterId = filter.Id,
                         OfferId = o.Id,

@@ -77,7 +77,7 @@ namespace Ref.Scrapper.Core
                                     if(result.Succeed)
                                     {
                                         offer.Floor = result.Floor;
-                                        offer.Content = result.Content;
+                                        offer.Content = result.Content.ToLowerInvariant();
                                         offer.IsScrapped = true;
 
                                         await _offerRepository.UpdateAsync(offer);

@@ -20,8 +20,8 @@
                         var keywordsContain = !item.shouldContain
                             ? ""
                             : "<tr class=\"tr-small\">" +
-                                "<td colspan=\"6\">&nbsp;<i>Ogłoszenia powinny zawierać słowa:</i> '" + item.shouldContain + "'</td>" +
-                               "</tr>";
+                            "<td colspan=\"6\">&nbsp;<i>Ogłoszenia powinny zawierać słowa:</i> '" + item.shouldContain + "'</td>" +
+                            "</tr>";
 
                         var rows = "<tr>" +
                             "<td>" + item.name + "<br><small>ostatnie powiadomienie: " + item.lastCheckedAtFormatted + "</small>" + "</td>" +
@@ -275,9 +275,15 @@
 
     var validateRequired = function (opts) {
 
-        $(document).on('change keyup', opts.requiredClass, function (e) {
+        $(document).on('change keyup', opts.requiredClass, function () {
 
             let disabled = true;
+
+            var $this = $(this);
+
+            if($this.is("textarea")){
+                disabled = false;
+            }
 
             $(opts.requiredClass).each(function () {
 
