@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Ref.Data.Components;
 using Ref.Data.Models;
 using Ref.Data.Repositories;
 using Ref.Shared.Extensions;
@@ -20,7 +21,7 @@ namespace Ref.App.Core
         private readonly Func<SiteType, ISiteToScrapp> _siteAccessor;
         private readonly IAppProvider _appProvider;
 
-        private readonly ICitiesRepository _citiesRepository;
+        private readonly ICitiesReport _citiesReport;
         private readonly IOfferRepository _offerRepository;
         private readonly ISiteRepository _siteRepository;
 
@@ -30,7 +31,7 @@ namespace Ref.App.Core
             ILogger<RefService> logger,
             Func<SiteType, ISiteToScrapp> siteAccessor,
             IAppProvider appProvider,
-            ICitiesRepository citiesRepository,
+            ICitiesReport citiesReport,
             IOfferRepository offerRepository,
             ISiteRepository siteRepository,
             IPushOverNotification pushOverNotification)
@@ -38,7 +39,7 @@ namespace Ref.App.Core
             _logger = logger;
             _siteAccessor = siteAccessor;
             _appProvider = appProvider;
-            _citiesRepository = citiesRepository;
+            _citiesReport = citiesReport;
             _offerRepository = offerRepository;
             _siteRepository = siteRepository;
             _pushOverNotification = pushOverNotification;
@@ -54,7 +55,7 @@ namespace Ref.App.Core
                 .Where(s => sitesDefined.Contains(s.Type))
                 .Where(s => s.IsActive);
 
-            var cities = await _citiesRepository.GetAllAsync();
+            var cities = await _citiesReport.GetAllCitiesForActiveUsersAsync();
 
             var dealTypes = _appProvider.Deals().Select(s => (DealType)s);
 

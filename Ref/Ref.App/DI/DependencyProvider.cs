@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NLog.Extensions.Logging;
 using Ref.App.Core;
+using Ref.Data.Components;
 using Ref.Data.Db;
 using Ref.Data.Models;
 using Ref.Data.Repositories;
@@ -58,9 +59,9 @@ namespace Ref.App.DI
             #endregion
 
             #region Repositories
-            services.AddTransient<ICitiesRepository, CitiesRepository>();
             services.AddTransient<IOfferRepository, OfferRepository>();
             services.AddTransient<ISiteRepository, SiteRepository>();
+            services.AddTransient<ICitiesReport, CitiesReport>();
             #endregion
 
             #region QueryStrings
