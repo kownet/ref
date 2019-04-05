@@ -62,8 +62,7 @@ namespace Ref.Services.Features.Commands.Filters
                         CityId = request.CityId,
                         Name = request.Name,
                         LastCheckedAt = entity.LastCheckedAt,
-                        ShouldContain = request.ShouldContain,
-                        ShouldNotContain = request.ShouldNotContain
+                        ShouldContain = string.IsNullOrWhiteSpace(request.ShouldContain) ? "" : request.ShouldContain.ToLowerInvariant()
                     });
 
                     return new Result();

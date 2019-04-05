@@ -104,7 +104,8 @@
 
         APP.filters.validateRequired({
             requiredClass: '.required',
-            disabledClass: '.toggle-disabled'
+            disabledClass: '.toggle-disabled',
+            notClass: '.not'
         });
 
         $(document).on('click', opts.btn, function () {
@@ -168,7 +169,8 @@
 
         APP.filters.validateRequired({
             requiredClass: '.required-edit',
-            disabledClass: '.toggle-disabled-edit'
+            disabledClass: '.toggle-disabled-edit',
+            notClass: '.not'
         });
 
         var filterId = null;
@@ -279,13 +281,9 @@
 
             let disabled = true;
 
-            var $this = $(this);
+            var classR = opts.requiredClass + ':not(' + opts.notClass + ')';
 
-            if($this.is("textarea")){
-                disabled = false;
-            }
-
-            $(opts.requiredClass).each(function () {
+            $(classR).each(function () {
 
                 let value = this.value;
 
