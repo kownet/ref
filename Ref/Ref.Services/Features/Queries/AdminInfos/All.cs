@@ -4,6 +4,7 @@ using Ref.Services.Features.Shared;
 using Ref.Shared.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -46,7 +47,7 @@ namespace Ref.Services.Features.Queries.AdminInfos
                             result.Add(new AdminInfoResult { Id = entity.Id, Text = entity.Text, IsActive = entity.IsActive, DateAdded = entity.DateAdded.Format() });
                         }
 
-                        return new Result { Infos = result };
+                        return new Result { Infos = result.OrderByDescending(i => i.DateAdded) };
                     }
                     else return new Result { Message = "No cities in database" };
                 }
