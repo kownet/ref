@@ -127,13 +127,16 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 return await c.ExecuteAsync(
-                    @"UPDATE Offers SET Content = @Content, Floor = @Floor, IsScrapped = @IsScrapped WHERE Id = @Id",
+                    @"UPDATE Offers SET Content = @Content, Floor = @Floor, IsScrapped = @IsScrapped, Area = @Area, Rooms = @Rooms, PricePerMeter = @PricePerMeter WHERE Id = @Id",
                     new
                     {
                         offer.Id,
                         offer.Content,
-                        Floor = offer.Floor.HasValue ? offer.Floor.Value : (int?)null,
-                        offer.IsScrapped
+                        offer.Floor,
+                        offer.IsScrapped,
+                        offer.Area,
+                        offer.Rooms,
+                        offer.PricePerMeter
                     });
             }
         }

@@ -129,7 +129,7 @@ namespace Ref.Sites.Scrapper
                                 }
                             }
 
-                            if (ad.IsValidToAdd())
+                            if (ad.IsValidToAdd() && !ad.Url.Contains("https://www.otodom.pl"))
                                 result.Add(ad);
                         }
                     }

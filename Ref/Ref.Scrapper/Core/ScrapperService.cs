@@ -51,7 +51,7 @@ namespace Ref.Scrapper.Core
                 .Where(s => sitesDefined.Contains(s.Type))
                 .Where(s => s.IsActive);
 
-            var dateSince = DateTime.Now.AddHours(-1);
+            var dateSince = DateTime.Now.AddMinutes(-1);
 
             while (true)
             {
@@ -60,7 +60,7 @@ namespace Ref.Scrapper.Core
                     foreach (var site in availableSites)
                     {
                         var toScrapp = await _offerRepository
-                            .FindByAsync(o => !o.IsScrapped && o.Site == site.Type && o.DateAdded >= dateSince);
+                            .FindByAsync(o => !o.IsScrapped && o.Site == site.Type && o.DateAdded <= dateSince);
 
                         if (toScrapp.AnyAndNotNull())
                         {
@@ -76,14 +76,25 @@ namespace Ref.Scrapper.Core
 
                                     if(result.Succeed)
                                     {
-                                        offer.Floor = result.Floor;
                                         offer.Content = result.Content.ToLowerInvariant();
                                         offer.IsScrapped = true;
+
+                                        if (result.Floor.HasValue)
+                                            offer.Floor = result.Floor.Value;
+
+                                        if (result.Area.HasValue)
+                                            offer.Area = result.Area.Value;
+
+                                        if (result.Rooms.HasValue)
+                                            offer.Rooms = result.Rooms.Value;
+
+                                        if (result.PricePerMeter.HasValue)
+                                            offer.PricePerMeter = result.PricePerMeter.Value;
 
                                         await _offerRepository.UpdateAsync(offer);
                                     }
 
-                                    if(result.IsDeleted || !result.Succeed)
+                                    if(result.IsDeleted || result.IsRedirected || !result.Succeed)
                                     {
                                         await _offerRepository.SetDeletedAsync(offer.Id);
                                     }
