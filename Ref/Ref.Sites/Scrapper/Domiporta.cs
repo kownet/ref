@@ -121,9 +121,16 @@ namespace Ref.Sites.Scrapper
                                     }
                                 }
 
-                                if (int.TryParse(article.ByClass("sneakpeak__details_item--price", @"[^0-9,.-]"), out int ppm))
+                                var ppms = article.ByClass("sneakpeak__details_item--price", @"[^0-9,.-]");
+
+                                if(!string.IsNullOrWhiteSpace(ppms))
                                 {
-                                    ad.PricePerMeter = ppm;
+                                    ppms = ppms.Remove(ppms.Length - 1);
+
+                                    if (int.TryParse(ppms, out int ppm))
+                                    {
+                                        ad.PricePerMeter = ppm;
+                                    }
                                 }
 
                                 var idPin = article.CssSelect(".sneakpeak__pin").FirstOrDefault();

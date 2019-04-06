@@ -130,7 +130,7 @@ namespace Ref.Coordinator.Core
                         o.Deal == filter.Deal &&
                         o.Price >= filter.PriceFrom &&
                         o.Price <= filter.PriceTo &&
-                        !o.IsScrapped &&
+                        o.IsScrapped &&
                         o.DateAdded >= userRegisterDate);
 
                 if (matchCriteriaOffers.AnyAndNotNull())

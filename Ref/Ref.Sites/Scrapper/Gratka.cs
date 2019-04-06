@@ -143,28 +143,37 @@ namespace Ref.Sites.Scrapper
 
                                     if (lis.AnyAndNotNull())
                                     {
-                                        var areaRaw = lis.FirstOrDefault();
-
-                                        if (!(areaRaw is null))
+                                        foreach (var li in lis)
                                         {
-                                            if (!string.IsNullOrWhiteSpace(areaRaw.InnerText))
+                                            var areaRaw = li;
+
+                                            if (!(areaRaw is null))
                                             {
-                                                if (int.TryParse(areaRaw.InnerText.Replace("Powierzchnia w m2: ", ""), out int a))
+                                                if (!string.IsNullOrWhiteSpace(areaRaw.InnerText))
                                                 {
-                                                    ad.Area = a;
+                                                    if(areaRaw.InnerText.Contains("Powierzchnia w m2: "))
+                                                    {
+                                                        if (int.TryParse(areaRaw.InnerText.Replace("Powierzchnia w m2: ", ""), out int a))
+                                                        {
+                                                            ad.Area = a;
+                                                        }
+                                                    }
                                                 }
                                             }
-                                        }
 
-                                        var roomsRaw = lis.Skip(1).FirstOrDefault();
+                                            var roomsRaw = li;
 
-                                        if (!(roomsRaw is null))
-                                        {
-                                            if (!string.IsNullOrWhiteSpace(roomsRaw.InnerText))
+                                            if (!(roomsRaw is null))
                                             {
-                                                if (int.TryParse(roomsRaw.InnerText.Replace("Liczba pokoi: ", ""), out int r))
+                                                if (!string.IsNullOrWhiteSpace(roomsRaw.InnerText))
                                                 {
-                                                    ad.Rooms = r;
+                                                    if(roomsRaw.InnerText.Contains("Liczba pokoi: "))
+                                                    {
+                                                        if (int.TryParse(roomsRaw.InnerText.Replace("Liczba pokoi: ", ""), out int r))
+                                                        {
+                                                            ad.Rooms = r;
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }

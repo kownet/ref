@@ -111,9 +111,19 @@ namespace Ref.Sites.Scrapper
                                     ad.Price = price;
                                 }
 
-                                if (int.TryParse(article.ByClass("single-result__price--currency", @"[^0-9,.-]"), out int ppm))
+                                var ppms = article.ByClass("single-result__price--currency", @"[^0-9,.-]");
+
+                                if (!string.IsNullOrWhiteSpace(ppms))
                                 {
-                                    ad.PricePerMeter = ppm;
+                                    if (ppms.Contains(","))
+                                    {
+                                        var ppmsSplitted = ppms.Split(",")[0];
+
+                                        if (int.TryParse(ppmsSplitted, out int ppm))
+                                        {
+                                            ad.PricePerMeter = ppm;
+                                        }
+                                    }
                                 }
 
                                 var info = article.CssSelect(".info-description").FirstOrDefault();
@@ -126,27 +136,27 @@ namespace Ref.Sites.Scrapper
                                     {
                                         if (elements.AnyAndNotNull())
                                         {
-                                            var first = elements.First();
-                                            var secondLast = elements.SecondLast();
-
-                                            if (!(first is null))
+                                            foreach (var element in elements)
                                             {
-                                                if (!string.IsNullOrWhiteSpace(first.InnerText))
+                                                if (!(element is null))
                                                 {
-                                                    if (int.TryParse(Regex.Replace(first.InnerText, regex, string.Empty).Trim(), out int r))
+                                                    if (!string.IsNullOrWhiteSpace(element.InnerText))
                                                     {
-                                                        ad.Rooms = r;
-                                                    }
-                                                }
-                                            }
+                                                        if (element.InnerText.Contains(" m²"))
+                                                        {
+                                                            if (int.TryParse(Regex.Replace(element.InnerText, regex, string.Empty).Trim(), out int a))
+                                                            {
+                                                                ad.Area = a;
+                                                            }
+                                                        }
 
-                                            if (!(secondLast is null))
-                                            {
-                                                if (!string.IsNullOrWhiteSpace(secondLast.InnerText))
-                                                {
-                                                    if (int.TryParse(Regex.Replace(secondLast.InnerText, regex, string.Empty).Trim(), out int a))
-                                                    {
-                                                        ad.Area = a;
+                                                        if (element.InnerText.Contains("pokoje") || element.InnerText.Contains("pokój"))
+                                                        {
+                                                            if (int.TryParse(Regex.Replace(element.InnerText, regex, string.Empty).Trim(), out int r))
+                                                            {
+                                                                ad.Rooms = r;
+                                                            }
+                                                        }
                                                     }
                                                 }
                                             }
