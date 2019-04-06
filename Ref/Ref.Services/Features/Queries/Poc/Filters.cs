@@ -66,14 +66,9 @@ namespace Ref.Services.Features.Queries.Poc
                                         INNER JOIN Cities C on F.CityId = C.Id
                                         WHERE F.UserId = @UserId", new { request.UserId });
 
-                        if (entities.AnyAndNotNull())
-                        {
-                            return new Result { Filters = entities };
-                        }
-                        else
-                        {
-                            return new Result { Message = "Brak filtrów" };
-                        }
+                        return entities.AnyAndNotNull()
+                            ? new Result { Filters = entities }
+                            : new Result();
                     }
                 }
                 catch (Exception ex)

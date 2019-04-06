@@ -15,35 +15,39 @@
 
                     $(opts.cntFiltersTable).empty();
 
-                    $.each(data.filters, function (i, item) {
+                    if (data.filters.length !== 0) {
 
-                        var keywordsContain = !item.shouldContain
-                            ? ""
-                            : "<tr class=\"tr-small\">" +
-                            "<td colspan=\"6\">&nbsp;<i>Ogłoszenia powinny zawierać słowa:</i> '" + item.shouldContain + "'</td>" +
-                            "</tr>";
+                        $.each(data.filters, function (i, item) {
 
-                        var rows = "<tr>" +
-                            "<td>" + item.name + "<br><small>ostatnie powiadomienie: " + item.lastCheckedAtFormatted + "</small>" + "</td>" +
-                            "<td>" + item.city + "</td>" +
-                            "<td>" + item.flatAreaFrom + " - " + item.flatAreaTo + "</td>" +
-                            "<td>" + item.priceFrom + " - " + item.priceTo + "</td>" +
-                            "<td>" + item.notificationFormatted + "</td>" +
-                            "<td>" +
-                            "<div class=\"btn-group btn-group-sm\">" +
-                            "<button type=\"button\" class=\"btn btn-sm btn-danger\" id=\"btn-filter-del\" data-id=" + item.id + " data-user-id=" + item.userId + "> Usuń</button>" +
-                            "<button type=\"button\" class=\"btn btn-sm btn-warning\" id=\"btn-filter-edit\" data-id=" + item.id + " data-user-id=" + item.userId + " data-toggle=\"modal\" data-target=\"#filter-edit\"> Edytuj</button>" +
-                            "</div >" + "</td>" +
-                            "</tr>" +
-                            keywordsContain;
+                            var keywordsContain = !item.shouldContain
+                                ? ""
+                                : "<tr class=\"tr-small\">" +
+                                "<td colspan=\"6\">&nbsp;<i>Ogłoszenia powinny zawierać zwrot:</i> '" + item.shouldContain + "'</td>" +
+                                "</tr>";
 
-                        $(opts.cntFiltersTable).append(rows);
-                    });
+                            var rows = "<tr>" +
+                                "<td>" + item.name + "<br><small>ostatnie powiadomienie: " + item.lastCheckedAtFormatted + "</small>" + "</td>" +
+                                "<td>" + item.city + "</td>" +
+                                "<td>" + item.flatAreaFrom + " - " + item.flatAreaTo + "</td>" +
+                                "<td>" + item.priceFrom + " - " + item.priceTo + "</td>" +
+                                "<td>" + item.notificationFormatted + "</td>" +
+                                "<td>" +
+                                "<div class=\"btn-group btn-group-sm\">" +
+                                "<button type=\"button\" class=\"btn btn-sm btn-danger\" id=\"btn-filter-del\" data-id=" + item.id + " data-user-id=" + item.userId + "> Usuń</button>" +
+                                "<button type=\"button\" class=\"btn btn-sm btn-warning\" id=\"btn-filter-edit\" data-id=" + item.id + " data-user-id=" + item.userId + " data-toggle=\"modal\" data-target=\"#filter-edit\"> Edytuj</button>" +
+                                "</div >" + "</td>" +
+                                "</tr>" +
+                                keywordsContain;
 
-                    APP.filters.deleteFilter({
-                        url: '/poc/deletefilter',
-                        btnDelete: '#btn-filter-del'
-                    });
+                            $(opts.cntFiltersTable).append(rows);
+                        });
+
+                        APP.filters.deleteFilter({
+                            url: '/poc/deletefilter',
+                            btnDelete: '#btn-filter-del'
+                        });
+
+                    }
 
                 } else {
                     swal($.errorHeader, data.message, "error");

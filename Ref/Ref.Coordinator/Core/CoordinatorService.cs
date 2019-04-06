@@ -130,6 +130,7 @@ namespace Ref.Coordinator.Core
                         o.Deal == filter.Deal &&
                         o.Price >= filter.PriceFrom &&
                         o.Price <= filter.PriceTo &&
+                        !o.IsScrapped &&
                         o.DateAdded >= userRegisterDate);
 
                 if (matchCriteriaOffers.AnyAndNotNull())
@@ -138,15 +139,11 @@ namespace Ref.Coordinator.Core
 
                     if (!string.IsNullOrWhiteSpace(filter.ShouldContain))
                     {
-                        var keywords = filter.ShouldContain.Split(' ').ToArray();
-
                         foreach (var matched in matchCriteriaOffers)
                         {
                             if(!string.IsNullOrWhiteSpace(matched.Content))
                             {
-                                var offerContainAnyOfKeyword = keywords.Any(matched.Content.Contains);
-
-                                if (offerContainAnyOfKeyword)
+                                if (matched.Content.Contains(filter.ShouldContain))
                                     matchedOfferByKeyword.Add(matched);
                             }
                         }
