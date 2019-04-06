@@ -50,7 +50,7 @@ namespace Ref.Sites.Scrapper.Single
                     {
                         if (!string.IsNullOrWhiteSpace(element.InnerText.Trim()))
                         {
-                            if(element.InnerText.Contains("Piętro"))
+                            if (element.InnerText.Contains("Piętro"))
                             {
                                 if (int.TryParse(Regex.Replace(element.InnerText.Trim(), regex, string.Empty).Trim(), out int a))
                                 {

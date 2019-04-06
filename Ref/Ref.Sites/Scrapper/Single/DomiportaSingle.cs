@@ -79,7 +79,7 @@ namespace Ref.Sites.Scrapper.Single
 
                                 var counter = 0;
 
-                                if(names.AnyAndNotNull())
+                                if (names.AnyAndNotNull())
                                 {
                                     foreach (var name in names)
                                     {
@@ -91,9 +91,9 @@ namespace Ref.Sites.Scrapper.Single
 
                                                 if (!(val is null))
                                                 {
-                                                    if(!string.IsNullOrWhiteSpace(val.InnerText))
+                                                    if (!string.IsNullOrWhiteSpace(val.InnerText))
                                                     {
-                                                        if(val.InnerText.Contains("Parter"))
+                                                        if (val.InnerText.Contains("Parter"))
                                                         {
                                                             result.Floor = 0;
                                                         }
@@ -110,6 +110,47 @@ namespace Ref.Sites.Scrapper.Single
                                         }
 
                                         counter++;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            var sum = doc.CssSelect(".summary").FirstOrDefault();
+
+            if (!(sum is null))
+            {
+                var imgs = sum.CssSelect(".summary__details_item");
+
+                if (imgs.AnyAndNotNull())
+                {
+                    foreach (var img in imgs)
+                    {
+                        var imgsrc = img.CssSelect("img");
+
+                        if (imgsrc.AnyAndNotNull())
+                        {
+                            foreach (var item in imgsrc)
+                            {
+                                var src = item.ByAttribute("src");
+
+                                if (!string.IsNullOrWhiteSpace(src))
+                                {
+                                    if (src.Contains("rooms"))
+                                    {
+                                        var r = img.InnerText;
+
+                                        if (!string.IsNullOrWhiteSpace(r))
+                                        {
+                                            r = r.Trim();
+
+                                            if (int.TryParse(r, out int rr))
+                                            {
+                                                result.Rooms = rr;
+                                            }
+                                        }
                                     }
                                 }
                             }

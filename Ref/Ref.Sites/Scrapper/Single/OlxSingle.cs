@@ -44,19 +44,19 @@ namespace Ref.Sites.Scrapper.Single
             {
                 var items = descContent.CssSelect(".item");
 
-                if(items.AnyAndNotNull())
+                if (items.AnyAndNotNull())
                 {
                     foreach (var item in items)
                     {
                         if (!string.IsNullOrWhiteSpace(item.InnerText))
                         {
-                            if(item.InnerText.Contains("Cena za m²"))
+                            if (item.InnerText.Contains("Cena za m²"))
                             {
                                 var val = item.ByClass("value", @"[^0-9,.-]");
 
-                                if(!string.IsNullOrWhiteSpace(val))
+                                if (!string.IsNullOrWhiteSpace(val))
                                 {
-                                    if(val.Contains("."))
+                                    if (val.Contains("."))
                                     {
                                         var ppms = val.Split(".")[0];
 
@@ -87,7 +87,7 @@ namespace Ref.Sites.Scrapper.Single
 
                                 if (!string.IsNullOrWhiteSpace(val))
                                 {
-                                    if(val.Contains(","))
+                                    if (val.Contains(","))
                                     {
                                         var toParse = val.Split(",")[0];
 
@@ -118,6 +118,22 @@ namespace Ref.Sites.Scrapper.Single
                                     }
                                 }
                             }
+                        }
+                    }
+                }
+            }
+
+            if(!result.PricePerMeter.HasValue || (result.PricePerMeter.HasValue && result.PricePerMeter.Value == 0))
+            {
+                if (result.Area.HasValue && offer.Price > 0)
+                {
+                    if (result.Area.Value > 0)
+                    {
+                        var ppm = offer.Price / result.Area.Value;
+
+                        if (ppm > 0)
+                        {
+                            result.PricePerMeter = ppm;
                         }
                     }
                 }
