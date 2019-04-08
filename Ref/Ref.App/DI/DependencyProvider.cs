@@ -176,7 +176,11 @@ namespace Ref.App.DI
                 configurationRoot["app:sites"],
                 configurationRoot["app:deals"],
                 configurationRoot["app:timeout"],
-                configurationRoot["app:pages"])
+                configurationRoot["app:pages"],
+                configurationRoot["app:notifications:banned"],
+                configurationRoot["app:notifications:norecords"],
+                configurationRoot["app:notifications:exception"],
+                configurationRoot["app:notifications:appexception"])
             );
             #endregion
 

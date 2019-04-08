@@ -89,7 +89,7 @@ namespace Ref.App.Core
 
                                         await _siteRepository.UpdateAsync(site);
 
-                                        if(_appProvider.AdminNotification())
+                                        if (_appProvider.BannedNotifications())
                                         {
                                             _pushOverNotification.Send(
                                                 Labels.BannedMsgTitle,
@@ -100,8 +100,8 @@ namespace Ref.App.Core
                                     if (result.ThereAreNoRecords)
                                     {
                                         _logger.LogError(Labels.NoRecordsMsg(site.Type.ToString(), city.Name));
-                                        
-                                        if(_appProvider.AdminNotification())
+
+                                        if (_appProvider.NoRecordsNotifications())
                                         {
                                             _pushOverNotification.Send(
                                                 Labels.NoRecordsMsgTitle,
@@ -112,8 +112,8 @@ namespace Ref.App.Core
                                     if (result.ExceptionAccured)
                                     {
                                         _logger.LogError(Labels.ExceptionMsg(site.Type.ToString(), result.ExceptionMessage, city.Name));
-                                        
-                                        if(_appProvider.AdminNotification())
+
+                                        if (_appProvider.ExceptionNotifications())
                                         {
                                             _pushOverNotification.Send(
                                                 Labels.ExceptionMsgTitle,
@@ -168,9 +168,12 @@ namespace Ref.App.Core
 
                     _logger.LogError(msgException);
 
-                    _pushOverNotification.Send(
-                        $"[{_appProvider.AppId()}]{Labels.ErrorMsgTitle}",
-                        $"{msgHeader} {ex.GetFullMessage()}");
+                    if (_appProvider.AppExceptionNotifications())
+                    {
+                        _pushOverNotification.Send(
+                            $"[{_appProvider.AppId()}]{Labels.ErrorMsgTitle}",
+                            $"{msgHeader} {ex.GetFullMessage()}");
+                    }
 
                     Thread.Sleep(_appProvider.PauseTime());
                 }

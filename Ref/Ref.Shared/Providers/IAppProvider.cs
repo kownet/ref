@@ -9,6 +9,10 @@ namespace Ref.Shared.Providers
         IEnumerable<int> Deals();
         int Timeout();
         int Pages();
+        bool BannedNotifications();
+        bool NoRecordsNotifications();
+        bool ExceptionNotifications();
+        bool AppExceptionNotifications();
     }
 
     public class AppProvider : AppBaseProvider, IAppProvider
@@ -17,6 +21,10 @@ namespace Ref.Shared.Providers
         private readonly string _deals;
         private readonly string _timeout;
         private readonly string _pages;
+        private readonly string _bannedn;
+        private readonly string _norecordsn;
+        private readonly string _exceptionn;
+        private readonly string _appexceptionn;
 
         public AppProvider(
             string address,
@@ -29,18 +37,31 @@ namespace Ref.Shared.Providers
             string sites,
             string deals,
             string timeout,
-            string pages)
+            string pages,
+            string bannedn,
+            string norecordsn,
+            string exceptionn,
+            string appexceptionn)
             : base(address, sender, replyto, pausetime, adminnotification, successTries, appId)
         {
             _sites = sites;
             _deals = deals;
             _timeout = timeout;
             _pages = pages;
+            _bannedn = bannedn;
+            _norecordsn = norecordsn;
+            _exceptionn = exceptionn;
+            _appexceptionn = appexceptionn;
         }
 
         public IEnumerable<int> Sites() => _sites.Split(",").Select(int.Parse).ToList();
         public IEnumerable<int> Deals() => _deals.Split(",").Select(int.Parse).ToList();
         public int Timeout() => int.Parse(_timeout);
         public int Pages() => int.Parse(_pages);
+
+        public bool BannedNotifications() => bool.Parse(_bannedn);
+        public bool NoRecordsNotifications() => bool.Parse(_norecordsn);
+        public bool ExceptionNotifications() => bool.Parse(_exceptionn);
+        public bool AppExceptionNotifications() => bool.Parse(_appexceptionn);
     }
 }
