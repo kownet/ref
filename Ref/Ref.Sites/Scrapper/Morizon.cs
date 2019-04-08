@@ -42,6 +42,15 @@ namespace Ref.Sites.Scrapper
 
             HtmlNode doc = scrap.HtmlNode;
 
+            if (doc.InnerHtml.Contains("Ta strona została zablokowana."))
+            {
+                return new ScrappResponse
+                {
+                    Offers = new List<Offer>(),
+                    WeAreBanned = true
+                };
+            }
+
             var noResult = doc.CssSelect(".message-title").FirstOrDefault();
 
             if (noResult != null)
