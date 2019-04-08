@@ -51,10 +51,10 @@ namespace Ref.Scrapper.Core
                 .Where(s => sitesDefined.Contains(s.Type))
                 .Where(s => s.IsActive);
 
-            var dateSince = DateTime.Now.AddMinutes(-1);
-
             while (true)
             {
+                var dateSince = DateTime.Now.AddMinutes(-1);
+
                 try
                 {
                     foreach (var site in availableSites)
@@ -122,9 +122,12 @@ namespace Ref.Scrapper.Core
 
                     _logger.LogError(msgException);
 
-                    _pushOverNotification.Send(
-                        $"[{_appProvider.AppId()}]{Labels.ErrorMsgTitle}",
-                        $"{msgHeader} {ex.GetFullMessage()}");
+                    if(_appProvider.AdminNotification())
+                    {
+                        _pushOverNotification.Send(
+                            $"[{_appProvider.AppId()}]{Labels.ErrorMsgTitle}",
+                            $"{msgHeader} {ex.GetFullMessage()}");
+                    }
 
                     Thread.Sleep(_appProvider.PauseTime());
                 }
