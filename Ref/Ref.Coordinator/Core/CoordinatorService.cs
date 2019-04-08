@@ -124,17 +124,34 @@ namespace Ref.Coordinator.Core
             {
                 var userRegisterDate = (await _userRepository.FindByAsync(u => u.Id == filter.UserId))
                     .FirstOrDefault().RegisteredAt;
-                
+
                 Expression<Func<Offer, bool>> predicate = (o =>
                     o.CityId == filter.CityId &&
                     o.Deal == filter.Deal &&
                     o.DateAdded >= userRegisterDate &&
                     o.IsScrapped);
 
-                predicate = predicate = (o => o.Price <= filter.PriceTo);
+                if (filter.PriceFrom.HasValue)
+                    predicate = predicate = (o => o.Price >= filter.PriceFrom.Value);
 
-                var matchCriteriaOffers = await _offerRepository
-                    .FindByAsync(predicate);
+                if (filter.PriceTo.HasValue)
+                    predicate = predicate = (o => o.Price <= filter.PriceTo.Value);
+
+                if (filter.FlatAreaFrom.HasValue)
+                    predicate = predicate = (o => o.Area >= filter.FlatAreaFrom.Value);
+
+                if (filter.FlatAreaTo.HasValue)
+                    predicate = predicate = (o => o.Area <= filter.FlatAreaTo.Value);
+
+                if (filter.PricePerMeterFrom.HasValue)
+                    predicate = predicate = (o => o.PricePerMeter >= filter.PricePerMeterFrom.Value);
+
+                if (filter.PricePerMeterTo.HasValue)
+                    predicate = predicate = (o => o.PricePerMeter <= filter.PricePerMeterTo.Value);
+
+                var matchCriteriaOffers = (await _offerRepository
+                    .FindByAsync(predicate))
+                    .ToList();
 
                 if (matchCriteriaOffers.AnyAndNotNull())
                 {
@@ -144,7 +161,7 @@ namespace Ref.Coordinator.Core
                     {
                         foreach (var matched in matchCriteriaOffers)
                         {
-                            if(!string.IsNullOrWhiteSpace(matched.Content))
+                            if (!string.IsNullOrWhiteSpace(matched.Content))
                             {
                                 if (matched.Content.Contains(filter.ShouldContain))
                                     matchedOfferByKeyword.Add(matched);

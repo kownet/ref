@@ -81,7 +81,7 @@ namespace Ref.Services.Features.Commands.Filters
                             Notification = request.Notification,
                             Name = request.Name,
                             LastCheckedAt = DateTime.Now,
-                            ShouldContain = string.IsNullOrWhiteSpace(request.ShouldContain) ? "" : request.ShouldContain.ToLowerInvariant()
+                            ShouldContain = request.ShouldContain
                         });
 
                         return new Result();

@@ -24,7 +24,7 @@ namespace Ref.Data.Components
             using (var c = _dbAccess.Connection)
             {
                 return await c.QueryAsync<UserSubscription>(
-                    @"SELECT F.Id, F.UserId, F.Property, F.Deal, F.Market, F.CityId, F.FlatAreaFrom, F.FlatAreaTo, F.PriceFrom, F.PriceTo, F.Name, F.Notification, F.LastCheckedAt, F.ShouldContain, F.ShouldNotContain, U.IsActive as IsUserActive
+                    @"SELECT F.Id, F.UserId, F.Property, F.Deal, F.Market, F.CityId, F.FlatAreaFrom, F.FlatAreaTo, F.PriceFrom, F.PriceTo, F.Name, F.Notification, F.LastCheckedAt, F.ShouldContain, F.ShouldNotContain, U.IsActive as IsUserActive, F.PricePerMeterFrom, F.PricePerMeterTo 
                         FROM Filters as F INNER JOIN Users U on F.UserId = U.Id WHERE U.IsActive = 1 AND F.Notification <> 100");
             }
         }
