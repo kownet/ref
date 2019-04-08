@@ -56,12 +56,12 @@ namespace Ref.Notifier.Core
                     {
                         var groupedForClient = filtersResultNotSent
                             .GroupBy(f => f.Email)
-                            .Select(gr => new { Email = gr.Key, Filters = gr.ToList() })
+                            .Select(gr => new { Email = gr.Key, Token = gr.First().Token, Filters = gr.ToList() })
                             .ToList();
 
                         foreach (var user in groupedForClient)
                         {
-                            var email = new EmailUI();
+                            var email = new EmailUI(user.Token);
 
                             foreach (var filter in user.Filters)
                             {
