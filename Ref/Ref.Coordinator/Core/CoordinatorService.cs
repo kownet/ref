@@ -9,6 +9,7 @@ using Ref.Shared.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -123,15 +124,17 @@ namespace Ref.Coordinator.Core
             {
                 var userRegisterDate = (await _userRepository.FindByAsync(u => u.Id == filter.UserId))
                     .FirstOrDefault().RegisteredAt;
+                
+                Expression<Func<Offer, bool>> predicate = (o =>
+                    o.CityId == filter.CityId &&
+                    o.Deal == filter.Deal &&
+                    o.DateAdded >= userRegisterDate &&
+                    o.IsScrapped);
+
+                predicate = predicate = (o => o.Price <= filter.PriceTo);
 
                 var matchCriteriaOffers = await _offerRepository
-                    .FindByAsync(o =>
-                        o.CityId == filter.CityId &&
-                        o.Deal == filter.Deal &&
-                        o.Price >= filter.PriceFrom &&
-                        o.Price <= filter.PriceTo &&
-                        o.IsScrapped &&
-                        o.DateAdded >= userRegisterDate);
+                    .FindByAsync(predicate);
 
                 if (matchCriteriaOffers.AnyAndNotNull())
                 {

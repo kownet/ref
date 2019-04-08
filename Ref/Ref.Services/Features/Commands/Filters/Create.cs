@@ -16,10 +16,12 @@ namespace Ref.Services.Features.Commands.Filters
         {
             public int UserId { get; set; }
             public int CityId { get; set; }
-            public int FlatAreaFrom { get; set; }
-            public int FlatAreaTo { get; set; }
-            public int PriceFrom { get; set; }
-            public int PriceTo { get; set; }
+            public int? FlatAreaFrom { get; set; }
+            public int? FlatAreaTo { get; set; }
+            public int? PriceFrom { get; set; }
+            public int? PriceTo { get; set; }
+            public int? PricePerMeterFrom { get; set; }
+            public int? PricePerMeterTo { get; set; }
             public NotificationType Notification { get; set; }
             public string Name { get; set; }
             public string ShouldContain { get; set; }
@@ -74,6 +76,8 @@ namespace Ref.Services.Features.Commands.Filters
                             FlatAreaTo = request.FlatAreaTo,
                             PriceFrom = request.PriceFrom,
                             PriceTo = request.PriceTo,
+                            PricePerMeterFrom = request.PricePerMeterFrom,
+                            PricePerMeterTo = request.PricePerMeterTo,
                             Notification = request.Notification,
                             Name = request.Name,
                             LastCheckedAt = DateTime.Now,

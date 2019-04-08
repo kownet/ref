@@ -35,7 +35,7 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 return await c.QueryAsync<Filter>(
-                    @"SELECT Id, UserId, Property, Deal, Market, CityId, FlatAreaFrom, FlatAreaTo, PriceFrom, PriceTo, Name, Notification, LastCheckedAt, ShouldContain, ShouldNotContain FROM Filters");
+                    @"SELECT Id, UserId, Property, Deal, Market, CityId, FlatAreaFrom, FlatAreaTo, PriceFrom, PriceTo, Name, Notification, LastCheckedAt, ShouldContain, ShouldNotContain, PricePerMeterFrom, PricePerMeterTo FROM Filters");
             }
         }
 
@@ -44,7 +44,7 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 var result = (await c.QueryAsync<Filter>(
-                    @"SELECT Id, UserId, Property, Deal, Market, CityId, FlatAreaFrom, FlatAreaTo, PriceFrom, PriceTo, Name, Notification, LastCheckedAt, ShouldContain, ShouldNotContain FROM Filters")).AsQueryable();
+                    @"SELECT Id, UserId, Property, Deal, Market, CityId, FlatAreaFrom, FlatAreaTo, PriceFrom, PriceTo, Name, Notification, LastCheckedAt, ShouldContain, ShouldNotContain, PricePerMeterFrom, PricePerMeterTo FROM Filters")).AsQueryable();
 
                 return result.Where(predicate);
             }
@@ -55,8 +55,8 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 return await c.ExecuteAsync(
-                    @"INSERT INTO Filters (UserId, Property, Deal, Market, FlatAreaFrom, FlatAreaTo, PriceFrom, PriceTo, CityId, Name, Notification, LastCheckedAt, ShouldContain, ShouldNotContain)
-                        VALUES(@UserId, @Property, @Deal, @Market, @FlatAreaFrom, @FlatAreaTo, @PriceFrom, @PriceTo, @CityId, @Name, @Notification, @LastCheckedAt, @ShouldContain, @ShouldNotContain);
+                    @"INSERT INTO Filters (UserId, Property, Deal, Market, FlatAreaFrom, FlatAreaTo, PriceFrom, PriceTo, CityId, Name, Notification, LastCheckedAt, ShouldContain, ShouldNotContain, PricePerMeterFrom, PricePerMeterTo)
+                        VALUES(@UserId, @Property, @Deal, @Market, @FlatAreaFrom, @FlatAreaTo, @PriceFrom, @PriceTo, @CityId, @Name, @Notification, @LastCheckedAt, @ShouldContain, @ShouldNotContain, @PricePerMeterFrom, @PricePerMeterTo);
                     SELECT CAST(SCOPE_IDENTITY() as int)",
                     new
                     {
@@ -72,8 +72,10 @@ namespace Ref.Data.Repositories
                         filter.Name,
                         filter.Notification,
                         filter.LastCheckedAt,
-                        filter.ShouldContain,
-                        filter.ShouldNotContain
+                        ShouldContain = string.IsNullOrWhiteSpace(filter.ShouldContain) ? default(string) : filter.ShouldContain.ToLowerInvariant(),
+                        ShouldNotContain = string.IsNullOrWhiteSpace(filter.ShouldNotContain) ? default(string) : filter.ShouldNotContain.ToLowerInvariant(),
+                        filter.PricePerMeterFrom,
+                        filter.PricePerMeterTo
                     });
             }
         }
@@ -111,7 +113,7 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 return await c.ExecuteAsync(
-                    @"UPDATE Filters SET Property = @Property, Deal = @Deal, Market = @Market, CityId = @CityId, FlatAreaFrom = @FlatAreaFrom, FlatAreaTo = @FlatAreaTo, PriceFrom = @PriceFrom, PriceTo = @PriceTo, Name = @Name, Notification = @Notification, ShouldContain = @ShouldContain, ShouldNotContain = @ShouldNotContain 
+                    @"UPDATE Filters SET Property = @Property, Deal = @Deal, Market = @Market, CityId = @CityId, FlatAreaFrom = @FlatAreaFrom, FlatAreaTo = @FlatAreaTo, PriceFrom = @PriceFrom, PriceTo = @PriceTo, Name = @Name, Notification = @Notification, ShouldContain = @ShouldContain, ShouldNotContain = @ShouldNotContain, PricePerMeterFrom = @PricePerMeterFrom, PricePerMeterTo = @PricePerMeterTo 
                         WHERE Id = @Id AND UserId = @UserId",
                     new
                     {
@@ -127,8 +129,10 @@ namespace Ref.Data.Repositories
                         filter.PriceTo,
                         filter.Name,
                         filter.Notification,
-                        filter.ShouldContain,
-                        filter.ShouldNotContain
+                        ShouldContain = string.IsNullOrWhiteSpace(filter.ShouldContain) ? default(string) : filter.ShouldContain.ToLowerInvariant(),
+                        ShouldNotContain = string.IsNullOrWhiteSpace(filter.ShouldNotContain) ? default(string) : filter.ShouldNotContain.ToLowerInvariant(),
+                        filter.PricePerMeterFrom,
+                        filter.PricePerMeterTo
                     });
             }
         }
@@ -138,7 +142,7 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 return await c.QueryFirstOrDefaultAsync<Filter>(
-                    @"SELECT Id, UserId, Property, Deal, Market, CityId, FlatAreaFrom, FlatAreaTo, PriceFrom, PriceTo, Name, Notification, LastCheckedAt, ShouldContain, ShouldNotContain FROM Filters 
+                    @"SELECT Id, UserId, Property, Deal, Market, CityId, FlatAreaFrom, FlatAreaTo, PriceFrom, PriceTo, Name, Notification, LastCheckedAt, ShouldContain, ShouldNotContain, PricePerMeterFrom, PricePerMeterTo FROM Filters 
                         WHERE Id = @Id AND UserId = @UserId",
                     new
                     {

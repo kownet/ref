@@ -15,10 +15,12 @@ namespace Ref.Services.Features.Commands.Filters
             public int Id { get; set; }
             public int UserId { get; set; }
             public int CityId { get; set; }
-            public int FlatAreaFrom { get; set; }
-            public int FlatAreaTo { get; set; }
-            public int PriceFrom { get; set; }
-            public int PriceTo { get; set; }
+            public int? FlatAreaFrom { get; set; }
+            public int? FlatAreaTo { get; set; }
+            public int? PriceFrom { get; set; }
+            public int? PriceTo { get; set; }
+            public int? PricePerMeterFrom { get; set; }
+            public int? PricePerMeterTo { get; set; }
             public string Name { get; set; }
             public NotificationType Notification { get; set; }
             public string ShouldContain { get; set; }
@@ -62,7 +64,9 @@ namespace Ref.Services.Features.Commands.Filters
                         CityId = request.CityId,
                         Name = request.Name,
                         LastCheckedAt = entity.LastCheckedAt,
-                        ShouldContain = string.IsNullOrWhiteSpace(request.ShouldContain) ? "" : request.ShouldContain.ToLowerInvariant()
+                        ShouldContain = string.IsNullOrWhiteSpace(request.ShouldContain) ? "" : request.ShouldContain.ToLowerInvariant(),
+                        PricePerMeterFrom = request.PricePerMeterFrom,
+                        PricePerMeterTo = request.PricePerMeterTo
                     });
 
                     return new Result();

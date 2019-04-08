@@ -2,6 +2,49 @@
 
     var getUserFilters = function (opts) {
 
+        function parseValues(from, to) {
+
+            var info = "<td>";
+
+            if (from === null && to === null) {
+                info = info + "brak";
+            }
+
+            if (from !== null && to === null) {
+                if (from === 0) {
+                    info = info + "brak";
+                } else {
+                    info = info + "od " + from;
+                }
+            }
+
+            if (from === null && to !== null) {
+                if (to === 0) {
+                    info = info + "brak";
+                } else {
+                    info = info + "do " + to;
+                }
+            }
+
+            if (from !== null && to !== null) {
+                if (from === 0 && to === 0) {
+                    info = info + "brak";
+                } else if (from === 0) {
+                    info = info + "do " + to;
+                }
+                else if (to === 0) {
+                    info = info + "od " + from;
+                }
+                else {
+                    info = info + from + " - " + to;
+                }
+            }
+
+            info = info + "</td>";
+
+            return info;
+        }
+
         var params = JSON.stringify({ userId: opts.userId });
 
         $.ajax({
@@ -22,14 +65,19 @@
                             var keywordsContain = !item.shouldContain
                                 ? ""
                                 : "<tr class=\"tr-small\">" +
-                                "<td colspan=\"6\">&nbsp;<i>Ogłoszenia powinny zawierać zwrot:</i> '" + item.shouldContain + "'</td>" +
+                                "<td colspan=\"7\">&nbsp;<i>Ogłoszenia powinny zawierać zwrot:</i> '" + item.shouldContain + "'</td>" +
                                 "</tr>";
+
+                            var ppmInfo = parseValues(item.pricePerMeterFrom, item.pricePerMeterTo);
+                            var faInfo = parseValues(item.flatAreaFrom, item.flatAreaTo);
+                            var pInfo = parseValues(item.priceFrom, item.priceTo);
 
                             var rows = "<tr>" +
                                 "<td>" + item.name + "<br><small>ostatnie powiadomienie: " + item.lastCheckedAtFormatted + "</small>" + "</td>" +
                                 "<td>" + item.city + "</td>" +
-                                "<td>" + item.flatAreaFrom + " - " + item.flatAreaTo + "</td>" +
-                                "<td>" + item.priceFrom + " - " + item.priceTo + "</td>" +
+                                faInfo +
+                                pInfo +
+                                ppmInfo +
                                 "<td>" + item.notificationFormatted + "</td>" +
                                 "<td>" +
                                 "<div class=\"btn-group btn-group-sm\">" +
@@ -68,7 +116,7 @@
                 title: $.confirmHeader,
                 text: "Usuniętego filtra nie będzie można odzyskać!",
                 icon: "warning",
-                buttons: true,
+                buttons: ["Anuluj", "Usuń"],
                 dangerMode: true
             }).then((willDelete) => {
                 if (willDelete) {
@@ -123,6 +171,8 @@
                 flatAreaTo: $(opts.cntAreaTo).val(),
                 priceFrom: $(opts.cntPriceFrom).val(),
                 priceTo: $(opts.cntPriceTo).val(),
+                pricePerMeterFrom: $(opts.cntPpmFrom).val(),
+                pricePerMeterTo: $(opts.cntPpmTo).val(),
                 notification: $(opts.cntNtf).val(),
                 name: $(opts.cntName).val(),
                 shouldContain: $(opts.cntShouldContain).val()
@@ -196,6 +246,8 @@
                         $(opts.cntCity).val(data.filter.cityId);
                         $(opts.cntPriceFrom).val(data.filter.priceFrom);
                         $(opts.cntPriceTo).val(data.filter.priceTo);
+                        $(opts.cntPpmFrom).val(data.filter.pricePerMeterFrom);
+                        $(opts.cntPpmTo).val(data.filter.pricePerMeterTo);
                         $(opts.cntAreaFrom).val(data.filter.flatAreaFrom);
                         $(opts.cntAreaTo).val(data.filter.flatAreaTo);
                         $(opts.cntNtf).val(data.filter.notification);
@@ -221,6 +273,8 @@
                 flatAreaTo: $(opts.cntAreaTo).val(),
                 priceFrom: $(opts.cntPriceFrom).val(),
                 priceTo: $(opts.cntPriceTo).val(),
+                pricePerMeterFrom: $(opts.cntPpmFrom).val(),
+                pricePerMeterTo: $(opts.cntPpmTo).val(),
                 notification: $(opts.cntNtf).val(),
                 name: $(opts.cntName).val(),
                 shouldContain: $(opts.cntShouldContain).val()

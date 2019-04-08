@@ -34,10 +34,12 @@ namespace Ref.Services.Features.Queries.Poc
             public int UserId { get; set; }
             public string Name { get; set; }
             public string City { get; set; }
-            public int FlatAreaFrom { get; set; }
-            public int FlatAreaTo { get; set; }
-            public int PriceFrom { get; set; }
-            public int PriceTo { get; set; }
+            public int? FlatAreaFrom { get; set; }
+            public int? FlatAreaTo { get; set; }
+            public int? PriceFrom { get; set; }
+            public int? PriceTo { get; set; }
+            public int? PricePerMeterFrom { get; set; }
+            public int? PricePerMeterTo { get; set; }
             public NotificationType Notification { get; set; }
             public string NotificationFormatted => Notification.GetDescription();
             public DateTime? LastCheckedAt { get; set; }
@@ -61,7 +63,7 @@ namespace Ref.Services.Features.Queries.Poc
                 {
                     using (var c = _dbAccess.Connection)
                     {
-                        var entities = await c.QueryAsync<FilterPoc>(@"SELECT F.Id, F.UserId, F.Name, C.Name as City, F.FlatAreaFrom, F.FlatAreaTo, F.PriceFrom, F.PriceTo, F.Notification, F.LastCheckedAt, F.ShouldContain, F.ShouldNotContain 
+                        var entities = await c.QueryAsync<FilterPoc>(@"SELECT F.Id, F.UserId, F.Name, C.Name as City, F.FlatAreaFrom, F.FlatAreaTo, F.PriceFrom, F.PriceTo, F.Notification, F.LastCheckedAt, F.ShouldContain, F.ShouldNotContain, F.PricePerMeterFrom, F.PricePerMeterTo 
                                         FROM Filters F
                                         INNER JOIN Cities C on F.CityId = C.Id
                                         WHERE F.UserId = @UserId", new { request.UserId });

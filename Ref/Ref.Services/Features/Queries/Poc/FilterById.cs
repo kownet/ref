@@ -57,7 +57,9 @@ namespace Ref.Services.Features.Queries.Poc
                                 Name = filter.Name,
                                 Notification = filter.Notification,
                                 ShouldContain = filter.ShouldContain,
-                                ShouldNotContain = filter.ShouldNotContain
+                                ShouldNotContain = filter.ShouldNotContain,
+                                PricePerMeterFrom = filter.PricePerMeterFrom,
+                                PricePerMeterTo = filter.PricePerMeterTo
                             }
                         };
                     }
