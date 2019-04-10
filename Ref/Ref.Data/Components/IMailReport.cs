@@ -28,7 +28,7 @@ namespace Ref.Data.Components
             {
                 return await c.QueryAsync<MailReportFilter>(@"
                     SELECT U.Email, U.Id as UserId, F.Name as Filter, F.Id as FilterId, U.Guid as Token FROM Users U
-                    INNER JOIN Filters F ON F.UserId = U.Id");
+                    INNER JOIN Filters F ON F.UserId = U.Id WHERE U.IsActive = 1 AND F.Notification <> 100");
             }
         }
 
