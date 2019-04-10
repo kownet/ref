@@ -86,10 +86,10 @@ namespace Ref.App.Standalone.Core
 
                                 if (result.ExceptionAccured)
                                 {
-                                    _logger.LogError(Labels.ExceptionMsg(siteType.ToString(), result.ExceptionMessage));
+                                    _logger.LogError(Labels.ExceptionMsg(siteType.ToString(), result.ExceptionMessage, ""));
                                     _pushOverNotification.Send(
                                         Labels.ExceptionMsgTitle,
-                                        Labels.ExceptionMsg(siteType.ToString(), result.ExceptionMessage));
+                                        Labels.ExceptionMsg(siteType.ToString(), result.ExceptionMessage, ""));
                                 }
 
                                 var newestFromSite = result.Advertisements;
