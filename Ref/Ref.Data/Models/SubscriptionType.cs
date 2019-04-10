@@ -13,6 +13,9 @@ namespace Ref.Data.Models
         [Description("Specjalny")]
         Special = 2,
 
+        [Description("Demo")]
+        Demo = 3,
+
         [Description("Niezdefiniowany")]
         Undefinded = 100,
     }
