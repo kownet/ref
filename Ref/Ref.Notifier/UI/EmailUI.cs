@@ -24,20 +24,15 @@ namespace Ref.Notifier.UI
             var sbRaw = new StringBuilder();
             var sbHtml = new StringBuilder();
 
-            var sbHeader =
-                $"Twoje ustawienia dostępne <a href=\"https://app.pewnemieszkanie.pl/index.html?guid={Token}\">tutaj.</a><br><br>";
-
             var sbFooter =
                 $"<br><br>-----" + 
-                $"<br>Udanych zakupów życzy zespół: <a href=\"https://pewnemieszkanie.pl/\">PewneMieszkanie.pl</a>" +
+                $"<br><strong>Udanych zakupów życzy zespół:</strong> <a href=\"https://pewnemieszkanie.pl/\">PewneMieszkanie.pl</a>" +
                 $"<br>Zapraszamy na nasz <a href=\"https://www.facebook.com/PewneMieszkanie/\">Facebook</a>.";
-
-            sbHtml.AppendLine(sbHeader);
 
             foreach (var filter in Filters)
             {
                 sbRaw.AppendLine($"Filtr: {filter.Key}:");
-                sbHtml.AppendLine($"<br><strong>Filtr: {filter.Key}:<strong><br><br>");
+                sbHtml.AppendLine($"<br><strong><a href=\"https://app.pewnemieszkanie.pl/index.html?guid={Token}\">Filtr - {filter.Key}</a></strong>:<br><br>");
 
                 var siteGrouped = filter.Value.GroupBy(s => s.Site);
 
@@ -46,14 +41,14 @@ namespace Ref.Notifier.UI
                     var header = $"{site.Key.ToString()} - [{site.ToList().Count}]";
 
                     sbRaw.AppendLine($"Strona: {header}:");
-                    sbHtml.AppendLine($"<br><i>Strona: {header}:</i><br><br>");
+                    sbHtml.AppendLine($"<br><strong>Strona: {header}:</strong><br><br>");
 
                     var offers = site.OrderBy(o => o.Price).ToList();
 
                     foreach (var offer in offers)
                     {
                         sbRaw.AppendLine($"{offer.Price} - {offer.Url} - {offer.Header}");
-                        sbHtml.AppendLine($"{offer.Price} [zł] - <a href=\"{offer.Url}\">{offer.Header}</a><br>");
+                        sbHtml.AppendLine($"<i>{offer.Price} [zł]</i> - <a href=\"{offer.Url}\">{offer.Header}</a><br>");
                     }
                 }
             }

@@ -132,22 +132,22 @@ namespace Ref.Coordinator.Core
                     o.IsScrapped);
 
                 if (filter.PriceFrom.HasValue)
-                    predicate = predicate = (o => o.Price >= filter.PriceFrom.Value);
+                    predicate = predicate.And(o => o.Price >= filter.PriceFrom.Value);
 
                 if (filter.PriceTo.HasValue)
-                    predicate = predicate = (o => o.Price <= filter.PriceTo.Value);
+                    predicate = predicate.And(o => o.Price <= filter.PriceTo.Value);
 
                 if (filter.FlatAreaFrom.HasValue)
-                    predicate = predicate = (o => o.Area >= filter.FlatAreaFrom.Value);
+                    predicate = predicate.And(o => o.Area >= filter.FlatAreaFrom.Value);
 
                 if (filter.FlatAreaTo.HasValue)
-                    predicate = predicate = (o => o.Area <= filter.FlatAreaTo.Value);
+                    predicate = predicate.And(o => o.Area <= filter.FlatAreaTo.Value);
 
                 if (filter.PricePerMeterFrom.HasValue)
-                    predicate = predicate = (o => o.PricePerMeter >= filter.PricePerMeterFrom.Value);
+                    predicate = predicate.And(o => o.PricePerMeter >= filter.PricePerMeterFrom.Value);
 
                 if (filter.PricePerMeterTo.HasValue)
-                    predicate = predicate = (o => o.PricePerMeter <= filter.PricePerMeterTo.Value);
+                    predicate = predicate.And(o => o.PricePerMeter <= filter.PricePerMeterTo.Value);
 
                 var matchCriteriaOffers = (await _offerRepository
                     .FindByAsync(predicate))
@@ -155,6 +155,8 @@ namespace Ref.Coordinator.Core
 
                 if (matchCriteriaOffers.AnyAndNotNull())
                 {
+                    _logger.LogTrace($"There are {matchCriteriaOffers.Count()} offers for filter {filter.Id}.");
+
                     var matchedOfferByKeyword = new List<Offer>();
 
                     if (!string.IsNullOrWhiteSpace(filter.ShouldContain))
@@ -164,7 +166,11 @@ namespace Ref.Coordinator.Core
                             if (!string.IsNullOrWhiteSpace(matched.Content))
                             {
                                 if (matched.Content.Contains(filter.ShouldContain))
+                                {
+                                    _logger.LogTrace($"Offer {matched.Id} contain phrase {filter.ShouldContain}.");
+
                                     matchedOfferByKeyword.Add(matched);
+                                }
                             }
                         }
                     }
