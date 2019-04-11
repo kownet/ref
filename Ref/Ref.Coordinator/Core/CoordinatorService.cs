@@ -55,7 +55,8 @@ namespace Ref.Coordinator.Core
             {
                 try
                 {
-                    var filtersToCheck = await _userSubscriptionReport.GetAllActiveAsync();
+                    var filtersToCheck = (await _userSubscriptionReport.GetAllActiveAsync())
+                        .Where(u => !u.DemoPassed);
 
                     var grouped = filtersToCheck.GroupBy(f => f.Notification);
 
