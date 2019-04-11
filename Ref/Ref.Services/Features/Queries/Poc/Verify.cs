@@ -46,6 +46,9 @@ namespace Ref.Services.Features.Queries.Poc
                         return new Result { Message = "Nie ma takiego użytkownika" };
                     else
                     {
+                        if (user.DemoPassed)
+                            return new Result { Message = "Twój okres próbny minął. Prosimy o kontakt w celu dalszego korzystania z usługi." };
+
                         return new Result { UserId = user.Id, Email = user.Email, RegisteredAt = user.RegisteredAt.Format(), IsActive = user.IsActive };
                     }
                 }

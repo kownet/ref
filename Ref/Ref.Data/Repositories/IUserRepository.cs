@@ -66,7 +66,7 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 var result = (await c.QueryAsync<User>(
-                    @"SELECT Id, Email, PasswordHash, PasswordSalt, Role, Guid, RegisteredAt, IsActive FROM Users")).AsQueryable();
+                    @"SELECT Id, Email, PasswordHash, PasswordSalt, Role, Guid, RegisteredAt, IsActive, Subscription FROM Users")).AsQueryable();
 
                 return result.Where(predicate);
             }
@@ -77,7 +77,7 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 return await c.QuerySingleOrDefaultAsync<User>(
-                    @"SELECT Id, Email, PasswordHash, PasswordSalt, Role, Guid, RegisteredAt, IsActive FROM Users WHERE Id = @Id",
+                    @"SELECT Id, Email, PasswordHash, PasswordSalt, Role, Guid, RegisteredAt, IsActive, Subscription FROM Users WHERE Id = @Id",
                     new
                     {
                         Id = userId
@@ -89,7 +89,7 @@ namespace Ref.Data.Repositories
         {
             using (var c = _dbAccess.Connection)
             {
-                return await c.QueryAsync<User>(@"SELECT Id, Email, Guid, RegisteredAt, IsActive FROM Users");
+                return await c.QueryAsync<User>(@"SELECT Id, Email, Guid, RegisteredAt, IsActive, Subscription FROM Users");
             }
         }
 

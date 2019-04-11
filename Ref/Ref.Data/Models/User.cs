@@ -15,5 +15,8 @@ namespace Ref.Data.Models
         public DateTime RegisteredAt { get; set; }
         public string Guid { get; set; }
         public bool IsActive { get; set; }
+
+        public bool DemoPassed
+            => (Subscription == SubscriptionType.Demo && (DateTime.Now - RegisteredAt).TotalHours > 24);
     }
 }
