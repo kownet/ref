@@ -93,9 +93,13 @@ namespace Ref.Services.Features.Commands.Filters
                 }
                 else
                 {
+                    var s = maximumForCurrentSubscription + 1 > 0
+                            ? $"{maximumForCurrentSubscription + 1} filtr"
+                            : $"{maximumForCurrentSubscription + 1} filtry";
+
                     return new Result
                     {
-                        Message = $"Maximum number of filters - {maximumForCurrentSubscription + 1} has been exceeded."
+                        Message = $"Możesz utworzyć - {s} dla Twojego planu."
                     };
                 }
             }
