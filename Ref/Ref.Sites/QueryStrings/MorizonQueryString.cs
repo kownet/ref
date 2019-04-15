@@ -6,7 +6,7 @@ namespace Ref.Sites.QueryStrings
 {
     public class MorizonQueryString : IQueryString
     {
-        public string Get(City city, DealType dealType)
+        public string Get(City city, DealType dealType, District district = null)
         {
             var type = "mieszkania";
             var deal = dealType == DealType.Sale ? "" : "do-wynajecia";

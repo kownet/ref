@@ -1,5 +1,6 @@
 ﻿using HtmlAgilityPack;
 using Ref.Data.Models;
+using Ref.Data.Repositories;
 using Ref.Shared.Extensions;
 using Ref.Shared.Providers;
 using Ref.Shared.Utils;
@@ -19,15 +20,18 @@ namespace Ref.Sites.Scrapper
         protected readonly IAppProvider AppProvider;
         protected readonly Func<SiteType, IPages> PageProvider;
         protected readonly Func<SiteType, IQueryString> QueryStringProvider;
+        protected readonly IDistrictRepository DistrictRepository;
 
         public SiteToScrapp(
             IAppProvider appProvider,
             Func<SiteType, IPages> pageProvider,
-            Func<SiteType, IQueryString> queryStringProvider)
+            Func<SiteType, IQueryString> queryStringProvider,
+            IDistrictRepository districtRepository)
         {
             AppProvider = appProvider;
             PageProvider = pageProvider;
             QueryStringProvider = queryStringProvider;
+            DistrictRepository = districtRepository;
         }
 
         protected SiteToScrappResponse ScrapThis(string url, string specialEncoding = "")

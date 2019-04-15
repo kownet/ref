@@ -62,6 +62,7 @@ namespace Ref.App.DI
             services.AddTransient<IOfferRepository, OfferRepository>();
             services.AddTransient<ISiteRepository, SiteRepository>();
             services.AddTransient<ICitiesReport, CitiesReport>();
+            services.AddTransient<IDistrictRepository, DistrictRepository>();
             #endregion
 
             #region QueryStrings

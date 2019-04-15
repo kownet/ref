@@ -19,6 +19,7 @@ namespace Ref.Data.Models
         public bool IsScrapped { get; set; }
         public int? Floor { get; set; }
         public string Content { get; set; }
+        public int? DistrictId { get; set; }
 
         public bool IsValidToAdd() =>
             !string.IsNullOrWhiteSpace(SiteOfferId) && !string.IsNullOrWhiteSpace(Url) && Price > 0;

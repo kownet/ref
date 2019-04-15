@@ -6,7 +6,7 @@ namespace Ref.Sites.QueryStrings
 {
     public class GumtreeQueryString : IQueryString
     {
-        public string Get(City city, DealType dealType)
+        public string Get(City city, DealType dealType, District district = null)
         {
             var type = "s-mieszkania-i-domy";
             var deal = dealType == DealType.Sale ? "-sprzedam-i-kupie" : "-do-wynajecia";

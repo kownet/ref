@@ -6,7 +6,7 @@ namespace Ref.Sites.QueryStrings
 {
     public class DomiportaQueryString : IQueryString
     {
-        public string Get(City city, DealType dealType)
+        public string Get(City city, DealType dealType, District district = null)
         {
             var type = "mieszkanie";
             var deal = dealType == DealType.Sale ? "sprzedam" : "wynajme";

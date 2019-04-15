@@ -1,5 +1,6 @@
 ﻿using HtmlAgilityPack;
 using Ref.Data.Models;
+using Ref.Data.Repositories;
 using Ref.Data.Repositories.Standalone;
 using Ref.Shared.Extensions;
 using Ref.Shared.Providers;
@@ -18,63 +19,83 @@ namespace Ref.Sites.Scrapper
         public Olx(
             IAppProvider appProvider,
             Func<SiteType, IPages> pageProvider,
-            Func<SiteType, IQueryString> queryStringProvider)
-            : base(appProvider, pageProvider, queryStringProvider)
+            Func<SiteType, IQueryString> queryStringProvider,
+            IDistrictRepository districtRepository)
+            : base(appProvider, pageProvider, queryStringProvider, districtRepository)
         {
         }
 
         public ScrappResponse Scrapp(City city, DealType dealType)
         {
-            var searchQuery = QueryStringProvider(SiteType.Olx).Get(city, dealType);
-
-            var scrap = ScrapThis(searchQuery);
-
-            if (!scrap.Succeed)
+            if(city.HasDistricts)
             {
+                var districts = (DistrictRepository.FindByAsync(d => d.CityId == city.Id).Result).ToList();
+
+                var result = new List<Offer>();
+
+                if (districts.AnyAndNotNull())
+                {
+                    foreach (var district in districts)
+                    {
+                        var searchQuery = QueryStringProvider(SiteType.OtoDom).Get(city, dealType, district);
+                    }
+                }
+
+                return new ScrappResponse { Offers = result };
+            }
+            else
+            {
+                var searchQuery = QueryStringProvider(SiteType.Olx).Get(city, dealType);
+
+                var scrap = ScrapThis(searchQuery);
+
+                if (!scrap.Succeed)
+                {
+                    return new ScrappResponse
+                    {
+                        Offers = new List<Offer>(),
+                        ExceptionAccured = scrap.ExceptionAccured,
+                        ExceptionMessage = scrap.ExceptionMessage
+                    };
+                }
+
+                HtmlNode doc = scrap.HtmlNode;
+
+                var noResult = doc.CssSelect(".emptynew ").FirstOrDefault();
+
+                if (noResult != null)
+                {
+                    return new ScrappResponse
+                    {
+                        Offers = new List<Offer>(),
+                        ThereAreNoRecords = true
+                    };
+                }
+
+                var banned = doc.CssSelect(".message").FirstOrDefault();
+
+                if (banned != null)
+                {
+                    return new ScrappResponse
+                    {
+                        Offers = new List<Offer>(),
+                        WeAreBanned = true
+                    };
+                }
+
+                int pages = PageProvider(SiteType.Olx).Get(doc);
+
+                var result = Crawl(pages, searchQuery, doc);
+
+                result.Change(o => o.Site = SiteType.Olx);
+                result.Change(o => o.Deal = dealType);
+                result.Change(o => o.CityId = city.Id);
+
                 return new ScrappResponse
                 {
-                    Offers = new List<Offer>(),
-                    ExceptionAccured = scrap.ExceptionAccured,
-                    ExceptionMessage = scrap.ExceptionMessage
+                    Offers = result
                 };
             }
-
-            HtmlNode doc = scrap.HtmlNode;
-
-            var noResult = doc.CssSelect(".emptynew ").FirstOrDefault();
-
-            if (noResult != null)
-            {
-                return new ScrappResponse
-                {
-                    Offers = new List<Offer>(),
-                    ThereAreNoRecords = true
-                };
-            }
-
-            var banned = doc.CssSelect(".message").FirstOrDefault();
-
-            if (banned != null)
-            {
-                return new ScrappResponse
-                {
-                    Offers = new List<Offer>(),
-                    WeAreBanned = true
-                };
-            }
-
-            int pages = PageProvider(SiteType.Olx).Get(doc);
-
-            var result = Crawl(pages, searchQuery, doc);
-
-            result.Change(o => o.Site = SiteType.Olx);
-            result.Change(o => o.Deal = dealType);
-            result.Change(o => o.CityId = city.Id);
-
-            return new ScrappResponse
-            {
-                Offers = result
-            };
         }
 
         private List<Offer> Crawl(int pages, string searchQuery, HtmlNode doc)

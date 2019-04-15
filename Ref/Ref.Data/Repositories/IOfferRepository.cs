@@ -82,6 +82,7 @@ namespace Ref.Data.Repositories
                         sbc.ColumnMappings.Add("IsScrapped", "IsScrapped");
                         sbc.ColumnMappings.Add("Floor", "Floor");
                         sbc.ColumnMappings.Add("Content", "Content");
+                        sbc.ColumnMappings.Add("DistrictId", "DistrictId");
 
                         sbc.WriteToServer(dt);
                     }
@@ -102,7 +103,7 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 var result = (await c.QueryAsync<Offer>(
-                    @"SELECT Id, CityId, SiteOfferId, Site, Deal, Url, Header, Price, DateAdded, Area, Rooms, PricePerMeter, IsScrapped, Floor, Content FROM Offers")).AsQueryable();
+                    @"SELECT Id, CityId, SiteOfferId, Site, Deal, Url, Header, Price, DateAdded, Area, Rooms, PricePerMeter, IsScrapped, Floor, Content, DistrictId FROM Offers")).AsQueryable();
 
                 return result.Where(predicate);
             }

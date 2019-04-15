@@ -7,12 +7,14 @@ namespace Ref.Sites.QueryStrings
 {
     public class OtoDomQueryString : IQueryString
     {
-        public string Get(City city, DealType dealType)
+        public string Get(City city, DealType dealType, District district = null)
         {
             var type = "mieszkanie";
             var deal = dealType == DealType.Sale ? "sprzedaz" : "wynajem";
             var newest = 1; // from last 24hours
             var market = "secondary";
+
+            var dist = district is null ? "?" : $"{district.NameRaw}/?";
 
             var cityName = city.NameRaw;
 
@@ -20,7 +22,7 @@ namespace Ref.Sites.QueryStrings
                 cityName = city.NameRaw.Replace(' ', '-');
 
             var result =
-                $"https://www.otodom.pl/{deal}/{type}/{cityName}/?";
+                $"https://www.otodom.pl/{deal}/{type}/{cityName}/{dist}";
 
             var divider = "search%5B";
 
