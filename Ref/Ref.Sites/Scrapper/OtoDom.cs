@@ -45,8 +45,19 @@ namespace Ref.Sites.Scrapper
                         {
                             HtmlNode doc = scrap.HtmlNode;
 
-                            var noResult = doc.CssSelect(".search-location-extended-warning").FirstOrDefault();
+                            int pages = PageProvider(SiteType.OtoDom).Get(doc);
+
+                            var districtResult = Crawl(pages, searchQuery, doc);
+
+                            districtResult.Change(o => o.Site = SiteType.OtoDom);
+                            districtResult.Change(o => o.Deal = dealType);
+                            districtResult.Change(o => o.CityId = city.Id);
+                            districtResult.Change(o => o.DistrictId = district.Id);
+
+                            result.AddRange(districtResult);
                         }
+
+                        AppProvider.PauseTime();
                     }
                 }
 
@@ -72,7 +83,7 @@ namespace Ref.Sites.Scrapper
 
                 var noResult = doc.CssSelect(".search-location-extended-warning").FirstOrDefault();
 
-                if (noResult != null)
+                if (!(noResult is null))
                 {
                     return new ScrappResponse
                     {
