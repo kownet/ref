@@ -15,7 +15,17 @@ CREATE TABLE Cities(
 	[Name] nvarchar(256) NOT NULL,
 	[NameRaw] nvarchar(256) NOT NULL,
 	[GtCodeSale] nvarchar(128) NOT NULL,
-	[GtCodeRent] nvarchar(128) NOT NULL
+	[GtCodeRent] nvarchar(128) NOT NULL,
+	[HasDistricts] bit NOT NULL DEFAULT(0)
+)
+
+CREATE TABLE Districts(
+	[Id] [int] PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	[CityId] [int] REFERENCES Cities(Id),
+	[Name] nvarchar(256) NOT NULL,
+	[NameRaw] nvarchar(256) NOT NULL,
+	[GtCodeSale] nvarchar(128) NOT NULL,
+	[GtCodeRent] nvarchar(128) NOT NULL,
 )
 
 CREATE TABLE Filters(

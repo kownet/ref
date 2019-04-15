@@ -25,7 +25,7 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 return await c.QueryAsync<City>(
-                    @"SELECT Id, Name, NameRaw, GtCodeSale, GtCodeRent FROM Cities");
+                    @"SELECT Id, Name, NameRaw, GtCodeSale, GtCodeRent, HasDistricts FROM Cities");
             }
         }
     }

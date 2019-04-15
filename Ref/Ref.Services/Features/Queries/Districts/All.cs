@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Ref.Services.Features.Queries.Cities
+namespace Ref.Services.Features.Queries.Districts
 {
     public class All
     {
@@ -17,38 +17,38 @@ namespace Ref.Services.Features.Queries.Cities
         {
             public Result()
             {
-                Cities = new HashSet<CityResult>();
+                Districts = new HashSet<DistrictResult>();
             }
 
-            public IEnumerable<CityResult> Cities { get; set; }
+            public IEnumerable<DistrictResult> Districts { get; set; }
         }
 
         public class Handler : IRequestHandler<Query, Result>
         {
-            private readonly ICitiesRepository _citiesRepository;
+            private readonly IDistrictRepository _districtRepository;
 
-            public Handler(ICitiesRepository citiesRepository)
+            public Handler(IDistrictRepository districtRepository)
             {
-                _citiesRepository = citiesRepository;
+                _districtRepository = districtRepository;
             }
 
             public async Task<Result> Handle(Query request, CancellationToken cancellationToken)
             {
                 try
                 {
-                    var entities = await _citiesRepository.GetAllAsync();
-                    var result = new List<CityResult>();
+                    var entities = await _districtRepository.GetAllAsync();
+                    var result = new List<DistrictResult>();
 
                     if (entities.AnyAndNotNull())
                     {
                         foreach (var entity in entities)
                         {
-                            result.Add(new CityResult { Id = entity.Id, Name = entity.Name, NameRaw = entity.NameRaw, HasDistricts = entity.HasDistricts });
+                            result.Add(new DistrictResult { Id = entity.Id, Name = entity.Name, NameRaw = entity.NameRaw });
                         }
 
-                        return new Result { Cities = result };
+                        return new Result { Districts = result };
                     }
-                    else return new Result { Message = "No cities in database" };
+                    else return new Result { Message = "No districts in database" };
                 }
                 catch (Exception ex)
                 {

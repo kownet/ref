@@ -25,7 +25,7 @@ namespace Ref.Data.Components
             using (var c = _dbAccess.Connection)
             {
                 return await c.QueryAsync<City>(
-                    @"select distinct C.Id, C.Name, C.NameRaw, C.GtCodeSale, C.GtCodeRent from Cities C
+                    @"select distinct C.Id, C.Name, C.NameRaw, C.GtCodeSale, C.GtCodeRent, C.HasDistricts from Cities C
                         inner join Filters F on C.Id = F.CityId
                         inner join Users U on U.Id = F.UserId
                         where U.IsActive = 1 and F.Notification <> 100");
