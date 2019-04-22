@@ -79,15 +79,9 @@ namespace Ref.App.Core
                                         await LoopForData(availableSites, dealTypes, city, district);
                                     }
                                 }
-                                else
-                                {
-                                    await LoopForData(availableSites, dealTypes, city, null);
-                                }
                             }
-                            else
-                            {
-                                await LoopForData(availableSites, dealTypes, city, null);
-                            }
+
+                            await LoopForData(availableSites, dealTypes, city, null);
                         }
                     }
 
@@ -183,6 +177,26 @@ namespace Ref.App.Core
                         newestFromCriteria = newestFromCriteria
                             .DistinctBy(p => p.Header)
                             .ToList();
+                    }
+
+                    if(!(district is null))
+                    {
+                        if (newestFromCriteria.AnyAndNotNull())
+                        {
+                            foreach (var item in newestFromCriteria)
+                            {
+                                var r = (await _offerRepository
+                                    .FindByAsync(o =>
+                                        o.SiteOfferId == item.SiteOfferId &&
+                                        !o.DistrictId.HasValue))
+                                    .FirstOrDefault();
+
+                                if (!(r is null))
+                                {
+                                    await _offerRepository.SetDistrict(r.Id, district.Id);
+                                }
+                            }
+                        }
                     }
 
                     var newestFrom = newestFromCriteria

@@ -19,6 +19,7 @@ namespace Ref.Data.Repositories
         void BulkDelete(IList<int> offers);
         Task<int> UpdateAsync(Offer offer);
         Task<int> SetDeletedAsync(int offerId);
+        Task<int> SetDistrict(int offerId, int districtId);
     }
 
     public class OfferRepository : IOfferRepository
@@ -119,6 +120,20 @@ namespace Ref.Data.Repositories
                     {
                         Id = offerId,
                         IsScrapped = true
+                    });
+            }
+        }
+
+        public async Task<int> SetDistrict(int offerId, int districtId)
+        {
+            using (var c = _dbAccess.Connection)
+            {
+                return await c.ExecuteAsync(
+                    @"UPDATE Offers SET DistrictId = @DistrictId WHERE Id = @Id",
+                    new
+                    {
+                        Id = offerId,
+                        DistrictId = districtId
                     });
             }
         }
