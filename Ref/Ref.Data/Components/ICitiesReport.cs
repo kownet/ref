@@ -38,7 +38,7 @@ namespace Ref.Data.Components
             using (var c = _dbAccess.Connection)
             {
                 return await c.QueryAsync<District>(
-                    @"select distinct D.Id, D.Name, D.NameRaw, D.GtCodeRent, D.GtCodeSale, D.CityId, D.OtoDomId, D.OlxId from Districts D
+                    @"select distinct D.Id, D.Name, D.NameRaw, D.GtCodeRent, D.GtCodeSale, D.CityId, D.OtoDomId, D.OlxId, D.AdrId from Districts D
 						inner join Filters F on D.Id = F.DistrictId
 						where D.CityId = @CityId", new { CityId = cityId });
             }

@@ -10,6 +10,7 @@
         public string GtCodeRent { get; set; }
         public int? OtoDomId { get; set; }
         public int? OlxId { get; set; }
+        public string AdrId { get; set; }
 
         public bool IsGumtreeAvailable
             => !string.IsNullOrWhiteSpace(GtCodeSale) && !string.IsNullOrWhiteSpace(GtCodeRent);
@@ -25,5 +26,8 @@
 
         public bool IsOlxAvailable
             => OlxId.HasValue;
+
+        public bool IsAdresowoAvailable
+            => !string.IsNullOrWhiteSpace(AdrId);
     }
 }
