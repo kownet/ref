@@ -13,6 +13,8 @@ namespace Ref.Sites.QueryStrings
             var market = "2";
             var newest = 1;
 
+            var dist = district is null ? "" : $"/{district.NameRaw}";
+
             var cityName = city.NameRaw;
 
             if (city.NameRaw.Contains(' '))
@@ -26,7 +28,7 @@ namespace Ref.Sites.QueryStrings
             }
 
             var result =
-                $"{domain}/{type}/{cityName}/?";
+                $"{domain}/{type}/{cityName}{dist}/?";
 
             var divider = "ps%5B";
 
