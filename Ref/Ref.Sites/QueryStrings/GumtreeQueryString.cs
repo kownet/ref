@@ -22,8 +22,14 @@ namespace Ref.Sites.QueryStrings
             if (city.NameRaw.Contains('-'))
                 cityName = city.NameRaw.Replace('-', '+');
 
-            if(city.NameRaw.Contains(' '))
+            if (city.NameRaw.Contains(' '))
                 cityName = city.NameRaw.Replace(' ', '-');
+
+            if (!(district is null))
+            {
+                cityName = district.NameRaw;
+                code = dealType == DealType.Sale ? district.GtCodeSale : district.GtCodeRent;
+            }
 
             var result =
                 $"https://www.gumtree.pl/{type}{deal}/{cityName}/{houseOrFlat}{code}{page}?";

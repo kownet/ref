@@ -47,6 +47,11 @@ namespace Ref.Sites.Scrapper
 
             var code = dealType == DealType.Sale ? city.GtCodeSale : city.GtCodeRent;
 
+            if (!(district is null))
+            {
+                code = dealType == DealType.Sale ? $"{district.GtCodeSale}" : district.GtCodeRent;
+            }
+
             var scrap = ScrapThis(searchQuery);
 
             if (!scrap.Succeed)
