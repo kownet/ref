@@ -25,75 +25,62 @@ namespace Ref.Sites.Scrapper
         {
         }
 
-        public ScrappResponse Scrapp(City city, DealType dealType)
+        public ScrappResponse Scrapp(City city, DealType dealType, District district)
         {
-            if(city.HasDistricts)
+            var searchQuery = QueryStringProvider(SiteType.Gratka).Get(city, dealType, district);
+
+            var scrap = ScrapThis(searchQuery);
+
+            if (!scrap.Succeed)
             {
-                var districts = (DistrictRepository.FindByAsync(d => d.CityId == city.Id).Result).ToList();
-
-                var result = new List<Offer>();
-
-                if (districts.AnyAndNotNull())
-                {
-                    foreach (var district in districts)
-                    {
-                        var searchQuery = QueryStringProvider(SiteType.OtoDom).Get(city, dealType, district);
-                    }
-                }
-
-                return new ScrappResponse { Offers = result };
-            }
-            else
-            {
-                var searchQuery = QueryStringProvider(SiteType.Gratka).Get(city, dealType);
-
-                var scrap = ScrapThis(searchQuery);
-
-                if (!scrap.Succeed)
-                {
-                    return new ScrappResponse
-                    {
-                        Offers = new List<Offer>(),
-                        ExceptionAccured = scrap.ExceptionAccured,
-                        ExceptionMessage = scrap.ExceptionMessage
-                    };
-                }
-
-                HtmlNode doc = scrap.HtmlNode;
-
-                if (doc.InnerHtml.Contains("tymczasowo zablokowany"))
-                {
-                    return new ScrappResponse
-                    {
-                        Offers = new List<Offer>(),
-                        WeAreBanned = true
-                    };
-                }
-
-                var noResult = doc.CssSelect(".content__emptyListInfo").FirstOrDefault();
-
-                if (noResult != null)
-                {
-                    return new ScrappResponse
-                    {
-                        Offers = new List<Offer>(),
-                        ThereAreNoRecords = true
-                    };
-                }
-
-                int pages = PageProvider(SiteType.Gratka).Get(doc);
-
-                var result = Crawl(pages, searchQuery, doc);
-
-                result.Change(o => o.Site = SiteType.Gratka);
-                result.Change(o => o.Deal = dealType);
-                result.Change(o => o.CityId = city.Id);
-
                 return new ScrappResponse
                 {
-                    Offers = result
+                    Offers = new List<Offer>(),
+                    ExceptionAccured = scrap.ExceptionAccured,
+                    ExceptionMessage = scrap.ExceptionMessage
                 };
             }
+
+            HtmlNode doc = scrap.HtmlNode;
+
+            if (doc.InnerHtml.Contains("tymczasowo zablokowany"))
+            {
+                return new ScrappResponse
+                {
+                    Offers = new List<Offer>(),
+                    WeAreBanned = true
+                };
+            }
+
+            var noResult = doc.CssSelect(".content__emptyListInfo").FirstOrDefault();
+
+            if (noResult != null)
+            {
+                return new ScrappResponse
+                {
+                    Offers = new List<Offer>(),
+                    ThereAreNoRecords = true
+                };
+            }
+
+            int pages = PageProvider(SiteType.Gratka).Get(doc);
+
+            var result = Crawl(pages, searchQuery, doc);
+
+            result.Change(o => o.Site = SiteType.Gratka);
+            result.Change(o => o.Deal = dealType);
+            result.Change(o => o.CityId = city.Id);
+
+            if (!(district is null))
+            {
+                result.Change(o => o.DistrictId = district.Id);
+            }
+
+            return new ScrappResponse
+            {
+                Offers = result
+            };
+
         }
 
         private List<Offer> Crawl(int pages, string searchQuery, HtmlNode doc)
@@ -172,7 +159,7 @@ namespace Ref.Sites.Scrapper
                                             {
                                                 if (!string.IsNullOrWhiteSpace(areaRaw.InnerText))
                                                 {
-                                                    if(areaRaw.InnerText.Contains("Powierzchnia w m2: "))
+                                                    if (areaRaw.InnerText.Contains("Powierzchnia w m2: "))
                                                     {
                                                         if (int.TryParse(areaRaw.InnerText.Replace("Powierzchnia w m2: ", ""), out int a))
                                                         {
@@ -188,7 +175,7 @@ namespace Ref.Sites.Scrapper
                                             {
                                                 if (!string.IsNullOrWhiteSpace(roomsRaw.InnerText))
                                                 {
-                                                    if(roomsRaw.InnerText.Contains("Liczba pokoi: "))
+                                                    if (roomsRaw.InnerText.Contains("Liczba pokoi: "))
                                                     {
                                                         if (int.TryParse(roomsRaw.InnerText.Replace("Liczba pokoi: ", ""), out int r))
                                                         {

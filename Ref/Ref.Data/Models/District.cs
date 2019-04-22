@@ -8,6 +8,7 @@
         public string NameRaw { get; set; }
         public string GtCodeSale { get; set; }
         public string GtCodeRent { get; set; }
+        public int? OtoDomId { get; set; }
 
         public bool IsGumtreeAvailable
             => !string.IsNullOrWhiteSpace(GtCodeSale) && !string.IsNullOrWhiteSpace(GtCodeRent);
@@ -17,5 +18,8 @@
 
         public bool IsGumtreeAvailableForRent
             => !string.IsNullOrWhiteSpace(GtCodeRent);
+
+        public bool IsOlxAvailable
+            => OtoDomId.HasValue;
     }
 }

@@ -21,5 +21,6 @@ namespace Ref.Data.Models
         public DateTime? LastCheckedAt { get; set; }
         public string ShouldContain { get; set; }
         public string ShouldNotContain { get; set; }
+        public int? DistrictId { get; set; }
     }
 }

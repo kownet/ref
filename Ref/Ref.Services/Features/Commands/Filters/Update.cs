@@ -25,6 +25,7 @@ namespace Ref.Services.Features.Commands.Filters
             public NotificationType Notification { get; set; }
             public string ShouldContain { get; set; }
             public string ShouldNotContain { get; set; }
+            public int? DistrictId { get; set; }
         }
 
         public class Result : BaseResult { }
@@ -66,7 +67,8 @@ namespace Ref.Services.Features.Commands.Filters
                         LastCheckedAt = entity.LastCheckedAt,
                         ShouldContain = string.IsNullOrWhiteSpace(request.ShouldContain) ? "" : request.ShouldContain.ToLowerInvariant(),
                         PricePerMeterFrom = request.PricePerMeterFrom,
-                        PricePerMeterTo = request.PricePerMeterTo
+                        PricePerMeterTo = request.PricePerMeterTo,
+                        DistrictId = request.DistrictId
                     });
 
                     return new Result();

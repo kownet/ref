@@ -25,84 +25,70 @@ namespace Ref.Sites.Scrapper
         {
         }
 
-        public ScrappResponse Scrapp(City city, DealType dealType)
+        public ScrappResponse Scrapp(City city, DealType dealType, District district)
         {
-            if(city.HasDistricts)
+            if (!city.IsGumtreeAvailableForSale && dealType == DealType.Sale)
             {
-                var districts = (DistrictRepository.FindByAsync(d => d.CityId == city.Id).Result).ToList();
-
-                var result = new List<Offer>();
-
-                if (districts.AnyAndNotNull())
-                {
-                    foreach (var district in districts)
-                    {
-                        var searchQuery = QueryStringProvider(SiteType.OtoDom).Get(city, dealType, district);
-                    }
-                }
-
-                return new ScrappResponse { Offers = result };
-            }
-            else
-            {
-                if (!city.IsGumtreeAvailableForSale && dealType == DealType.Sale)
-                {
-                    return new ScrappResponse
-                    {
-                        Offers = new List<Offer>()
-                    };
-                }
-
-                if (!city.IsGumtreeAvailableForRent && dealType == DealType.Rent)
-                {
-                    return new ScrappResponse
-                    {
-                        Offers = new List<Offer>()
-                    };
-                }
-
-                var searchQuery = QueryStringProvider(SiteType.Gumtree).Get(city, dealType);
-
-                var code = dealType == DealType.Sale ? city.GtCodeSale : city.GtCodeRent;
-
-                var scrap = ScrapThis(searchQuery);
-
-                if (!scrap.Succeed)
-                {
-                    return new ScrappResponse
-                    {
-                        Offers = new List<Offer>(),
-                        ExceptionAccured = scrap.ExceptionAccured,
-                        ExceptionMessage = scrap.ExceptionMessage
-                    };
-                }
-
-                HtmlNode doc = scrap.HtmlNode;
-
-                int.TryParse(doc.ByClass("count", @"[^0-9]"), out int count);
-
-                if (count == 0)
-                {
-                    return new ScrappResponse
-                    {
-                        Offers = new List<Offer>(),
-                        ThereAreNoRecords = true
-                    };
-                }
-
-                int pages = PageProvider(SiteType.Gumtree).Get(doc, code);
-
-                var result = Crawl(pages, searchQuery, doc, code);
-
-                result.Change(o => o.Site = SiteType.Gumtree);
-                result.Change(o => o.Deal = dealType);
-                result.Change(o => o.CityId = city.Id);
-
                 return new ScrappResponse
                 {
-                    Offers = result
+                    Offers = new List<Offer>()
                 };
             }
+
+            if (!city.IsGumtreeAvailableForRent && dealType == DealType.Rent)
+            {
+                return new ScrappResponse
+                {
+                    Offers = new List<Offer>()
+                };
+            }
+
+            var searchQuery = QueryStringProvider(SiteType.Gumtree).Get(city, dealType, district);
+
+            var code = dealType == DealType.Sale ? city.GtCodeSale : city.GtCodeRent;
+
+            var scrap = ScrapThis(searchQuery);
+
+            if (!scrap.Succeed)
+            {
+                return new ScrappResponse
+                {
+                    Offers = new List<Offer>(),
+                    ExceptionAccured = scrap.ExceptionAccured,
+                    ExceptionMessage = scrap.ExceptionMessage
+                };
+            }
+
+            HtmlNode doc = scrap.HtmlNode;
+
+            int.TryParse(doc.ByClass("count", @"[^0-9]"), out int count);
+
+            if (count == 0)
+            {
+                return new ScrappResponse
+                {
+                    Offers = new List<Offer>(),
+                    ThereAreNoRecords = true
+                };
+            }
+
+            int pages = PageProvider(SiteType.Gumtree).Get(doc, code);
+
+            var result = Crawl(pages, searchQuery, doc, code);
+
+            result.Change(o => o.Site = SiteType.Gumtree);
+            result.Change(o => o.Deal = dealType);
+            result.Change(o => o.CityId = city.Id);
+
+            if (!(district is null))
+            {
+                result.Change(o => o.DistrictId = district.Id);
+            }
+
+            return new ScrappResponse
+            {
+                Offers = result
+            };
         }
 
         private List<Offer> Crawl(int pages, string searchQuery, HtmlNode doc, string code)

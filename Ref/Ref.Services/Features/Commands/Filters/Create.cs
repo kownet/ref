@@ -26,6 +26,7 @@ namespace Ref.Services.Features.Commands.Filters
             public string Name { get; set; }
             public string ShouldContain { get; set; }
             public string ShouldNotContain { get; set; }
+            public int? DistrictId { get; set; }
         }
 
         public class Result : BaseResult { }
@@ -81,7 +82,8 @@ namespace Ref.Services.Features.Commands.Filters
                             Notification = request.Notification,
                             Name = request.Name,
                             LastCheckedAt = DateTime.Now,
-                            ShouldContain = request.ShouldContain
+                            ShouldContain = request.ShouldContain,
+                            DistrictId = request.DistrictId
                         });
 
                         return new Result();

@@ -29,7 +29,7 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 var result = (await c.QueryAsync<District>(
-                    @"SELECT Id, CityId, Name, NameRaw, GtCodeSale, GtCodeRent FROM Districts")).AsQueryable();
+                    @"SELECT Id, CityId, Name, NameRaw, GtCodeSale, GtCodeRent, OtoDomId FROM Districts")).AsQueryable();
 
                 return result.Where(predicate);
             }
@@ -40,7 +40,7 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 return await c.QueryAsync<District>(
-                    @"SELECT Id, CityId, Name, NameRaw, GtCodeSale, GtCodeRent FROM Districts");
+                    @"SELECT Id, CityId, Name, NameRaw, GtCodeSale, GtCodeRent, OtoDomId FROM Districts");
             }
         }
     }

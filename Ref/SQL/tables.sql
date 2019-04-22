@@ -26,12 +26,14 @@ CREATE TABLE Districts(
 	[NameRaw] nvarchar(256) NOT NULL,
 	[GtCodeSale] nvarchar(128) NOT NULL,
 	[GtCodeRent] nvarchar(128) NOT NULL,
+	[OtoDomId] int NULL
 )
 
 CREATE TABLE Filters(
 	[Id] [int] PRIMARY KEY IDENTITY(1,1) NOT NULL,
 	[UserId] [int] REFERENCES Users(Id),
 	[CityId] [int] REFERENCES Cities(Id),
+	[DistrictId] [int] REFERENCES Districts(Id) NULL,
 	[Property] [int] NOT NULL,
 	[Deal] [int] NOT NULL,
 	[Market] [int] NOT NULL,
@@ -51,6 +53,7 @@ CREATE TABLE Filters(
 CREATE TABLE Offers(
 	[Id] [int] PRIMARY KEY IDENTITY(1,1) NOT NULL,
 	[CityId] [int] REFERENCES Cities(Id),
+	[DistrictId] [int] REFERENCES Districts(Id) NULL,
 	[SiteOfferId] nvarchar(128) NOT NULL,
 	[Site] [int] NOT NULL,
 	[Deal] int NOT NULL,

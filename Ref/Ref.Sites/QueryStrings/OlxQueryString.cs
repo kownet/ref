@@ -30,6 +30,11 @@ namespace Ref.Sites.QueryStrings
                 result = result + $"{divider}filter_enum_market%5D%5B0%5D={market}&";
             }
 
+            if(!(district is null) && district.IsOlxAvailable)
+            {
+                result = result + $"{divider}district_id%5D={district.OtoDomId.Value}&";
+            }
+
             return result.RemoveLastIf("&");
         }
 

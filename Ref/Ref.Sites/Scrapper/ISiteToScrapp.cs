@@ -7,6 +7,6 @@ namespace Ref.Sites.Scrapper
     public interface ISiteToScrapp
     {
         SiteResponse Search(SearchFilter filter);
-        ScrappResponse Scrapp(City city, DealType dealType);
+        ScrappResponse Scrapp(City city, DealType dealType, District district);
     }
 }

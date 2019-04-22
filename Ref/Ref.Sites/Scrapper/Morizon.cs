@@ -26,75 +26,61 @@ namespace Ref.Sites.Scrapper
         {
         }
 
-        public ScrappResponse Scrapp(City city, DealType dealType)
+        public ScrappResponse Scrapp(City city, DealType dealType, District district)
         {
-            if(city.HasDistricts)
+            var searchQuery = QueryStringProvider(SiteType.Morizon).Get(city, dealType, district);
+
+            var scrap = ScrapThis(searchQuery);
+
+            if (!scrap.Succeed)
             {
-                var districts = (DistrictRepository.FindByAsync(d => d.CityId == city.Id).Result).ToList();
-
-                var result = new List<Offer>();
-
-                if (districts.AnyAndNotNull())
-                {
-                    foreach (var district in districts)
-                    {
-                        var searchQuery = QueryStringProvider(SiteType.OtoDom).Get(city, dealType, district);
-                    }
-                }
-
-                return new ScrappResponse { Offers = result };
-            }
-            else
-            {
-                var searchQuery = QueryStringProvider(SiteType.Morizon).Get(city, dealType);
-
-                var scrap = ScrapThis(searchQuery);
-
-                if (!scrap.Succeed)
-                {
-                    return new ScrappResponse
-                    {
-                        Offers = new List<Offer>(),
-                        ExceptionAccured = scrap.ExceptionAccured,
-                        ExceptionMessage = scrap.ExceptionMessage
-                    };
-                }
-
-                HtmlNode doc = scrap.HtmlNode;
-
-                if (doc.InnerHtml.Contains("Ta strona została zablokowana."))
-                {
-                    return new ScrappResponse
-                    {
-                        Offers = new List<Offer>(),
-                        WeAreBanned = true
-                    };
-                }
-
-                var noResult = doc.CssSelect(".message-title").FirstOrDefault();
-
-                if (noResult != null)
-                {
-                    return new ScrappResponse
-                    {
-                        Offers = new List<Offer>(),
-                        ThereAreNoRecords = true
-                    };
-                }
-
-                int pages = PageProvider(SiteType.Morizon).Get(doc);
-
-                var result = Crawl(pages, searchQuery, doc);
-
-                result.Change(o => o.Site = SiteType.Morizon);
-                result.Change(o => o.Deal = dealType);
-                result.Change(o => o.CityId = city.Id);
-
                 return new ScrappResponse
                 {
-                    Offers = result
+                    Offers = new List<Offer>(),
+                    ExceptionAccured = scrap.ExceptionAccured,
+                    ExceptionMessage = scrap.ExceptionMessage
                 };
             }
+
+            HtmlNode doc = scrap.HtmlNode;
+
+            if (doc.InnerHtml.Contains("Ta strona została zablokowana."))
+            {
+                return new ScrappResponse
+                {
+                    Offers = new List<Offer>(),
+                    WeAreBanned = true
+                };
+            }
+
+            var noResult = doc.CssSelect(".message-title").FirstOrDefault();
+
+            if (noResult != null)
+            {
+                return new ScrappResponse
+                {
+                    Offers = new List<Offer>(),
+                    ThereAreNoRecords = true
+                };
+            }
+
+            int pages = PageProvider(SiteType.Morizon).Get(doc);
+
+            var result = Crawl(pages, searchQuery, doc);
+
+            result.Change(o => o.Site = SiteType.Morizon);
+            result.Change(o => o.Deal = dealType);
+            result.Change(o => o.CityId = city.Id);
+
+            if (!(district is null))
+            {
+                result.Change(o => o.DistrictId = district.Id);
+            }
+
+            return new ScrappResponse
+            {
+                Offers = result
+            };
         }
 
         private List<Offer> Crawl(int pages, string searchQuery, HtmlNode doc)

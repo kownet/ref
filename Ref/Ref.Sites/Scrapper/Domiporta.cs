@@ -26,66 +26,52 @@ namespace Ref.Sites.Scrapper
         {
         }
 
-        public ScrappResponse Scrapp(City city, DealType dealType)
+        public ScrappResponse Scrapp(City city, DealType dealType, District district)
         {
-            if(city.HasDistricts)
+            var searchQuery = QueryStringProvider(SiteType.DomiPorta).Get(city, dealType, district);
+
+            var scrap = ScrapThis(searchQuery);
+
+            if (!scrap.Succeed)
             {
-                var districts = (DistrictRepository.FindByAsync(d => d.CityId == city.Id).Result).ToList();
-
-                var result = new List<Offer>();
-
-                if (districts.AnyAndNotNull())
-                {
-                    foreach (var district in districts)
-                    {
-                        var searchQuery = QueryStringProvider(SiteType.OtoDom).Get(city, dealType, district);
-                    }
-                }
-
-                return new ScrappResponse { Offers = result };
-            }
-            else
-            {
-                var searchQuery = QueryStringProvider(SiteType.DomiPorta).Get(city, dealType);
-
-                var scrap = ScrapThis(searchQuery);
-
-                if (!scrap.Succeed)
-                {
-                    return new ScrappResponse
-                    {
-                        Offers = new List<Offer>(),
-                        ExceptionAccured = scrap.ExceptionAccured,
-                        ExceptionMessage = scrap.ExceptionMessage
-                    };
-                }
-
-                HtmlNode doc = scrap.HtmlNode;
-
-                var noResult = doc.CssSelect(".alert__title ").FirstOrDefault();
-
-                if (noResult != null)
-                {
-                    return new ScrappResponse
-                    {
-                        Offers = new List<Offer>(),
-                        ThereAreNoRecords = false
-                    };
-                }
-
-                int pages = PageProvider(SiteType.DomiPorta).Get(doc);
-
-                var result = Crawl(pages, searchQuery, doc);
-
-                result.Change(o => o.Site = SiteType.DomiPorta);
-                result.Change(o => o.Deal = dealType);
-                result.Change(o => o.CityId = city.Id);
-
                 return new ScrappResponse
                 {
-                    Offers = result
+                    Offers = new List<Offer>(),
+                    ExceptionAccured = scrap.ExceptionAccured,
+                    ExceptionMessage = scrap.ExceptionMessage
                 };
             }
+
+            HtmlNode doc = scrap.HtmlNode;
+
+            var noResult = doc.CssSelect(".alert__title ").FirstOrDefault();
+
+            if (noResult != null)
+            {
+                return new ScrappResponse
+                {
+                    Offers = new List<Offer>(),
+                    ThereAreNoRecords = false
+                };
+            }
+
+            int pages = PageProvider(SiteType.DomiPorta).Get(doc);
+
+            var result = Crawl(pages, searchQuery, doc);
+
+            result.Change(o => o.Site = SiteType.DomiPorta);
+            result.Change(o => o.Deal = dealType);
+            result.Change(o => o.CityId = city.Id);
+
+            if (!(district is null))
+            {
+                result.Change(o => o.DistrictId = district.Id);
+            }
+
+            return new ScrappResponse
+            {
+                Offers = result
+            };
         }
 
         private List<Offer> Crawl(int pages, string searchQuery, HtmlNode doc)
@@ -131,7 +117,7 @@ namespace Ref.Sites.Scrapper
 
                                 if (!string.IsNullOrWhiteSpace(areaRaw))
                                 {
-                                    if(areaRaw.Length >= 2)
+                                    if (areaRaw.Length >= 2)
                                     {
                                         areaRaw = areaRaw.Replace(",", "").Substring(0, 2);
 
@@ -144,7 +130,7 @@ namespace Ref.Sites.Scrapper
 
                                 var ppms = article.ByClass("sneakpeak__details_item--price", @"[^0-9,.-]");
 
-                                if(!string.IsNullOrWhiteSpace(ppms))
+                                if (!string.IsNullOrWhiteSpace(ppms))
                                 {
                                     ppms = ppms.Remove(ppms.Length - 1);
 

@@ -25,86 +25,52 @@ namespace Ref.Sites.Scrapper
         {
         }
 
-        public ScrappResponse Scrapp(City city, DealType dealType)
+        public ScrappResponse Scrapp(City city, DealType dealType, District district)
         {
-            if (city.HasDistricts)
+            var searchQuery = QueryStringProvider(SiteType.OtoDom).Get(city, dealType, district);
+
+            var scrap = ScrapThis(searchQuery);
+
+            if (!scrap.Succeed)
             {
-                var districts = (DistrictRepository.FindByAsync(d => d.CityId == city.Id).Result).ToList();
-
-                var result = new List<Offer>();
-
-                if (districts.AnyAndNotNull())
-                {
-                    foreach (var district in districts)
-                    {
-                        var searchQuery = QueryStringProvider(SiteType.OtoDom).Get(city, dealType, district);
-
-                        var scrap = ScrapThis(searchQuery);
-
-                        if(scrap.Succeed)
-                        {
-                            HtmlNode doc = scrap.HtmlNode;
-
-                            int pages = PageProvider(SiteType.OtoDom).Get(doc);
-
-                            var districtResult = Crawl(pages, searchQuery, doc);
-
-                            districtResult.Change(o => o.Site = SiteType.OtoDom);
-                            districtResult.Change(o => o.Deal = dealType);
-                            districtResult.Change(o => o.CityId = city.Id);
-                            districtResult.Change(o => o.DistrictId = district.Id);
-
-                            result.AddRange(districtResult);
-                        }
-
-                        AppProvider.PauseTime();
-                    }
-                }
-
-                return new ScrappResponse { Offers = result };
-            }
-            else
-            {
-                var searchQuery = QueryStringProvider(SiteType.OtoDom).Get(city, dealType);
-
-                var scrap = ScrapThis(searchQuery);
-
-                if (!scrap.Succeed)
-                {
-                    return new ScrappResponse
-                    {
-                        Offers = new List<Offer>(),
-                        ExceptionAccured = scrap.ExceptionAccured,
-                        ExceptionMessage = scrap.ExceptionMessage
-                    };
-                }
-
-                HtmlNode doc = scrap.HtmlNode;
-
-                var noResult = doc.CssSelect(".search-location-extended-warning").FirstOrDefault();
-
-                if (!(noResult is null))
-                {
-                    return new ScrappResponse
-                    {
-                        Offers = new List<Offer>(),
-                        ThereAreNoRecords = true
-                    };
-                }
-
-                int pages = PageProvider(SiteType.OtoDom).Get(doc);
-
-                var result = Crawl(pages, searchQuery, doc);
-
-                result.Change(o => o.Site = SiteType.OtoDom);
-                result.Change(o => o.Deal = dealType);
-                result.Change(o => o.CityId = city.Id);
-
                 return new ScrappResponse
                 {
-                    Offers = result
+                    Offers = new List<Offer>(),
+                    ExceptionAccured = scrap.ExceptionAccured,
+                    ExceptionMessage = scrap.ExceptionMessage
                 };
             }
+
+            HtmlNode doc = scrap.HtmlNode;
+
+            var noResult = doc.CssSelect(".search-location-extended-warning").FirstOrDefault();
+
+            if (!(noResult is null))
+            {
+                return new ScrappResponse
+                {
+                    Offers = new List<Offer>(),
+                    ThereAreNoRecords = true
+                };
+            }
+
+            int pages = PageProvider(SiteType.OtoDom).Get(doc);
+
+            var result = Crawl(pages, searchQuery, doc);
+
+            result.Change(o => o.Site = SiteType.OtoDom);
+            result.Change(o => o.Deal = dealType);
+            result.Change(o => o.CityId = city.Id);
+
+            if (!(district is null))
+            {
+                result.Change(o => o.DistrictId = district.Id);
+            }
+
+            return new ScrappResponse
+            {
+                Offers = result
+            };
         }
 
         private List<Offer> Crawl(int pages, string searchQuery, HtmlNode doc)
@@ -150,8 +116,8 @@ namespace Ref.Sites.Scrapper
                                 if (!string.IsNullOrWhiteSpace(areaRaw))
                                 {
                                     areaRaw.Replace(",", "");
-                                    
-                                    if(areaRaw.Length >= 2)
+
+                                    if (areaRaw.Length >= 2)
                                     {
                                         areaRaw = areaRaw.Substring(0, 2);
 

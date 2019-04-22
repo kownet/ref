@@ -9,6 +9,7 @@ namespace Ref.Data.Components
     public interface ICitiesReport
     {
         Task<IEnumerable<City>> GetAllCitiesForActiveUsersAsync();
+        Task<IEnumerable<District>> GetAllDistrictsForActiveCityAsync(int cityId);
     }
 
     public class CitiesReport : ICitiesReport
@@ -29,6 +30,17 @@ namespace Ref.Data.Components
                         inner join Filters F on C.Id = F.CityId
                         inner join Users U on U.Id = F.UserId
                         where U.IsActive = 1 and F.Notification <> 100");
+            }
+        }
+
+        public async Task<IEnumerable<District>> GetAllDistrictsForActiveCityAsync(int cityId)
+        {
+            using (var c = _dbAccess.Connection)
+            {
+                return await c.QueryAsync<District>(
+                    @"select distinct D.Id, D.Name, D.NameRaw, D.GtCodeRent, D.GtCodeSale, D.CityId, D.OtoDomId from Districts D
+						inner join Filters F on D.Id = F.DistrictId
+						where D.CityId = @CityId", new { CityId = cityId });
             }
         }
     }
