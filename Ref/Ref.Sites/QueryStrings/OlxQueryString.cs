@@ -12,6 +12,7 @@ namespace Ref.Sites.QueryStrings
             var type = "mieszkania";
             var deal = dealType == DealType.Sale ? "sprzedaz" : "wynajem";
             var market = "secondary";
+            var divider = "search%5B";
 
             var cityName = city.NameRaw;
 
@@ -20,8 +21,6 @@ namespace Ref.Sites.QueryStrings
 
             var result =
                 $"https://www.olx.pl/nieruchomosci/{type}/{deal}/{cityName}/?";
-
-            var divider = "search%5B";
 
             result = result + $"{divider}Border%5D=created_at%3Adesc&";
 
@@ -32,7 +31,7 @@ namespace Ref.Sites.QueryStrings
 
             if(!(district is null) && district.IsOlxAvailable)
             {
-                result = result + $"{divider}district_id%5D={district.OtoDomId.Value}&";
+                result = result + $"{divider}district_id%5D={district.OlxId.Value}&";
             }
 
             return result.RemoveLastIf("&");

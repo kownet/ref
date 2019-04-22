@@ -26,7 +26,8 @@ CREATE TABLE Districts(
 	[NameRaw] nvarchar(256) NOT NULL,
 	[GtCodeSale] nvarchar(128) NOT NULL,
 	[GtCodeRent] nvarchar(128) NOT NULL,
-	[OtoDomId] int NULL
+	[OtoDomId] int NULL,
+	[OlxId] int NULL
 )
 
 CREATE TABLE Filters(
