@@ -25,6 +25,7 @@ namespace Ref.Data.Components
         public string ShouldNotContain { get; set; }
         public SubscriptionType Subscription { get; set; }
         public DateTime RegisteredAt { get; set; }
+        public int? DistrictId { get; set; }
 
         public bool DemoPassed
             => (Subscription == SubscriptionType.Demo && (DateTime.Now - RegisteredAt).TotalHours > 24);

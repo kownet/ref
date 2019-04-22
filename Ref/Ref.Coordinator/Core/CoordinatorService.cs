@@ -150,6 +150,12 @@ namespace Ref.Coordinator.Core
                 if (filter.PricePerMeterTo.HasValue)
                     predicate = predicate.And(o => o.PricePerMeter <= filter.PricePerMeterTo.Value);
 
+                if (filter.DistrictId.HasValue)
+                {
+                    predicate = predicate.And(o => o.DistrictId.HasValue);
+                    predicate = predicate.And(o => o.DistrictId == filter.DistrictId.Value);
+                }
+
                 var matchCriteriaOffers = (await _offerRepository
                     .FindByAsync(predicate))
                     .ToList();
