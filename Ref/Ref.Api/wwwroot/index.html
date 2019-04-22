@@ -157,6 +157,12 @@
                             </select>
                         </div>
                         <div class="form-group">
+                            <label for="filter-add-district">Dzielnica</label>
+                            <select class="custom-select custom-select-sm required not" id="filter-add-district" disabled>
+                                <option value="" selected disabled>Wybierz</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label for="filter-area">Metraż</label>
                             <div class="row">
                                 <div class="col-md-6">
@@ -232,6 +238,12 @@
                             </select>
                         </div>
                         <div class="form-group">
+                            <label for="filter-edit-district">Dzielnica</label>
+                            <select class="custom-select custom-select-sm required not" id="filter-edit-district" disabled>
+                                <option value="" selected disabled>Wybierz</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label for="filter-area">Metraż</label>
                             <div class="row">
                                 <div class="col-md-6">
@@ -299,6 +311,7 @@
     <script type="text/javascript" src="/js/notificationtypes.js?1"></script>
     <script type="text/javascript" src="/js/filters.js?1"></script>
     <script type="text/javascript" src="/js/admininfos.js?1"></script>
+    <script type="text/javascript" src="/js/districts.js?1"></script>
 
     <script type="text/javascript">
 
@@ -313,7 +326,9 @@
         APP.cities.getAll({
             url: '/cities',
             cntAdd: '#filter-add-city',
-            cntEdit: '#filter-edit-city'
+            cntEdit: '#filter-edit-city',
+            cntDistrictAdd: '#filter-add-district',
+            cntDistrictEdit: '#filter-edit-district'
         });
 
         APP.notificationtypes.getAll({
@@ -337,7 +352,8 @@
             cntForm: '#filter-add-form',
             cntShouldContain: '#filter-add-should-contain',
             cntPpmFrom: '#filter-add-ppm-from',
-            cntPpmTo: '#filter-add-ppm-to'
+            cntPpmTo: '#filter-add-ppm-to',
+            cntDistrictAdd: '#filter-add-district'
         });
 
         APP.filters.editFilter({
@@ -357,7 +373,8 @@
             cntForm: '#filter-edit-form',
             cntShouldContain: '#filter-edit-should-contain',
             cntPpmFrom: '#filter-edit-ppm-from',
-            cntPpmTo: '#filter-edit-ppm-to'
+            cntPpmTo: '#filter-edit-ppm-to',
+            cntDistrictEdit: '#filter-edit-district'
         });
 
         APP.admininfos.getAll({

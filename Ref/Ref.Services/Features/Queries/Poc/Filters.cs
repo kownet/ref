@@ -34,6 +34,7 @@ namespace Ref.Services.Features.Queries.Poc
             public int UserId { get; set; }
             public string Name { get; set; }
             public string City { get; set; }
+            public string District { get; set; }
             public int? FlatAreaFrom { get; set; }
             public int? FlatAreaTo { get; set; }
             public int? PriceFrom { get; set; }
@@ -46,6 +47,7 @@ namespace Ref.Services.Features.Queries.Poc
             public string LastCheckedAtFormatted => LastCheckedAt.Format("niesprawdzany");
             public string ShouldContain { get; set; }
             public string ShouldNotContain { get; set; }
+            public string CityWithDistrict => string.IsNullOrWhiteSpace(District) ? Name : $"{Name} ({District})";
         }
 
         public class Handler : IRequestHandler<Query, Result>
@@ -63,9 +65,10 @@ namespace Ref.Services.Features.Queries.Poc
                 {
                     using (var c = _dbAccess.Connection)
                     {
-                        var entities = await c.QueryAsync<FilterPoc>(@"SELECT F.Id, F.UserId, F.Name, C.Name as City, F.FlatAreaFrom, F.FlatAreaTo, F.PriceFrom, F.PriceTo, F.Notification, F.LastCheckedAt, F.ShouldContain, F.ShouldNotContain, F.PricePerMeterFrom, F.PricePerMeterTo 
+                        var entities = await c.QueryAsync<FilterPoc>(@"SELECT F.Id, F.UserId, F.Name, C.Name as City, D.Name as District, F.FlatAreaFrom, F.FlatAreaTo, F.PriceFrom, F.PriceTo, F.Notification, F.LastCheckedAt, F.ShouldContain, F.ShouldNotContain, F.PricePerMeterFrom, F.PricePerMeterTo 
                                         FROM Filters F
                                         INNER JOIN Cities C on F.CityId = C.Id
+                                        LEFT JOIN Districts D on F.DistrictId = D.Id 
                                         WHERE F.UserId = @UserId", new { request.UserId });
 
                         return entities.AnyAndNotNull()

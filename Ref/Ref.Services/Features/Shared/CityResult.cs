@@ -6,5 +6,7 @@
         public string Name { get; set; }
         public string NameRaw { get; set; }
         public bool HasDistricts { get; set; }
+
+        public string NameFormatted => HasDistricts ? $"{Name} (dzielnice)" : Name;
     }
 }

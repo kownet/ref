@@ -59,7 +59,8 @@ namespace Ref.Services.Features.Queries.Poc
                                 ShouldContain = filter.ShouldContain,
                                 ShouldNotContain = filter.ShouldNotContain,
                                 PricePerMeterFrom = filter.PricePerMeterFrom,
-                                PricePerMeterTo = filter.PricePerMeterTo
+                                PricePerMeterTo = filter.PricePerMeterTo,
+                                DistrictId = filter.DistrictId
                             }
                         };
                     }

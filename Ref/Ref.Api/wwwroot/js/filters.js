@@ -72,9 +72,13 @@
                             var faInfo = parseValues(item.flatAreaFrom, item.flatAreaTo);
                             var pInfo = parseValues(item.priceFrom, item.priceTo);
 
+                            var city = item.district === null
+                                ? item.city
+                                : item.city + "<br>" + "<small>(" + item.district + ")</small>";
+
                             var rows = "<tr>" +
                                 "<td>" + item.name + "<br><small>ostatnie powiadomienie: " + item.lastCheckedAtFormatted + "</small>" + "</td>" +
-                                "<td>" + item.city + "</td>" +
+                                "<td>" + city + "</td>" +
                                 faInfo +
                                 pInfo +
                                 ppmInfo +
@@ -175,7 +179,8 @@
                 pricePerMeterTo: $(opts.cntPpmTo).val(),
                 notification: $(opts.cntNtf).val(),
                 name: $(opts.cntName).val(),
-                shouldContain: $(opts.cntShouldContain).val()
+                shouldContain: $(opts.cntShouldContain).val(),
+                districtId: $(opts.cntDistrictAdd).val()
             });
 
             $.ajax({
@@ -252,6 +257,7 @@
                         $(opts.cntAreaTo).val(data.filter.flatAreaTo);
                         $(opts.cntNtf).val(data.filter.notification);
                         $(opts.cntShouldContain).val(data.filter.shouldContain);
+                        $(opts.cntDistrictEdit).val(data.filter.districtId);
 
                     } else {
                         swal($.errorHeader, data.message, "error");
@@ -277,7 +283,8 @@
                 pricePerMeterTo: $(opts.cntPpmTo).val(),
                 notification: $(opts.cntNtf).val(),
                 name: $(opts.cntName).val(),
-                shouldContain: $(opts.cntShouldContain).val()
+                shouldContain: $(opts.cntShouldContain).val(),
+                districtId: $(opts.cntDistrictEdit).val()
             });
 
             $.ajax({

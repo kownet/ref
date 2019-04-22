@@ -17,5 +17,6 @@ namespace Ref.Services.Features.Shared
         public NotificationType Notification { get; set; }
         public string ShouldContain { get; set; }
         public string ShouldNotContain { get; set; }
+        public int? DistrictId { get; set; }
     }
 }
