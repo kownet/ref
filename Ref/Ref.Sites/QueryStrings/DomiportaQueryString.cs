@@ -12,13 +12,15 @@ namespace Ref.Sites.QueryStrings
             var deal = dealType == DealType.Sale ? "sprzedam" : "wynajme";
             var market = "Wtorny";
 
+            var dist = district is null ? "" : $"%2C%20{district.Name}";
+
             var cityName = city.NameRaw;
 
             if (city.NameRaw.Contains(' '))
                 cityName = city.NameRaw.Replace(' ', '-');
 
             var result =
-                $"https://www.domiporta.pl/{type}/{deal}?Localization={city.NameRaw}";
+                $"https://www.domiporta.pl/{type}/{deal}?Localization={city.NameRaw}{dist}";
 
             result = result + $"&Rynek={market}";
 

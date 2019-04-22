@@ -12,13 +12,15 @@ namespace Ref.Sites.QueryStrings
             var deal = dealType == DealType.Sale ? "sprzedaz" : "wynajem";
             var market = "wtorny";
 
+            var dist = district is null ? "" : $"/{district.NameRaw}";
+
             var cityName = city.NameRaw;
 
             if (city.NameRaw.Contains(' '))
                 cityName = city.NameRaw.Replace(' ', '-');
 
             var result =
-                $"https://gratka.pl/nieruchomosci/{type}/{cityName}/{deal}?";
+                $"https://gratka.pl/nieruchomosci/{type}/{cityName}{dist}/{deal}?";
 
             result = result + $"&rynek={market}";
 
