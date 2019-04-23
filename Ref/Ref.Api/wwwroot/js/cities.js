@@ -30,11 +30,35 @@
 
             } else {
                 $(opts.cntDistrictAdd).empty();
-                $(opts.cntDistrictAdd).append("<option value='' selected disabled>Wybierz</option>");
+                $(opts.cntDistrictAdd).append("<option value='' selected>Wybierz</option>");
                 $(opts.cntDistrictAdd).val(null).trigger('change');
                 $(opts.cntDistrictAdd).prop("disabled", true);
             }
             
+        });
+
+        $(opts.cntEdit).change(function () {
+
+            var selectedCity = $(this).children("option:selected").val();
+
+            var city = parseInt(selectedCity);
+
+            if ($.citiesWithDistrict.includes(city)) {
+
+                APP.districts.getAll({
+                    url: '/districts/city/' + city,
+                    cntAdd: opts.cntDistrictEdit
+                });
+
+                $(opts.cntDistrictEdit).prop("disabled", false);
+
+            } else {
+                $(opts.cntDistrictEdit).empty();
+                $(opts.cntDistrictEdit).append("<option value='' selected>Wybierz</option>");
+                $(opts.cntDistrictEdit).val(null).trigger('change');
+                $(opts.cntDistrictEdit).prop("disabled", true);
+            }
+
         });
 
     };

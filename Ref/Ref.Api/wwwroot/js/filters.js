@@ -234,7 +234,6 @@
 
         var filterId = null;
         var userId = null;
-        var districtId = null;
 
         $(document).on('click', opts.btn, function (e) {
 
@@ -242,7 +241,6 @@
 
             filterId = $(this).data("id");
             userId = $(this).data("user-id");
-            districtId = $(this).data("district-id");
 
             $.get(opts.url + '/' + filterId)
                 .done(function (data) {
@@ -261,18 +259,20 @@
                         $(opts.cntShouldContain).val(data.filter.shouldContain);
                         $(opts.cntDistrictEdit).val(data.filter.districtId);
 
-                        if (districtId !== null) {
+                        if (data.filter.districtId !== null) {
 
                             $(opts.cntDistrictEdit).empty();
+                            $(opts.cntDistrictEdit).append("<option value='' selected>Wybierz</option>");
+                            $(opts.cntDistrictEdit).val(null).trigger('change');
 
                             $(opts.cntDistrictEdit).prop("disabled", false);
 
                             APP.districts.getAll({
                                 url: '/districts/city/' + data.filter.cityId,
                                 cntAdd: opts.cntDistrictEdit,
-                                selectedDistrict: districtId
+                                selectedDistrict: data.filter.districtId
                             });
-                        }
+                        } 
 
                     } else {
                         swal($.errorHeader, data.message, "error");
