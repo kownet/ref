@@ -2,8 +2,6 @@
 
     var getAll = function (opts) {
 
-        var citiesWithDistrict = [1];
-
         $.get(opts.url)
             .done(function (data) {
 
@@ -21,7 +19,7 @@
 
             var city = parseInt(selectedCity);
 
-            if (citiesWithDistrict.includes(city)) {
+            if ($.citiesWithDistrict.includes(city)) {
 
                 APP.districts.getAll({
                     url: '/districts/city/' + city,
@@ -37,23 +35,6 @@
                 $(opts.cntDistrictAdd).prop("disabled", true);
             }
             
-        });
-
-        $(opts.cntEdit).change(function () {
-
-            var selectedCity = $(this).children("option:selected").val();
-
-            var city = parseInt(selectedCity);
-
-            if (citiesWithDistrict.includes(city)) {
-                $(opts.cntDistrictEdit).prop("disabled", false);
-            } else {
-                $(opts.cntDistrictEdit).empty();
-                $(opts.cntDistrictEdit).append("<option value='' selected disabled>Wybierz</option>");
-                $(opts.cntDistrictEdit).val(null).trigger('change');
-                $(opts.cntDistrictEdit).prop("disabled", true);
-            }
-
         });
 
     };

@@ -86,7 +86,7 @@
                                 "<td>" +
                                 "<div class=\"btn-group btn-group-sm\">" +
                                 "<button type=\"button\" class=\"btn btn-sm btn-danger\" id=\"btn-filter-del\" data-id=" + item.id + " data-user-id=" + item.userId + "> Usuń</button>" +
-                                "<button type=\"button\" class=\"btn btn-sm btn-warning\" id=\"btn-filter-edit\" data-id=" + item.id + " data-user-id=" + item.userId + " data-toggle=\"modal\" data-target=\"#filter-edit\"> Edytuj</button>" +
+                                "<button type=\"button\" class=\"btn btn-sm btn-warning\" id=\"btn-filter-edit\" data-id=" + item.id + " data-user-id=" + item.userId + " data-district-id=" + item.districtId + " data-toggle=\"modal\" data-target=\"#filter-edit\"> Edytuj</button>" +
                                 "</div >" + "</td>" +
                                 "</tr>" +
                                 keywordsContain;
@@ -234,6 +234,7 @@
 
         var filterId = null;
         var userId = null;
+        var districtId = null;
 
         $(document).on('click', opts.btn, function (e) {
 
@@ -241,6 +242,7 @@
 
             filterId = $(this).data("id");
             userId = $(this).data("user-id");
+            districtId = $(this).data("district-id");
 
             $.get(opts.url + '/' + filterId)
                 .done(function (data) {
@@ -258,6 +260,19 @@
                         $(opts.cntNtf).val(data.filter.notification);
                         $(opts.cntShouldContain).val(data.filter.shouldContain);
                         $(opts.cntDistrictEdit).val(data.filter.districtId);
+
+                        if (districtId !== null) {
+
+                            $(opts.cntDistrictEdit).empty();
+
+                            $(opts.cntDistrictEdit).prop("disabled", false);
+
+                            APP.districts.getAll({
+                                url: '/districts/city/' + data.filter.cityId,
+                                cntAdd: opts.cntDistrictEdit,
+                                selectedDistrict: districtId
+                            });
+                        }
 
                     } else {
                         swal($.errorHeader, data.message, "error");

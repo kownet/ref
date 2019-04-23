@@ -10,6 +10,10 @@
                     $(opts.cntAdd).append(rows);
                 });
 
+                if (opts.selectedDistrict !== null) {
+                    $(opts.cntAdd).val(opts.selectedDistrict);
+                }
+
             });
 
     };
