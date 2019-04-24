@@ -229,8 +229,6 @@ namespace Ref.App.Core
                         {
                             Type = EventType.Success,
                             Category = (EventCategory)site.Type,
-                            City = city.NameRaw,
-                            District = district is null ? "" : district.NameRaw,
                             Message = msg
                         });
                     }

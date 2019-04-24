@@ -34,17 +34,15 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 return await c.ExecuteAsync(
-                    @"INSERT INTO Events (Category, Type, UpdatedAt, Message, City, District)
-                        VALUES(@Category, @Type, @UpdatedAt, @Message, @City, @District);
+                    @"INSERT INTO Events (Category, Type, UpdatedAt, Message)
+                        VALUES(@Category, @Type, @UpdatedAt, @Message);
                     SELECT CAST(SCOPE_IDENTITY() as int)",
                     new
                     {
                         ev.Category,
                         ev.Type,
                         UpdatedAt = DateTime.Now,
-                        ev.Message,
-                        ev.District,
-                        ev.City
+                        ev.Message
                     });
             }
         }
@@ -67,7 +65,7 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 var result = (await c.QueryAsync<Event>(
-                    @"SELECT Id, Category, Type, UpdatedAt, Message, City, District FROM Events")).AsQueryable();
+                    @"SELECT Id, Category, Type, UpdatedAt, Message FROM Events")).AsQueryable();
 
                 return result.Where(predicate);
             }
@@ -78,7 +76,7 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 return await c.QueryAsync<Event>(
-                    @"SELECT Id, Category, Type, UpdatedAt, Message, City, District FROM Events");
+                    @"SELECT Id, Category, Type, UpdatedAt, Message FROM Events");
             }
         }
 
@@ -87,7 +85,7 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 return await c.QueryFirstOrDefaultAsync<Event>(
-                    @"SELECT Id, Category, Type, UpdatedAt, Message, City, District FROM Events 
+                    @"SELECT Id, Category, Type, UpdatedAt, Message FROM Events 
                         WHERE Id = @Id",
                     new
                     {
@@ -101,14 +99,12 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 var isAlready = await c.QueryFirstOrDefaultAsync<Event>(
-                    @"SELECT Id, Category, Type, UpdatedAt, Message, City, District FROM Events 
-                        WHERE Category = @Category AND Type = @Type AND City = @City AND District = @District",
+                    @"SELECT Id, Category, Type, UpdatedAt, Message FROM Events 
+                        WHERE Category = @Category AND Type = @Type",
                     new
                     {
                         ev.Category,
-                        ev.Type,
-                        ev.District,
-                        ev.City
+                        ev.Type
                     });
 
                 if (!(isAlready is null))
@@ -126,16 +122,14 @@ namespace Ref.Data.Repositories
                 else
                 {
                     await c.ExecuteAsync(
-                    @"INSERT INTO Events (Category, Type, UpdatedAt, Message, City, District)
-                        VALUES(@Category, @Type, @UpdatedAt, @Message, @City, @District)",
+                    @"INSERT INTO Events (Category, Type, UpdatedAt, Message)
+                        VALUES(@Category, @Type, @UpdatedAt, @Message)",
                     new
                     {
                         ev.Category,
                         ev.Type,
                         UpdatedAt = DateTime.Now,
-                        ev.Message,
-                        ev.District,
-                        ev.City
+                        ev.Message
                     });
                 }
             }
@@ -147,7 +141,7 @@ namespace Ref.Data.Repositories
             using(var c = _dbAccess.Connection)
             {
                 return await c.ExecuteAsync(
-                    @"UPDATE Events SET Category = @Category, Type = @Type, UpdatedAt = @UpdatedAt, Message = @Message, City = @City, District = @District 
+                    @"UPDATE Events SET Category = @Category, Type = @Type, UpdatedAt = @UpdatedAt, Message = @Message 
                         WHERE Id = @Id",
                     new
                     {
@@ -155,9 +149,7 @@ namespace Ref.Data.Repositories
                         ev.Category,
                         ev.Type,
                         ev.UpdatedAt,
-                        ev.Message,
-                        ev.City,
-                        ev.District
+                        ev.Message
                     });
             }
         }

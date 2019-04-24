@@ -47,8 +47,6 @@ namespace Ref.Services.Features.Queries.Events
                             result.Add(new EventResult
                             {
                                 UpdatedAt = entity.UpdatedAt.Format(),
-                                District = entity.District,
-                                City = entity.City,
                                 Category = entity.Category.ToString(),
                                 Type = entity.Type.ToString()
                             });
