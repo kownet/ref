@@ -25,6 +25,7 @@ namespace Ref.App.Core
         private readonly ICitiesReport _citiesReport;
         private readonly IOfferRepository _offerRepository;
         private readonly ISiteRepository _siteRepository;
+        private readonly IEventRepository _eventRepository;
 
         private readonly IPushOverNotification _pushOverNotification;
 
@@ -35,6 +36,7 @@ namespace Ref.App.Core
             ICitiesReport citiesReport,
             IOfferRepository offerRepository,
             ISiteRepository siteRepository,
+            IEventRepository eventRepository,
             IPushOverNotification pushOverNotification)
         {
             _logger = logger;
@@ -43,6 +45,7 @@ namespace Ref.App.Core
             _citiesReport = citiesReport;
             _offerRepository = offerRepository;
             _siteRepository = siteRepository;
+            _eventRepository = eventRepository;
             _pushOverNotification = pushOverNotification;
         }
 
@@ -208,14 +211,26 @@ namespace Ref.App.Core
                         _offerRepository.BulkInsert(newestFrom);
                     }
 
-                    var districted = district is null ? "" : $"District {district.NameRaw}, ";
+                    var districted = district is null ? $"\"District\": \"Empty\"," : $"\"District\": \"{district.NameRaw}\",";
 
-                    _logger.LogTrace(
-                        $"Site {site.Type.ToString()}, Deal {dealType.ToString()}, " +
-                        $"City {city.NameRaw}, " +
+                    var msg =
+                        $"{{\"Site\": \"{site.Type.ToString()}\"," +
+                        $"\"Deal\": \"{dealType.ToString()}\"," +
+                        $"\"City\": \"{city.NameRaw}\"," +
                         districted +
-                        $"collected {newestFromCriteria.Count()} records," +
-                        $" {newestFrom.Count()} new.");
+                        $"\"Records\": {newestFromCriteria.Count()}," +
+                        $"\"New\": {newestFrom.Count()} }}";
+
+                    _logger.LogTrace(msg);
+
+                    await _eventRepository.Upsert(new Event
+                    {
+                        Type = EventType.Success,
+                        Category = (EventCategory)site.Type,
+                        City = city.NameRaw,
+                        District = district is null ? "" : district.NameRaw,
+                        Message = msg
+                    });
                 }
 
                 Thread.Sleep(_appProvider.PauseTime());

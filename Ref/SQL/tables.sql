@@ -90,3 +90,13 @@ CREATE TABLE Sites(
 	[Name] nvarchar(32) NOT NULL,
 	[IsActive] [bit] NOT NULL DEFAULT(0),
 )
+
+CREATE TABLE Events(
+	[Id] [int] PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	[Type] [int] NOT NULL,
+	[Category] [int] NOT NULL,
+	[City] nvarchar(64) NULL,
+	[District] nvarchar(64) NULL,
+	[Message] nvarchar(256) NOT NULL,
+	[UpdatedAt] datetime NOT NULL
+)

@@ -9,5 +9,7 @@ namespace Ref.Data.Models
         public EventType Type { get; set; }
         public DateTime UpdatedAt { get; set; }
         public string Message { get; set; }
+        public string City { get; set; }
+        public string District { get; set; }
     }
 }

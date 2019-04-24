@@ -17,6 +17,7 @@ namespace Ref.Data.Repositories
         Task<int> DeleteAsync(int evId);
         Task<int> UpdateAsync(Event ev);
         Task<Event> GetAsync(int evId);
+        Task<int> Upsert(Event ev);
     }
 
     public class EventRepository : IEventRepository
@@ -33,15 +34,17 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 return await c.ExecuteAsync(
-                    @"INSERT INTO Filters (Category, Type, UpdatedAt, Message)
-                        VALUES(@Category, @Type, @UpdatedAt, @Message);
+                    @"INSERT INTO Events (Category, Type, UpdatedAt, Message, City, District)
+                        VALUES(@Category, @Type, @UpdatedAt, @Message, @City, @District);
                     SELECT CAST(SCOPE_IDENTITY() as int)",
                     new
                     {
                         ev.Category,
                         ev.Type,
-                        ev.UpdatedAt,
-                        ev.Message
+                        UpdatedAt = DateTime.Now,
+                        ev.Message,
+                        ev.District,
+                        ev.City
                     });
             }
         }
@@ -64,7 +67,7 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 var result = (await c.QueryAsync<Event>(
-                    @"SELECT Id, Category, Type, UpdatedAt, Message FROM Events")).AsQueryable();
+                    @"SELECT Id, Category, Type, UpdatedAt, Message, City, District FROM Events")).AsQueryable();
 
                 return result.Where(predicate);
             }
@@ -75,7 +78,7 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 return await c.QueryAsync<Event>(
-                    @"SELECT Id, Category, Type, UpdatedAt, Message FROM Events");
+                    @"SELECT Id, Category, Type, UpdatedAt, Message, City, District FROM Events");
             }
         }
 
@@ -84,7 +87,7 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 return await c.QueryFirstOrDefaultAsync<Event>(
-                    @"SELECT Id, Category, Type, UpdatedAt, Message FROM Events 
+                    @"SELECT Id, Category, Type, UpdatedAt, Message, City, District FROM Events 
                         WHERE Id = @Id",
                     new
                     {
@@ -93,12 +96,58 @@ namespace Ref.Data.Repositories
             }
         }
 
+        public async Task<int> Upsert(Event ev)
+        {
+            using (var c = _dbAccess.Connection)
+            {
+                var isAlready = await c.QueryFirstOrDefaultAsync<Event>(
+                    @"SELECT Id, Category, Type, UpdatedAt, Message, City, District FROM Events 
+                        WHERE Category = @Category AND Type = @Type AND City = @City AND District = @District",
+                    new
+                    {
+                        ev.Category,
+                        ev.Type,
+                        ev.District,
+                        ev.City
+                    });
+
+                if (!(isAlready is null))
+                {
+                     await c.ExecuteAsync(
+                            @"UPDATE Events SET UpdatedAt = @UpdatedAt, Message = @Message WHERE Id = @Id",
+                            new
+                            {
+                                isAlready.Id,
+                                UpdatedAt = DateTime.Now,
+                                ev.Message
+                            });
+                    
+                }
+                else
+                {
+                    await c.ExecuteAsync(
+                    @"INSERT INTO Events (Category, Type, UpdatedAt, Message, City, District)
+                        VALUES(@Category, @Type, @UpdatedAt, @Message, @City, @District)",
+                    new
+                    {
+                        ev.Category,
+                        ev.Type,
+                        UpdatedAt = DateTime.Now,
+                        ev.Message,
+                        ev.District,
+                        ev.City
+                    });
+                }
+            }
+            return 0;
+        }
+
         public async Task<int> UpdateAsync(Event ev)
         {
             using(var c = _dbAccess.Connection)
             {
                 return await c.ExecuteAsync(
-                    @"UPDATE Filters SET Category = @Category, Type = @Type, UpdatedAt = @UpdatedAt, Message = @Message 
+                    @"UPDATE Events SET Category = @Category, Type = @Type, UpdatedAt = @UpdatedAt, Message = @Message, City = @City, District = @District 
                         WHERE Id = @Id",
                     new
                     {
@@ -106,7 +155,9 @@ namespace Ref.Data.Repositories
                         ev.Category,
                         ev.Type,
                         ev.UpdatedAt,
-                        ev.Message
+                        ev.Message,
+                        ev.City,
+                        ev.District
                     });
             }
         }
