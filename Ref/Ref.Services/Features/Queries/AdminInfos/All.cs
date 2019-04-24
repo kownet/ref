@@ -47,7 +47,7 @@ namespace Ref.Services.Features.Queries.AdminInfos
                             result.Add(new AdminInfoResult { Id = entity.Id, Text = entity.Text, IsActive = entity.IsActive, DateAdded = entity.DateAdded.Format() });
                         }
 
-                        return new Result { Infos = result.OrderByDescending(i => i.DateAdded) };
+                        return new Result { Infos = result.OrderByDescending(i => i.DateAdded).Take(2) };
                     }
                     else return new Result { Message = "No cities in database" };
                 }

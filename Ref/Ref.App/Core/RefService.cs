@@ -223,14 +223,23 @@ namespace Ref.App.Core
 
                     _logger.LogTrace(msg);
 
-                    await _eventRepository.Upsert(new Event
+                    try
                     {
-                        Type = EventType.Success,
-                        Category = (EventCategory)site.Type,
-                        City = city.NameRaw,
-                        District = district is null ? "" : district.NameRaw,
-                        Message = msg
-                    });
+                        await _eventRepository.Upsert(new Event
+                        {
+                            Type = EventType.Success,
+                            Category = (EventCategory)site.Type,
+                            City = city.NameRaw,
+                            District = district is null ? "" : district.NameRaw,
+                            Message = msg
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        var msgException = $"Message: {ex.GetFullMessage()}, StackTrace: {ex.StackTrace}";
+
+                        _logger.LogError(msgException);
+                    }
                 }
 
                 Thread.Sleep(_appProvider.PauseTime());

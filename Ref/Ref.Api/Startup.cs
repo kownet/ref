@@ -86,6 +86,7 @@ namespace Ref.Api
             services.AddTransient<IAdminInfosRepository, AdminInfosRepository>();
             services.AddTransient<ISiteRepository, SiteRepository>();
             services.AddTransient<IDistrictRepository, DistrictRepository>();
+            services.AddTransient<IEventRepository, EventRepository>();
 
             services.AddScoped<IPasswordProvider, PasswordProvider>();
 
