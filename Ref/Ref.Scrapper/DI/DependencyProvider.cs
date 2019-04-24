@@ -52,6 +52,7 @@ namespace Ref.Scrapper.DI
             #region Repositories
             services.AddTransient<IOfferRepository, OfferRepository>();
             services.AddTransient<ISiteRepository, SiteRepository>();
+            services.AddTransient<IEventRepository, EventRepository>();
             #endregion
 
             #region App

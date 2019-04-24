@@ -22,6 +22,7 @@ namespace Ref.Scrapper.Core
 
         private readonly IOfferRepository _offerRepository;
         private readonly ISiteRepository _siteRepository;
+        private readonly IEventRepository _eventRepository;
 
         private readonly IPushOverNotification _pushOverNotification;
 
@@ -31,6 +32,7 @@ namespace Ref.Scrapper.Core
             IAppScrapperProvider appProvider,
             IOfferRepository offerRepository,
             ISiteRepository siteRepository,
+            IEventRepository eventRepository,
             IPushOverNotification pushOverNotification)
         {
             _logger = logger;
@@ -38,6 +40,7 @@ namespace Ref.Scrapper.Core
             _appProvider = appProvider;
             _offerRepository = offerRepository;
             _siteRepository = siteRepository;
+            _eventRepository = eventRepository;
             _pushOverNotification = pushOverNotification;
         }
 
@@ -97,6 +100,22 @@ namespace Ref.Scrapper.Core
                                     if(result.IsDeleted || result.IsRedirected || !result.Succeed)
                                     {
                                         await _offerRepository.SetDeletedAsync(offer.Id);
+                                    }
+
+                                    try
+                                    {
+                                        await _eventRepository.Upsert(new Event
+                                        {
+                                            Type = EventType.Success,
+                                            Category = (EventCategory)((int)site.Type + 100),
+                                            Message = $"Succeed:{result.Succeed}"
+                                        });
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        var msgException = $"Message: {ex.GetFullMessage()}, StackTrace: {ex.StackTrace}";
+
+                                        _logger.LogError(msgException);
                                     }
 
                                     Thread.Sleep(_appProvider.ScrappPause());
