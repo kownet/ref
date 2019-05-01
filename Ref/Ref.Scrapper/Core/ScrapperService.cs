@@ -77,7 +77,7 @@ namespace Ref.Scrapper.Core
                                 {
                                     var result = _siteAccessor(site.Type).SingleScrapp(offer);
 
-                                    if(result.Succeed)
+                                    if (result.Succeed)
                                     {
                                         offer.Content = result.Content.ToLowerInvariant();
                                         offer.IsScrapped = true;
@@ -97,25 +97,28 @@ namespace Ref.Scrapper.Core
                                         await _offerRepository.UpdateAsync(offer);
                                     }
 
-                                    if(result.IsDeleted || result.IsRedirected || !result.Succeed)
+                                    if (result.IsDeleted || result.IsRedirected || !result.Succeed)
                                     {
                                         await _offerRepository.SetDeletedAsync(offer.Id);
                                     }
 
-                                    try
+                                    if (_appProvider.EventUpdate())
                                     {
-                                        await _eventRepository.Upsert(new Event
+                                        try
                                         {
-                                            Type = EventType.Success,
-                                            Category = (EventCategory)((int)site.Type + 100),
-                                            Message = $"Succeed:{result.Succeed}"
-                                        });
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        var msgException = $"Message: {ex.GetFullMessage()}, StackTrace: {ex.StackTrace}";
+                                            await _eventRepository.Upsert(new Event
+                                            {
+                                                Type = EventType.Success,
+                                                Category = (EventCategory)((int)site.Type + 100),
+                                                Message = $"Succeed:{result.Succeed}"
+                                            });
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            var msgException = $"Message: {ex.GetFullMessage()}, StackTrace: {ex.StackTrace}";
 
-                                        _logger.LogError(msgException);
+                                            _logger.LogError(msgException);
+                                        }
                                     }
 
                                     Thread.Sleep(_appProvider.ScrappPause());
@@ -141,7 +144,7 @@ namespace Ref.Scrapper.Core
 
                     _logger.LogError(msgException);
 
-                    if(_appProvider.AdminNotification())
+                    if (_appProvider.AdminNotification())
                     {
                         _pushOverNotification.Send(
                             $"[{_appProvider.AppId()}]{Labels.ErrorMsgTitle}",

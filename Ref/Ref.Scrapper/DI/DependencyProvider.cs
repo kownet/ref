@@ -68,7 +68,8 @@ namespace Ref.Scrapper.DI
                 configurationRoot["app:sites"],
                 configurationRoot["app:timeout"],
                 configurationRoot["app:chunksize"],
-                configurationRoot["app:scrapppause"])
+                configurationRoot["app:scrapppause"],
+                configurationRoot["app:eventupdate"])
             );
             #endregion
 

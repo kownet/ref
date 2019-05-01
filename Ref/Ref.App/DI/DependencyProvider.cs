@@ -182,7 +182,9 @@ namespace Ref.App.DI
                 configurationRoot["app:notifications:banned"],
                 configurationRoot["app:notifications:norecords"],
                 configurationRoot["app:notifications:exception"],
-                configurationRoot["app:notifications:appexception"])
+                configurationRoot["app:notifications:appexception"],
+                configurationRoot["app:checkinterval"],
+                configurationRoot["app:eventupdate"])
             );
             #endregion
 

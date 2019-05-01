@@ -120,14 +120,6 @@ namespace Ref.App.Core
             {
                 foreach (DealType dealType in dealTypes)
                 {
-                    var old = await _offerRepository
-                        .FindByAsync(c =>
-                            c.CityId == city.Id &&
-                            c.Site == site.Type &&
-                            c.Deal == dealType);
-
-                    var oldest = old.ToList();
-
                     var result = _siteAccessor(site.Type).Scrapp(city, dealType, district);
 
                     if (result.WeAreBanned)
@@ -182,7 +174,7 @@ namespace Ref.App.Core
                             .ToList();
                     }
 
-                    if(!(district is null))
+                    if (!(district is null))
                     {
                         if (newestFromCriteria.AnyAndNotNull())
                         {
@@ -202,9 +194,22 @@ namespace Ref.App.Core
                         }
                     }
 
-                    var newestFrom = newestFromCriteria
-                        .Where(p => oldest.All(p2 => p2.SiteOfferId != p.SiteOfferId))
-                        .ToList();
+                    var newestFrom = new List<Offer>();
+
+                    if (newestFromCriteria.AnyAndNotNull())
+                    {
+                        var old = await _offerRepository
+                            .FindByAsync(c =>
+                                c.CityId == city.Id &&
+                                c.Site == site.Type &&
+                                c.Deal == dealType);
+
+                        var oldest = old.ToList();
+
+                        newestFrom = newestFromCriteria
+                            .Where(p => oldest.All(p2 => p2.SiteOfferId != p.SiteOfferId))
+                            .ToList();
+                    }
 
                     if (newestFrom.AnyAndNotNull())
                     {
@@ -223,20 +228,23 @@ namespace Ref.App.Core
 
                     _logger.LogTrace(msg);
 
-                    try
+                    if (_appProvider.EventUpdate())
                     {
-                        await _eventRepository.Upsert(new Event
+                        try
                         {
-                            Type = EventType.Success,
-                            Category = (EventCategory)site.Type,
-                            Message = msg
-                        });
-                    }
-                    catch (Exception ex)
-                    {
-                        var msgException = $"Message: {ex.GetFullMessage()}, StackTrace: {ex.StackTrace}";
+                            await _eventRepository.Upsert(new Event
+                            {
+                                Type = EventType.Success,
+                                Category = (EventCategory)site.Type,
+                                Message = msg
+                            });
+                        }
+                        catch (Exception ex)
+                        {
+                            var msgException = $"Message: {ex.GetFullMessage()}, StackTrace: {ex.StackTrace}";
 
-                        _logger.LogError(msgException);
+                            _logger.LogError(msgException);
+                        }
                     }
                 }
 

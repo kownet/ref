@@ -66,16 +66,16 @@ namespace Ref.Sites.Scrapper
 
             HtmlNode doc = scrap.HtmlNode;
 
-            int.TryParse(doc.ByClass("count", @"[^0-9]"), out int count);
+            //int.TryParse(doc.ByClass("count", @"[^0-9]"), out int count);
 
-            if (count == 0)
-            {
-                return new ScrappResponse
-                {
-                    Offers = new List<Offer>(),
-                    ThereAreNoRecords = true
-                };
-            }
+            //if (count == 0)
+            //{
+            //    return new ScrappResponse
+            //    {
+            //        Offers = new List<Offer>(),
+            //        ThereAreNoRecords = true
+            //    };
+            //}
 
             int pages = PageProvider(SiteType.Gumtree).Get(doc, code);
 
@@ -115,7 +115,7 @@ namespace Ref.Sites.Scrapper
 
                 doc = scrap.HtmlNode;
 
-                var listing = doc.CssSelect(".result-link");
+                var listing = doc.CssSelect(".tileV1");
 
                 if (!(listing is null))
                 {
@@ -128,7 +128,7 @@ namespace Ref.Sites.Scrapper
                                 DateAdded = DateTime.Now
                             };
 
-                            if (int.TryParse(article.ByClass("amount", @"[^0-9,.-]"), out int price))
+                            if (int.TryParse(article.ByClass("ad-price", @"[^0-9,.-]"), out int price))
                             {
                                 ad.Price = price;
                             }

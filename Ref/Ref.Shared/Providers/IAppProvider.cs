@@ -13,6 +13,8 @@ namespace Ref.Shared.Providers
         bool NoRecordsNotifications();
         bool ExceptionNotifications();
         bool AppExceptionNotifications();
+        int CheckInterval();
+        bool EventUpdate();
     }
 
     public class AppProvider : AppBaseProvider, IAppProvider
@@ -25,6 +27,8 @@ namespace Ref.Shared.Providers
         private readonly string _norecordsn;
         private readonly string _exceptionn;
         private readonly string _appexceptionn;
+        private readonly string _checkinterval;
+        private readonly string _eventupdate;
 
         public AppProvider(
             string address,
@@ -41,7 +45,9 @@ namespace Ref.Shared.Providers
             string bannedn,
             string norecordsn,
             string exceptionn,
-            string appexceptionn)
+            string appexceptionn,
+            string checkinterval,
+            string eventupdate)
             : base(address, sender, replyto, pausetime, adminnotification, successTries, appId)
         {
             _sites = sites;
@@ -52,6 +58,8 @@ namespace Ref.Shared.Providers
             _norecordsn = norecordsn;
             _exceptionn = exceptionn;
             _appexceptionn = appexceptionn;
+            _checkinterval = checkinterval;
+            _eventupdate = eventupdate;
         }
 
         public IEnumerable<int> Sites() => _sites.Split(",").Select(int.Parse).ToList();
@@ -63,5 +71,8 @@ namespace Ref.Shared.Providers
         public bool NoRecordsNotifications() => bool.Parse(_norecordsn);
         public bool ExceptionNotifications() => bool.Parse(_exceptionn);
         public bool AppExceptionNotifications() => bool.Parse(_appexceptionn);
+
+        public int CheckInterval() => int.Parse(_checkinterval);
+        public bool EventUpdate() => bool.Parse(_eventupdate);
     }
 }
