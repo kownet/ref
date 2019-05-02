@@ -50,8 +50,7 @@ namespace Ref.Cleaner.Core
 
                         _offerRepository.BulkDelete(
                             offersToDelete
-                            .Select(o => o.Id)
-                            .ToList());
+                            .Select(o => o.Id));
 
                         _logger.LogTrace($"{offersToDelete.Count()} offers deleted.");
                     }

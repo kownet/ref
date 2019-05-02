@@ -15,8 +15,8 @@ namespace Ref.Data.Repositories
     public interface IOfferRepository : IRepository
     {
         Task<IQueryable<Offer>> FindByAsync(Expression<Func<Offer, bool>> predicate);
-        void BulkInsert(IList<Offer> offers);
-        void BulkDelete(IList<int> offers);
+        void BulkInsert(IEnumerable<Offer> offers);
+        void BulkDelete(IEnumerable<int> offers);
         Task<int> UpdateAsync(Offer offer);
         Task<int> SetDeletedAsync(int offerId);
         Task<int> SetDistrict(int offerId, int districtId);
@@ -32,7 +32,7 @@ namespace Ref.Data.Repositories
             _dbAccess = dbAccess;
         }
 
-        public void BulkDelete(IList<int> offers)
+        public void BulkDelete(IEnumerable<int> offers)
         {
             using (var c = _dbAccess.Connection)
             {
@@ -55,7 +55,7 @@ namespace Ref.Data.Repositories
             }
         }
 
-        public void BulkInsert(IList<Offer> offers)
+        public void BulkInsert(IEnumerable<Offer> offers)
         {
             offers.Change(o => o.Url = o.Url.Truncate(254));
             offers.Change(o => o.Header = o.Header.Truncate(254));
@@ -64,11 +64,11 @@ namespace Ref.Data.Repositories
             {
                 using (var sbc = new SqlBulkCopy((SqlConnection)c))
                 {
-                    sbc.BatchSize = offers.Count;
+                    sbc.BatchSize = offers.Count();
                     sbc.DestinationTableName = "dbo.Offers";
                     try
                     {
-                        var dt = offers.ToDataTable();
+                        var dt = offers.ToList().ToDataTable();
 
                         sbc.ColumnMappings.Add("CityId", "CityId");
                         sbc.ColumnMappings.Add("SiteOfferId", "SiteOfferId");

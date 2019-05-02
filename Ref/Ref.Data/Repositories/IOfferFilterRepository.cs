@@ -14,7 +14,7 @@ namespace Ref.Data.Repositories
 {
     public interface IOfferFilterRepository : IRepository
     {
-        void BulkInsert(IList<OfferFilter> offers, bool withUpdate = false);
+        void BulkInsert(IEnumerable<OfferFilter> offers, bool withUpdate = false);
         Task<IQueryable<OfferFilter>> FindByAsync(Expression<Func<OfferFilter, bool>> predicate);
     }
 
@@ -27,7 +27,7 @@ namespace Ref.Data.Repositories
             _dbAccess = dbAccess;
         }
 
-        public void BulkInsert(IList<OfferFilter> offers, bool withUpdate = false)
+        public void BulkInsert(IEnumerable<OfferFilter> offers, bool withUpdate = false)
         {
             using (var c = _dbAccess.Connection)
             {
@@ -35,10 +35,10 @@ namespace Ref.Data.Repositories
                 {
                     using (var sbc = new SqlBulkCopy((SqlConnection)c, SqlBulkCopyOptions.Default, (SqlTransaction)trans))
                     {
-                        sbc.BatchSize = offers.Count;
+                        sbc.BatchSize = offers.Count();
                         sbc.DestinationTableName = "dbo.OfferFilters";
 
-                        var dt = offers.ToDataTable();
+                        var dt = offers.ToList().ToDataTable();
 
                         sbc.ColumnMappings.Add("OfferId", "OfferId");
                         sbc.ColumnMappings.Add("FilterId", "FilterId");

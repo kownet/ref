@@ -162,7 +162,7 @@ namespace Ref.App.Core
                         }
                     }
 
-                    var newestFromCriteria = result.Offers.ToList();
+                    var newestFromCriteria = result.Offers;
 
                     if (site.Type != SiteType.Adresowo &&
                         site.Type != SiteType.DomiPorta &&
@@ -170,8 +170,7 @@ namespace Ref.App.Core
                         site.Type != SiteType.Morizon)
                     {
                         newestFromCriteria = newestFromCriteria
-                            .DistinctBy(p => p.Header)
-                            .ToList();
+                            .DistinctBy(p => p.Header);
                     }
 
                     if (!(district is null))
@@ -194,18 +193,15 @@ namespace Ref.App.Core
                         }
                     }
 
-                    var newestFrom = new List<Offer>();
+                    var newestFrom = Enumerable.Empty<Offer>();
 
                     if (newestFromCriteria.AnyAndNotNull())
                     {
                         var old = await _offerRepository.
                                 GetScrapped(city.Id, site.Type, dealType);
 
-                        var oldest = old.ToList();
-
                         newestFrom = newestFromCriteria
-                            .Where(p => oldest.All(p2 => p2 != p.SiteOfferId))
-                            .ToList();
+                            .Where(p => old.All(p2 => p2 != p.SiteOfferId));
                     }
 
                     if (newestFrom.AnyAndNotNull())
