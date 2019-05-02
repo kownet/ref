@@ -198,16 +198,13 @@ namespace Ref.App.Core
 
                     if (newestFromCriteria.AnyAndNotNull())
                     {
-                        var old = await _offerRepository
-                            .FindByAsync(c =>
-                                c.CityId == city.Id &&
-                                c.Site == site.Type &&
-                                c.Deal == dealType);
+                        var old = await _offerRepository.
+                                GetScrapped(city.Id, site.Type, dealType);
 
                         var oldest = old.ToList();
 
                         newestFrom = newestFromCriteria
-                            .Where(p => oldest.All(p2 => p2.SiteOfferId != p.SiteOfferId))
+                            .Where(p => oldest.All(p2 => p2 != p.SiteOfferId))
                             .ToList();
                     }
 

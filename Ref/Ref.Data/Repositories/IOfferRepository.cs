@@ -20,6 +20,7 @@ namespace Ref.Data.Repositories
         Task<int> UpdateAsync(Offer offer);
         Task<int> SetDeletedAsync(int offerId);
         Task<int> SetDistrict(int offerId, int districtId);
+        Task<IEnumerable<string>> GetScrapped(int cityId, SiteType siteType, DealType dealType);
     }
 
     public class OfferRepository : IOfferRepository
@@ -107,6 +108,21 @@ namespace Ref.Data.Repositories
                     @"SELECT Id, CityId, SiteOfferId, Site, Deal, Url, Header, Price, DateAdded, Area, Rooms, PricePerMeter, IsScrapped, Floor, Content, DistrictId FROM Offers")).AsQueryable();
 
                 return result.Where(predicate);
+            }
+        }
+
+        public async Task<IEnumerable<string>> GetScrapped(int cityId, SiteType siteType, DealType dealType)
+        {
+            using (var c = _dbAccess.Connection)
+            {
+                return await c.QueryAsync<string>(
+                    @"SELECT SiteOfferId FROM Offers WHERE CityId = @CityId AND Site = @Site AND Deal = @Deal",
+                    new
+                    {
+                        CityId = cityId,
+                        Site = siteType,
+                        Deal = dealType
+                    });
             }
         }
 
