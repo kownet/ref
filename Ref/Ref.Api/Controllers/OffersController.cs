@@ -50,5 +50,30 @@ namespace Ref.Api.Controllers
                 return BadRequest(result.Message);
             }
         }
+
+        /// <summary>
+        /// Get number of offers that are still to scrapp
+        /// </summary>
+        /// <returns>Offers to scrapp</returns>
+        [AllowAnonymous]
+        [HttpGet]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [Route("toscrapp")]
+        public async Task<IActionResult> GetToScrapp()
+        {
+            var result = await Mediator.Send(new ToScrapp.Query());
+
+            if (result.Succeed)
+            {
+                return Ok(result.Offers);
+            }
+            else
+            {
+                _logger.LogError(result.Message);
+
+                return BadRequest(result.Message);
+            }
+        }
     }
 }
