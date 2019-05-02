@@ -56,10 +56,9 @@ namespace Ref.Api.Controllers
         /// </summary>
         /// <returns>Offers to scrapp</returns>
         [AllowAnonymous]
-        [HttpGet]
+        [HttpGet("toscrapp")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        [Route("toscrapp")]
         public async Task<IActionResult> GetToScrapp()
         {
             var result = await Mediator.Send(new ToScrapp.Query());
