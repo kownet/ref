@@ -167,15 +167,35 @@ namespace Ref.Coordinator.Core
 
                     if (!string.IsNullOrWhiteSpace(filter.ShouldContain))
                     {
-                        foreach (var matched in matchCriteriaOffers)
+                        if(filter.ShouldContain.Contains(Statics.Separator))
                         {
-                            if (!string.IsNullOrWhiteSpace(matched.Content))
-                            {
-                                if (matched.Content.Contains(filter.ShouldContain))
-                                {
-                                    _logger.LogTrace($"Offer {matched.Id} contain phrase {filter.ShouldContain}.");
+                            var splittedPhrase = filter.ShouldContain.Split(Statics.Separator);
 
-                                    matchedOfferByKeyword.Add(matched);
+                            foreach (var matched in matchCriteriaOffers)
+                            {
+                                if (!string.IsNullOrWhiteSpace(matched.Content))
+                                {
+                                    if (splittedPhrase.Any(matched.Content.Contains))
+                                    {
+                                        _logger.LogTrace($"Offer {matched.Id} contain at least one from phrase {filter.ShouldContain}.");
+
+                                        matchedOfferByKeyword.Add(matched);
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            foreach (var matched in matchCriteriaOffers)
+                            {
+                                if (!string.IsNullOrWhiteSpace(matched.Content))
+                                {
+                                    if (matched.Content.Contains(filter.ShouldContain))
+                                    {
+                                        _logger.LogTrace($"Offer {matched.Id} contain at least one from phrase {filter.ShouldContain}.");
+
+                                        matchedOfferByKeyword.Add(matched);
+                                    }
                                 }
                             }
                         }
