@@ -25,7 +25,7 @@ namespace Ref.Sites.QueryStrings
             if (city.NameRaw.Contains(' '))
                 cityName = city.NameRaw.Replace(' ', '-');
 
-            if (!(district is null))
+            if (!(district is null) && city.NameRaw == "warszawa") // gumtree wspiera tylko dzielnice warszawy
             {
                 cityName = district.NameRaw;
                 code = dealType == DealType.Sale ? district.GtCodeSale : district.GtCodeRent;
