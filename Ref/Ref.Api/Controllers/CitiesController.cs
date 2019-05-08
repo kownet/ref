@@ -43,5 +43,26 @@ namespace Ref.Api.Controllers
                 return BadRequest(result.Message);
             }
         }
+
+        /// <summary>
+        /// Get all cities with districts
+        /// </summary>
+        /// <returns>All cities with districts stored in system database</returns>
+        [HttpGet("withdistricts")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        public async Task<IActionResult> GetAllWithDistricts()
+        {
+            var result = await Mediator.Send(new AllWithDistricts.Query());
+
+            if (result.Succeed)
+                return Ok(result.Cities);
+            else
+            {
+                _logger.LogError(result.Message);
+
+                return BadRequest(result.Message);
+            }
+        }
     }
 }

@@ -2,6 +2,17 @@
 
     var getAll = function (opts) {
 
+        var cities = getAllWithDistricts({ url: '/cities/withdistricts' });
+
+        function clearContainer(container) {
+
+            $(container).empty();
+            $(container).append("<option value='' selected>Wybierz</option>");
+            $(container).val(null).trigger('change');
+            $(container).prop("disabled", true);
+
+        }
+
         $.get(opts.url)
             .done(function (data) {
 
@@ -19,7 +30,9 @@
 
             var city = parseInt(selectedCity);
 
-            if ($.citiesWithDistrict.includes(city)) {
+            clearContainer(opts.cntDistrictAdd);
+
+            if (cities.includes(city)) {
 
                 APP.districts.getAll({
                     url: '/districts/city/' + city,
@@ -29,12 +42,9 @@
                 $(opts.cntDistrictAdd).prop("disabled", false);
 
             } else {
-                $(opts.cntDistrictAdd).empty();
-                $(opts.cntDistrictAdd).append("<option value='' selected>Wybierz</option>");
-                $(opts.cntDistrictAdd).val(null).trigger('change');
-                $(opts.cntDistrictAdd).prop("disabled", true);
+                clearContainer(opts.cntDistrictAdd);
             }
-            
+
         });
 
         $(opts.cntEdit).change(function () {
@@ -43,7 +53,9 @@
 
             var city = parseInt(selectedCity);
 
-            if ($.citiesWithDistrict.includes(city)) {
+            clearContainer(opts.cntDistrictEdit);
+
+            if (cities.includes(city)) {
 
                 APP.districts.getAll({
                     url: '/districts/city/' + city,
@@ -53,19 +65,38 @@
                 $(opts.cntDistrictEdit).prop("disabled", false);
 
             } else {
-                $(opts.cntDistrictEdit).empty();
-                $(opts.cntDistrictEdit).append("<option value='' selected>Wybierz</option>");
-                $(opts.cntDistrictEdit).val(null).trigger('change');
-                $(opts.cntDistrictEdit).prop("disabled", true);
+                clearContainer(opts.cntDistrictEdit);
             }
 
         });
 
     };
 
+    var getAllWithDistricts = function (opts) {
+
+        var result = [];
+
+        $.get(opts.url)
+            .done(function (data) {
+
+                $.each(data, function (i, item) {
+
+                    result.push(item.id);
+
+                });
+
+            });
+
+        return result;
+
+    };
+
     return {
         getAll: function (opts) {
             getAll(opts);
+        },
+        getAllWithDistricts: function (opts) {
+            return getAllWithDistricts(opts);
         }
     };
 
