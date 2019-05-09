@@ -3,6 +3,7 @@ using Ref.Data.Repositories;
 using Ref.Services.Features.Shared;
 using System;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -54,10 +55,10 @@ namespace Ref.Services.Features.Queries.Poc
                                 PriceFrom = filter.PriceFrom,
                                 PriceTo = filter.PriceTo,
                                 UserId = filter.UserId,
-                                Name = filter.Name,
+                                Name = WebUtility.HtmlDecode(filter.Name),
                                 Notification = filter.Notification,
-                                ShouldContain = filter.ShouldContain,
-                                ShouldNotContain = filter.ShouldNotContain,
+                                ShouldContain = WebUtility.HtmlDecode(filter.ShouldContain),
+                                ShouldNotContain = WebUtility.HtmlDecode(filter.ShouldNotContain),
                                 PricePerMeterFrom = filter.PricePerMeterFrom,
                                 PricePerMeterTo = filter.PricePerMeterTo,
                                 DistrictId = filter.DistrictId

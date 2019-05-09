@@ -65,7 +65,13 @@
                             var keywordsContain = !item.shouldContain
                                 ? ""
                                 : "<tr class=\"tr-small\">" +
-                                "<td colspan=\"7\">&nbsp;<i>Ogłoszenia powinny zawierać zwrot:</i> '" + item.shouldContain + "'</td>" +
+                                "<td colspan=\"7\">&nbsp;<i>Ogłoszenia powinny zawierać frazy:</i> '" + item.shouldContain + "'</td>" +
+                                "</tr>";
+
+                            var keywordsNotContain = !item.shouldNotContain
+                                ? ""
+                                : "<tr class=\"tr-small\">" +
+                                "<td colspan=\"7\">&nbsp;<i>Ogłoszenia <strong>nie</strong> powinny zawierać fraz:</i> '" + item.shouldNotContain + "'</td>" +
                                 "</tr>";
 
                             var ppmInfo = parseValues(item.pricePerMeterFrom, item.pricePerMeterTo);
@@ -89,7 +95,8 @@
                                 "<button type=\"button\" class=\"btn btn-sm btn-warning\" id=\"btn-filter-edit\" data-id=" + item.id + " data-user-id=" + item.userId + " data-district-id=" + item.districtId + " data-toggle=\"modal\" data-target=\"#filter-edit\"> Edytuj</button>" +
                                 "</div >" + "</td>" +
                                 "</tr>" +
-                                keywordsContain;
+                                keywordsContain +
+                                keywordsNotContain;
 
                             $(opts.cntFiltersTable).append(rows);
                         });
@@ -180,6 +187,7 @@
                 notification: $(opts.cntNtf).val(),
                 name: $(opts.cntName).val(),
                 shouldContain: $(opts.cntShouldContain).val(),
+                shouldNotContain: $(opts.cntShouldNotContain).val(),
                 districtId: $(opts.cntDistrictAdd).val()
             });
 
@@ -257,6 +265,7 @@
                         $(opts.cntAreaTo).val(data.filter.flatAreaTo);
                         $(opts.cntNtf).val(data.filter.notification);
                         $(opts.cntShouldContain).val(data.filter.shouldContain);
+                        $(opts.cntShouldNotContain).val(data.filter.shouldNotContain);
                         $(opts.cntDistrictEdit).val(data.filter.districtId);
 
                         if (data.filter.districtId !== null) {
@@ -272,7 +281,7 @@
                                 cntAdd: opts.cntDistrictEdit,
                                 selectedDistrict: data.filter.districtId
                             });
-                        } 
+                        }
 
                     } else {
                         swal($.errorHeader, data.message, "error");
@@ -299,6 +308,7 @@
                 notification: $(opts.cntNtf).val(),
                 name: $(opts.cntName).val(),
                 shouldContain: $(opts.cntShouldContain).val(),
+                shouldNotContain: $(opts.cntShouldNotContain).val(),
                 districtId: $(opts.cntDistrictEdit).val()
             });
 

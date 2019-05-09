@@ -202,8 +202,13 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="filter-keywords-contain">Zwrot (zawiera)</label>
+                            <label for="filter-keywords-contain">Frazy (zawiera)</label>
                             <textarea class="form-control required not" id="filter-add-should-contain">
+                            </textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="filter-keywords-not-contain">Frazy (zakazane)</label>
+                            <textarea class="form-control required not" id="filter-add-should-not-contain">
                             </textarea>
                         </div>
                     </form>
@@ -284,8 +289,13 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="filter-keywords-contain">Zwrot (zawiera)</label>
+                            <label for="filter-keywords-contain">Frazy (zawiera)</label>
                             <textarea class="form-control required-edit not" id="filter-edit-should-contain">
+                            </textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="filter-keywords-not-contain">Frazy (zakazane)</label>
+                            <textarea class="form-control required-edit not" id="filter-edit-should-not-contain">
                             </textarea>
                         </div>
                     </form>
@@ -306,14 +316,14 @@
         var APP = {};
     </script>
 
-    <script type="text/javascript" src="/js/utils.js?1"></script>
-    <script type="text/javascript" src="/js/home.js?1"></script>
-    <script type="text/javascript" src="/js/users.js?1"></script>
-    <script type="text/javascript" src="/js/cities.js?1"></script>
-    <script type="text/javascript" src="/js/notificationtypes.js?1"></script>
-    <script type="text/javascript" src="/js/filters.js?1"></script>
-    <script type="text/javascript" src="/js/admininfos.js?1"></script>
-    <script type="text/javascript" src="/js/districts.js?1"></script>
+    <script type="text/javascript" src="/js/utils.js?2"></script>
+    <script type="text/javascript" src="/js/home.js?2"></script>
+    <script type="text/javascript" src="/js/users.js?2"></script>
+    <script type="text/javascript" src="/js/cities.js?2"></script>
+    <script type="text/javascript" src="/js/notificationtypes.js?2"></script>
+    <script type="text/javascript" src="/js/filters.js?2"></script>
+    <script type="text/javascript" src="/js/admininfos.js?2"></script>
+    <script type="text/javascript" src="/js/districts.js?2"></script>
 
     <script type="text/javascript">
 
@@ -353,6 +363,7 @@
             cntModal: '#filter-add',
             cntForm: '#filter-add-form',
             cntShouldContain: '#filter-add-should-contain',
+            cntShouldNotContain: '#filter-add-should-not-contain',
             cntPpmFrom: '#filter-add-ppm-from',
             cntPpmTo: '#filter-add-ppm-to',
             cntDistrictAdd: '#filter-add-district'
@@ -374,6 +385,7 @@
             cntModal: '#filter-edit',
             cntForm: '#filter-edit-form',
             cntShouldContain: '#filter-edit-should-contain',
+            cntShouldNotContain: '#filter-edit-should-not-contain',
             cntPpmFrom: '#filter-edit-ppm-from',
             cntPpmTo: '#filter-edit-ppm-to',
             cntDistrictEdit: '#filter-edit-district'

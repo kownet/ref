@@ -5,6 +5,7 @@ using Ref.Services.Features.Shared;
 using Ref.Services.Helpers;
 using System;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -80,9 +81,10 @@ namespace Ref.Services.Features.Commands.Filters
                             PricePerMeterFrom = request.PricePerMeterFrom,
                             PricePerMeterTo = request.PricePerMeterTo,
                             Notification = request.Notification,
-                            Name = request.Name,
+                            Name = WebUtility.HtmlEncode(request.Name),
                             LastCheckedAt = DateTime.Now,
-                            ShouldContain = request.ShouldContain,
+                            ShouldContain = WebUtility.HtmlEncode(request.ShouldContain),
+                            ShouldNotContain = WebUtility.HtmlEncode(request.ShouldNotContain),
                             DistrictId = request.DistrictId
                         });
 

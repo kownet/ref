@@ -3,6 +3,7 @@ using Ref.Data.Models;
 using Ref.Data.Repositories;
 using Ref.Services.Features.Shared;
 using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -63,9 +64,10 @@ namespace Ref.Services.Features.Commands.Filters
                         PriceTo = request.PriceTo,
                         Notification = request.Notification,
                         CityId = request.CityId,
-                        Name = request.Name,
+                        Name = WebUtility.HtmlEncode(request.Name),
                         LastCheckedAt = entity.LastCheckedAt,
-                        ShouldContain = string.IsNullOrWhiteSpace(request.ShouldContain) ? "" : request.ShouldContain.ToLowerInvariant(),
+                        ShouldContain = WebUtility.HtmlEncode(request.ShouldContain),
+                        ShouldNotContain = WebUtility.HtmlEncode(request.ShouldNotContain),
                         PricePerMeterFrom = request.PricePerMeterFrom,
                         PricePerMeterTo = request.PricePerMeterTo,
                         DistrictId = request.DistrictId

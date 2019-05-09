@@ -11,3 +11,15 @@ $.errorHeader = "Błąd!";
 $.confirmHeader = "Czy na pewno?";
 
 $.notActiveUserMessage = "Okres próbny minął. Proszę o kontakt na tomek@kownet.info";
+
+$.removeEmpties = function (container) {
+
+    $(document).ready(function () {
+        $(container).focusout(function () {
+            var text = $(container).val();
+            text = text.replace(/(?:(?:\r\n|\r|\n)\s*){2}/gm, "");
+            $(this).val(text);
+        });
+    });
+
+};
