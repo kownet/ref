@@ -48,3 +48,7 @@ INSERT INTO Districts (CityId, Name, NameRaw, OlxId, AdrId, GtCodeSale, GtCodeRe
 INSERT INTO Districts (CityId, Name, NameRaw, OlxId, AdrId, GtCodeSale, GtCodeRent) VALUES (3, 'Bieñczyce', 'bienczyce', '285', '-E', '', '')
 INSERT INTO Districts (CityId, Name, NameRaw, OlxId, AdrId, GtCodeSale, GtCodeRent) VALUES (3, 'Wzgórza Krzes³awickie', 'wzgorza-krzeslawickie', '281', '', '', '')
 INSERT INTO Districts (CityId, Name, NameRaw, OlxId, AdrId, GtCodeSale, GtCodeRent) VALUES (3, 'Nowa Huta', 'nowa-huta', '287', '-B', '', '')
+
+ALTER DATABASE [REF] SET SINGLE_USER WITH ROLLBACK IMMEDIATE; 
+ALTER DATABASE [REF] COLLATE Polish_CI_AS; 
+ALTER DATABASE [REF] SET MULTI_USER; 

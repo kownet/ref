@@ -68,7 +68,7 @@ CREATE TABLE Offers(
 	[Floor] [int] NULL,
 	[DateAdded] datetime NOT NULL,
 	[IsScrapped] bit NOT NULL DEFAULT(0) WITH VALUES,
-	[Content] varchar(max) NULL
+	[Content] nvarchar(3072) NULL
 )
 
 CREATE TABLE OfferFilters(
