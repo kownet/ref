@@ -163,13 +163,13 @@ namespace Ref.Coordinator.Core
                 {
                     _logger.LogTrace($"There are {matchCriteriaOffers.Count()} offers for filter {filter.Id}.");
 
-                    var matchedOfferByKeyword = new List<Offer>();
+                    var matchedOfferByShouldContain = new List<Offer>();
 
                     if (!string.IsNullOrWhiteSpace(filter.ShouldContain))
                     {
                         if(filter.ShouldContain.Contains(Statics.Separator))
                         {
-                            var splittedPhrase = filter.ShouldContain.Split(Statics.Separator);
+                            var splittedPhrase = filter.ShouldContain.Split(Statics.Separator).Select(p => p.Trim());
 
                             foreach (var matched in matchCriteriaOffers)
                             {
@@ -179,7 +179,7 @@ namespace Ref.Coordinator.Core
                                     {
                                         _logger.LogTrace($"Offer {matched.Id} contain at least one from phrase {filter.ShouldContain}.");
 
-                                        matchedOfferByKeyword.Add(matched);
+                                        matchedOfferByShouldContain.Add(matched);
                                     }
                                 }
                             }
@@ -194,7 +194,7 @@ namespace Ref.Coordinator.Core
                                     {
                                         _logger.LogTrace($"Offer {matched.Id} contain at least one from phrase {filter.ShouldContain}.");
 
-                                        matchedOfferByKeyword.Add(matched);
+                                        matchedOfferByShouldContain.Add(matched);
                                     }
                                 }
                             }
@@ -202,10 +202,48 @@ namespace Ref.Coordinator.Core
                     }
                     else
                     {
-                        matchedOfferByKeyword.AddRange(matchCriteriaOffers);
+                        matchedOfferByShouldContain.AddRange(matchCriteriaOffers);
                     }
 
-                    var offerFilters = matchedOfferByKeyword.Select(o => new OfferFilter
+                    if(!string.IsNullOrWhiteSpace(filter.ShouldNotContain))
+                    {
+                        if (filter.ShouldNotContain.Contains(Statics.Separator))
+                        {
+                            var splittedPhrase = filter.ShouldNotContain.Split(Statics.Separator).Select(p => p.Trim());
+
+                            foreach (var matched in matchedOfferByShouldContain)
+                            {
+                                if (!string.IsNullOrWhiteSpace(matched.Content))
+                                {
+                                    if (splittedPhrase.Any(matched.Content.Contains))
+                                    {
+                                        _logger.LogTrace($"Offer {matched.Id} contain at least one from phrase {filter.ShouldNotContain}.");
+
+                                        matched.ToDelete = true;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            foreach (var matched in matchedOfferByShouldContain)
+                            {
+                                if (!string.IsNullOrWhiteSpace(matched.Content))
+                                {
+                                    if (matched.Content.Contains(filter.ShouldNotContain))
+                                    {
+                                        _logger.LogTrace($"Offer {matched.Id} contain at least one from phrase {filter.ShouldContain}.");
+
+                                        matched.ToDelete = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    matchedOfferByShouldContain.RemoveAll(o => o.ToDelete);
+
+                    var offerFilters = matchedOfferByShouldContain.Select(o => new OfferFilter
                     {
                         FilterId = filter.Id,
                         OfferId = o.Id,

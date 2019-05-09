@@ -66,8 +66,8 @@ namespace Ref.Services.Features.Commands.Filters
                         CityId = request.CityId,
                         Name = WebUtility.HtmlEncode(request.Name),
                         LastCheckedAt = entity.LastCheckedAt,
-                        ShouldContain = WebUtility.HtmlEncode(request.ShouldContain),
-                        ShouldNotContain = WebUtility.HtmlEncode(request.ShouldNotContain),
+                        ShouldContain = WebUtility.HtmlEncode(request.ShouldContain.ToLowerInvariant()),
+                        ShouldNotContain = WebUtility.HtmlEncode(request.ShouldNotContain.ToLowerInvariant()),
                         PricePerMeterFrom = request.PricePerMeterFrom,
                         PricePerMeterTo = request.PricePerMeterTo,
                         DistrictId = request.DistrictId

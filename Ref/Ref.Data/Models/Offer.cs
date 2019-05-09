@@ -23,5 +23,7 @@ namespace Ref.Data.Models
 
         public bool IsValidToAdd() =>
             !string.IsNullOrWhiteSpace(SiteOfferId) && !string.IsNullOrWhiteSpace(Url) && Price > 0;
+
+        public bool ToDelete { get; set; }
     }
 }

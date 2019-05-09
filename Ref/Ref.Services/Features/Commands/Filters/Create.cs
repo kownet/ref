@@ -83,8 +83,8 @@ namespace Ref.Services.Features.Commands.Filters
                             Notification = request.Notification,
                             Name = WebUtility.HtmlEncode(request.Name),
                             LastCheckedAt = DateTime.Now,
-                            ShouldContain = WebUtility.HtmlEncode(request.ShouldContain),
-                            ShouldNotContain = WebUtility.HtmlEncode(request.ShouldNotContain),
+                            ShouldContain = WebUtility.HtmlEncode(request.ShouldContain.ToLowerInvariant()),
+                            ShouldNotContain = WebUtility.HtmlEncode(request.ShouldNotContain.ToLowerInvariant()),
                             DistrictId = request.DistrictId
                         });
 
