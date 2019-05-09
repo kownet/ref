@@ -79,7 +79,7 @@ namespace Ref.Scrapper.Core
 
                                     if (result.Succeed)
                                     {
-                                        offer.Content = result.Content.ToLowerInvariant();
+                                        offer.Content = result.Content.ToLowerInvariant().Truncate(3070);
                                         offer.IsScrapped = true;
 
                                         if (result.Floor.HasValue)
