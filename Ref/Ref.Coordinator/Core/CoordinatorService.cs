@@ -174,10 +174,10 @@ namespace Ref.Coordinator.Core
 
                             foreach (var matched in matchCriteriaOffers)
                             {
-                                if (!string.IsNullOrWhiteSpace(matched.Content))
+                                if (!string.IsNullOrWhiteSpace(matched.Content) && !string.IsNullOrWhiteSpace(matched.Header))
                                 {
                                     if (splittedPhrase.Any(matched.Content.Contains)
-                                        || splittedPhrase.Any(matched.Header.Contains))
+                                        || splittedPhrase.Any(matched.Header.ToLowerInvariant().Contains))
                                     {
                                         _logger.LogTrace($"Offer {matched.Id} contain at least one from phrase {filter.ShouldContain}.");
 
@@ -190,10 +190,10 @@ namespace Ref.Coordinator.Core
                         {
                             foreach (var matched in matchCriteriaOffers)
                             {
-                                if (!string.IsNullOrWhiteSpace(matched.Content))
+                                if (!string.IsNullOrWhiteSpace(matched.Content) && !string.IsNullOrWhiteSpace(matched.Header))
                                 {
                                     if (matched.Content.Contains(WebUtility.HtmlDecode(filter.ShouldContain.Trim()))
-                                        || matched.Header.Contains(WebUtility.HtmlDecode(filter.ShouldContain.Trim())))
+                                        || matched.Header.ToLowerInvariant().Contains(WebUtility.HtmlDecode(filter.ShouldContain.Trim())))
                                     {
                                         _logger.LogTrace($"Offer {matched.Id} contain at least one from phrase {filter.ShouldContain}.");
 
@@ -216,10 +216,10 @@ namespace Ref.Coordinator.Core
 
                             foreach (var matched in matchedOfferByShouldContain)
                             {
-                                if (!string.IsNullOrWhiteSpace(matched.Content))
+                                if (!string.IsNullOrWhiteSpace(matched.Content) && !string.IsNullOrWhiteSpace(matched.Header))
                                 {
                                     if (splittedPhrase.Any(matched.Content.Contains)
-                                        || splittedPhrase.Any(matched.Header.Contains))
+                                        || splittedPhrase.Any(matched.Header.ToLowerInvariant().Contains))
                                     {
                                         _logger.LogTrace($"Offer {matched.Id} contain at least one from phrase {filter.ShouldNotContain}.");
 
@@ -232,10 +232,10 @@ namespace Ref.Coordinator.Core
                         {
                             foreach (var matched in matchedOfferByShouldContain)
                             {
-                                if (!string.IsNullOrWhiteSpace(matched.Content))
+                                if (!string.IsNullOrWhiteSpace(matched.Content) && !string.IsNullOrWhiteSpace(matched.Header))
                                 {
                                     if (matched.Content.Contains(WebUtility.HtmlDecode(filter.ShouldNotContain.Trim())) 
-                                        || matched.Header.Contains(WebUtility.HtmlDecode(filter.ShouldNotContain.Trim())))
+                                        || matched.Header.ToLowerInvariant().Contains(WebUtility.HtmlDecode(filter.ShouldNotContain.Trim())))
                                     {
                                         _logger.LogTrace($"Offer {matched.Id} contain at least one from phrase {filter.ShouldNotContain}.");
 
