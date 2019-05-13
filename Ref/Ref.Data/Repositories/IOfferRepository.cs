@@ -18,7 +18,7 @@ namespace Ref.Data.Repositories
         void BulkInsert(IEnumerable<Offer> offers);
         void BulkDelete(IEnumerable<int> offers);
         Task<int> UpdateAsync(Offer offer);
-        Task<int> SetDeletedAsync(int offerId);
+        Task<int> SetBadlyScrappedAsync(int offerId);
         Task<int> SetDistrict(int offerId, int districtId);
         Task<IEnumerable<string>> GetScrapped(int cityId, SiteType siteType, DealType dealType);
     }
@@ -126,16 +126,16 @@ namespace Ref.Data.Repositories
             }
         }
 
-        public async Task<int> SetDeletedAsync(int offerId)
+        public async Task<int> SetBadlyScrappedAsync(int offerId)
         {
             using (var c = _dbAccess.Connection)
             {
                 return await c.ExecuteAsync(
-                    @"UPDATE Offers SET IsScrapped = @IsScrapped WHERE Id = @Id",
+                    @"UPDATE Offers SET IsBadlyScrapped = @IsBadlyScrapped WHERE Id = @Id",
                     new
                     {
                         Id = offerId,
-                        IsScrapped = true
+                        IsBadlyScrapped = true
                     });
             }
         }

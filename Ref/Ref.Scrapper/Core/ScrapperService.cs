@@ -63,7 +63,7 @@ namespace Ref.Scrapper.Core
                     foreach (var site in availableSites)
                     {
                         var toScrapp = await _offerRepository
-                            .FindByAsync(o => !o.IsScrapped && o.Site == site.Type && o.DateAdded <= dateSince);
+                            .FindByAsync(o => !o.IsScrapped && !o.IsBadlyScrapped && o.Site == site.Type && o.DateAdded <= dateSince);
 
                         if (toScrapp.AnyAndNotNull())
                         {
@@ -99,7 +99,7 @@ namespace Ref.Scrapper.Core
 
                                     if (result.IsDeleted || result.IsRedirected || !result.Succeed)
                                     {
-                                        await _offerRepository.SetDeletedAsync(offer.Id);
+                                        await _offerRepository.SetBadlyScrappedAsync(offer.Id);
                                     }
 
                                     if (_appProvider.EventUpdate())
