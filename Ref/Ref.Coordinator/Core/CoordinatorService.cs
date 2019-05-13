@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -167,15 +168,16 @@ namespace Ref.Coordinator.Core
 
                     if (!string.IsNullOrWhiteSpace(filter.ShouldContain))
                     {
-                        if(filter.ShouldContain.Contains(Statics.Separator))
+                        if (filter.ShouldContain.Contains(Statics.Separator))
                         {
-                            var splittedPhrase = filter.ShouldContain.Split(Statics.Separator).Select(p => p.Trim());
+                            var splittedPhrase = filter.ShouldContain.Split(Statics.Separator).Select(p => WebUtility.HtmlDecode(p.Trim()));
 
                             foreach (var matched in matchCriteriaOffers)
                             {
                                 if (!string.IsNullOrWhiteSpace(matched.Content))
                                 {
-                                    if (splittedPhrase.Any(matched.Content.Contains))
+                                    if (splittedPhrase.Any(matched.Content.Contains)
+                                        || splittedPhrase.Any(matched.Header.Contains))
                                     {
                                         _logger.LogTrace($"Offer {matched.Id} contain at least one from phrase {filter.ShouldContain}.");
 
@@ -190,7 +192,8 @@ namespace Ref.Coordinator.Core
                             {
                                 if (!string.IsNullOrWhiteSpace(matched.Content))
                                 {
-                                    if (matched.Content.Contains(filter.ShouldContain))
+                                    if (matched.Content.Contains(WebUtility.HtmlDecode(filter.ShouldContain.Trim()))
+                                        || matched.Header.Contains(WebUtility.HtmlDecode(filter.ShouldContain.Trim())))
                                     {
                                         _logger.LogTrace($"Offer {matched.Id} contain at least one from phrase {filter.ShouldContain}.");
 
@@ -205,17 +208,18 @@ namespace Ref.Coordinator.Core
                         matchedOfferByShouldContain.AddRange(matchCriteriaOffers);
                     }
 
-                    if(!string.IsNullOrWhiteSpace(filter.ShouldNotContain))
+                    if (!string.IsNullOrWhiteSpace(filter.ShouldNotContain))
                     {
                         if (filter.ShouldNotContain.Contains(Statics.Separator))
                         {
-                            var splittedPhrase = filter.ShouldNotContain.Split(Statics.Separator).Select(p => p.Trim());
+                            var splittedPhrase = filter.ShouldNotContain.Split(Statics.Separator).Select(p => WebUtility.HtmlDecode(p.Trim()));
 
                             foreach (var matched in matchedOfferByShouldContain)
                             {
                                 if (!string.IsNullOrWhiteSpace(matched.Content))
                                 {
-                                    if (splittedPhrase.Any(matched.Content.Contains))
+                                    if (splittedPhrase.Any(matched.Content.Contains)
+                                        || splittedPhrase.Any(matched.Header.Contains))
                                     {
                                         _logger.LogTrace($"Offer {matched.Id} contain at least one from phrase {filter.ShouldNotContain}.");
 
@@ -230,9 +234,10 @@ namespace Ref.Coordinator.Core
                             {
                                 if (!string.IsNullOrWhiteSpace(matched.Content))
                                 {
-                                    if (matched.Content.Contains(filter.ShouldNotContain))
+                                    if (matched.Content.Contains(WebUtility.HtmlDecode(filter.ShouldNotContain.Trim())) 
+                                        || matched.Header.Contains(WebUtility.HtmlDecode(filter.ShouldNotContain.Trim())))
                                     {
-                                        _logger.LogTrace($"Offer {matched.Id} contain at least one from phrase {filter.ShouldContain}.");
+                                        _logger.LogTrace($"Offer {matched.Id} contain at least one from phrase {filter.ShouldNotContain}.");
 
                                         matched.ToDelete = true;
                                     }
