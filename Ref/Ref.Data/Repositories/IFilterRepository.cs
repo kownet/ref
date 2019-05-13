@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Ref.Data.Db;
 using Ref.Data.Models;
+using Ref.Shared.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -64,19 +65,19 @@ namespace Ref.Data.Repositories
                         filter.Property,
                         filter.Deal,
                         filter.Market,
-                        filter.FlatAreaFrom,
-                        filter.FlatAreaTo,
-                        filter.PriceFrom,
-                        filter.PriceTo,
+                        FlatAreaFrom = filter.FlatAreaFrom.ToNull(),
+                        FlatAreaTo = filter.FlatAreaTo.ToNull(),
+                        PriceFrom = filter.PriceFrom.ToNull(),
+                        PriceTo = filter.PriceTo.ToNull(),
                         filter.CityId,
                         filter.Name,
                         filter.Notification,
                         filter.LastCheckedAt,
                         ShouldContain = string.IsNullOrWhiteSpace(filter.ShouldContain) ? default(string) : filter.ShouldContain.ToLowerInvariant(),
                         ShouldNotContain = string.IsNullOrWhiteSpace(filter.ShouldNotContain) ? default(string) : filter.ShouldNotContain.ToLowerInvariant(),
-                        filter.PricePerMeterFrom,
-                        filter.PricePerMeterTo,
-                        filter.DistrictId
+                        PricePerMeterFrom = filter.PricePerMeterFrom.ToNull(),
+                        PricePerMeterTo = filter.PricePerMeterTo.ToNull(),
+                        DistrictId = filter.DistrictId.ToNull()
                     });
             }
         }
@@ -124,17 +125,17 @@ namespace Ref.Data.Repositories
                         filter.Deal,
                         filter.Market,
                         filter.CityId,
-                        filter.FlatAreaFrom,
-                        filter.FlatAreaTo,
-                        filter.PriceFrom,
-                        filter.PriceTo,
+                        FlatAreaFrom = filter.FlatAreaFrom.ToNull(),
+                        FlatAreaTo = filter.FlatAreaTo.ToNull(),
+                        PriceFrom = filter.PriceFrom.ToNull(),
+                        PriceTo = filter.PriceTo.ToNull(),
                         filter.Name,
                         filter.Notification,
                         ShouldContain = string.IsNullOrWhiteSpace(filter.ShouldContain) ? default(string) : filter.ShouldContain.ToLowerInvariant(),
                         ShouldNotContain = string.IsNullOrWhiteSpace(filter.ShouldNotContain) ? default(string) : filter.ShouldNotContain.ToLowerInvariant(),
-                        filter.PricePerMeterFrom,
-                        filter.PricePerMeterTo,
-                        filter.DistrictId
+                        PricePerMeterFrom = filter.PricePerMeterFrom.ToNull(),
+                        PricePerMeterTo = filter.PricePerMeterTo.ToNull(),
+                        DistrictId = filter.DistrictId.ToNull()
                     });
             }
         }
