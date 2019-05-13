@@ -17,7 +17,11 @@ namespace Ref.Sites.Scrapper.Single
 
         public SingleScrappResponse SingleScrapp(Offer offer)
         {
-            var result = new SingleScrappResponse();
+            var result = new SingleScrappResponse
+            {
+                Area = offer.Area,
+                PricePerMeter = offer.PricePerMeter
+            };
 
             var scrap = ScrapThis($@"{offer.Url}");
 

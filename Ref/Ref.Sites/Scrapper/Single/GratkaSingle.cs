@@ -17,7 +17,11 @@ namespace Ref.Sites.Scrapper.Single
 
         public SingleScrappResponse SingleScrapp(Offer offer)
         {
-            var result = new SingleScrappResponse();
+            var result = new SingleScrappResponse
+            {
+                Area = offer.Area,
+                PricePerMeter = offer.PricePerMeter
+            };
 
             var scrap = ScrapThis($@"{offer.Url}");
 
@@ -65,6 +69,19 @@ namespace Ref.Sites.Scrapper.Single
                                 }
                             }
                         }
+                    }
+                }
+            }
+
+            if(offer.Area == 0)
+            {
+                if(offer.Price != 0 && offer.PricePerMeter != 0)
+                {
+                    var area = offer.Price / offer.PricePerMeter;
+
+                    if (area > 0)
+                    {
+                        result.Area = area;
                     }
                 }
             }

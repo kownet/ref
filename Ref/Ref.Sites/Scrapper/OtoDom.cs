@@ -115,15 +115,35 @@ namespace Ref.Sites.Scrapper
 
                                 if (!string.IsNullOrWhiteSpace(areaRaw))
                                 {
-                                    areaRaw.Replace(",", "");
-
-                                    if (areaRaw.Length >= 2)
+                                    if (areaRaw.Contains(","))
                                     {
-                                        areaRaw = areaRaw.Substring(0, 2);
+                                        areaRaw = areaRaw.Replace(",", "");
+
+                                        var length = areaRaw.Length;
+
+                                        if (length == 4 || length == 3)
+                                            areaRaw = areaRaw.Substring(0, 2);
+
+                                        if (length == 5)
+                                            areaRaw = areaRaw.Substring(0, 3);
 
                                         if (int.TryParse(areaRaw, out int area))
                                         {
                                             ad.Area = area;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        var length = areaRaw.Length;
+
+                                        if (length >= 2 && length <= 3)
+                                        {
+                                            areaRaw = areaRaw.Substring(0, length);
+
+                                            if (int.TryParse(areaRaw, out int area))
+                                            {
+                                                ad.Area = area;
+                                            }
                                         }
                                     }
                                 }

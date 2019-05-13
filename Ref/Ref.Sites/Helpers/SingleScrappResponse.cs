@@ -11,6 +11,10 @@
         public int? Rooms { get; set; }
         public int? Area { get; set; }
 
-        public bool Succeed => !string.IsNullOrWhiteSpace(Content) && !IsDeleted && !IsRedirected;
+        public bool ParamsAreValid
+            => (Area.HasValue && Area.Value != 0) && (PricePerMeter.HasValue && PricePerMeter.Value != 0);
+
+        public bool Succeed
+            => !string.IsNullOrWhiteSpace(Content) && !IsDeleted && !IsRedirected && ParamsAreValid;
     }
 }

@@ -161,9 +161,31 @@ namespace Ref.Sites.Scrapper
                                                 {
                                                     if (areaRaw.InnerText.Contains("Powierzchnia w m2: "))
                                                     {
-                                                        if (int.TryParse(areaRaw.InnerText.Replace("Powierzchnia w m2: ", ""), out int a))
+                                                        var nmb = areaRaw.InnerText.Replace("Powierzchnia w m2: ", "");
+
+                                                        if (nmb.Contains("."))
                                                         {
-                                                            ad.Area = a;
+                                                            nmb = nmb.Replace(".", "");
+
+                                                            var length = nmb.Length;
+
+                                                            if (length == 4 || length == 3)
+                                                                nmb = nmb.Substring(0, 2);
+
+                                                            if (length == 5)
+                                                                nmb = nmb.Substring(0, 3);
+
+                                                            if (int.TryParse(nmb, out int area))
+                                                            {
+                                                                ad.Area = area;
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            if (int.TryParse(nmb, out int a))
+                                                            {
+                                                                ad.Area = a;
+                                                            }
                                                         }
                                                     }
                                                 }
