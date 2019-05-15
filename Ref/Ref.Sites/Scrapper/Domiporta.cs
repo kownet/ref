@@ -117,13 +117,37 @@ namespace Ref.Sites.Scrapper
 
                                 if (!string.IsNullOrWhiteSpace(areaRaw))
                                 {
-                                    if (areaRaw.Length >= 2)
+                                    if (areaRaw.Contains(","))
                                     {
-                                        areaRaw = areaRaw.Replace(",", "").Substring(0, 2);
+                                        areaRaw = areaRaw.Split(",")[0];
+
+                                        var length = areaRaw.Length;
+
+                                        if (length == 4 || length == 3 || length == 2)
+                                            areaRaw = areaRaw.Substring(0, 2);
+
+                                        if (length == 5)
+                                            areaRaw = areaRaw.Substring(0, 3);
 
                                         if (int.TryParse(areaRaw, out int area))
                                         {
                                             ad.Area = area;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        areaRaw = areaRaw.RemoveLastIf("2");
+
+                                        var length = areaRaw.Length;
+
+                                        if (length >= 2 && length <= 3)
+                                        {
+                                            areaRaw = areaRaw.Substring(0, length);
+
+                                            if (int.TryParse(areaRaw, out int area))
+                                            {
+                                                ad.Area = area;
+                                            }
                                         }
                                     }
                                 }
@@ -173,7 +197,51 @@ namespace Ref.Sites.Scrapper
 
         public ScrappResponse Scrapp(UserSubscriptionFilter userSubscriptionFilter)
         {
-            throw new NotImplementedException();
+            var searchQuery = QueryStringProvider(SiteType.DomiPorta).Get(userSubscriptionFilter);
+
+            var scrap = ScrapThis(searchQuery);
+
+            if (!scrap.Succeed)
+            {
+                return new ScrappResponse
+                {
+                    Offers = new List<Offer>(),
+                    ExceptionAccured = scrap.ExceptionAccured,
+                    ExceptionMessage = scrap.ExceptionMessage
+                };
+            }
+
+            HtmlNode doc = scrap.HtmlNode;
+
+            var noResult = doc.CssSelect(".alert__title ").FirstOrDefault();
+
+            if (noResult != null)
+            {
+                return new ScrappResponse
+                {
+                    Offers = new List<Offer>(),
+                    ThereAreNoRecords = false
+                };
+            }
+
+            int pages = PageProvider(SiteType.DomiPorta).Get(doc);
+
+            var result = Crawl(pages, searchQuery, doc);
+
+            result.Change(o => o.Site = SiteType.DomiPorta);
+            result.Change(o => o.Deal = userSubscriptionFilter.Deal);
+            result.Change(o => o.CityId = userSubscriptionFilter.CityId);
+            result.Change(o => o.Property = userSubscriptionFilter.Property);
+
+            if (!(userSubscriptionFilter.DistrictId is null))
+            {
+                result.Change(o => o.DistrictId = userSubscriptionFilter.DistrictId);
+            }
+
+            return new ScrappResponse
+            {
+                Offers = result
+            };
         }
     }
 }
