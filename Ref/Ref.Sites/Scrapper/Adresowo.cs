@@ -172,6 +172,26 @@ namespace Ref.Sites.Scrapper
                                     }
                                 }
 
+                                if(ad.Area == 0)
+                                {
+                                    area = article.CssSelect(".result-info__basic").FirstOrDefault();
+
+                                    if (!(area is null))
+                                    {
+                                        if (!string.IsNullOrWhiteSpace(area.InnerText))
+                                        {
+                                            var areaRaw = area.InnerText
+                                                .Replace("m&sup2;", "")
+                                                .Trim();
+
+                                            if (int.TryParse(areaRaw, out int areaa))
+                                            {
+                                                ad.Area = areaa;
+                                            }
+                                        }
+                                    }
+                                }
+
                                 if (ad.IsValidToAdd())
                                     result.Add(ad);
                             }
@@ -185,7 +205,58 @@ namespace Ref.Sites.Scrapper
 
         public ScrappResponse Scrapp(UserSubscriptionFilter userSubscriptionFilter)
         {
-            throw new NotImplementedException();
+            if (userSubscriptionFilter.Deal == DealType.Rent)
+            {
+                return new ScrappResponse
+                {
+                    Offers = new List<Offer>(),
+                    ThereAreNoRecords = true
+                };
+            }
+
+            var searchQuery = QueryStringProvider(SiteType.Adresowo).Get(userSubscriptionFilter);
+
+            var scrap = ScrapThis($"{searchQuery}od");
+
+            if (!scrap.Succeed)
+            {
+                return new ScrappResponse
+                {
+                    Offers = new List<Offer>(),
+                    ExceptionAccured = scrap.ExceptionAccured,
+                    ExceptionMessage = scrap.ExceptionMessage
+                };
+            }
+
+            HtmlNode doc = scrap.HtmlNode;
+
+            if (doc.InnerHtml.Contains("jest pusta"))
+            {
+                return new ScrappResponse
+                {
+                    Offers = new List<Offer>(),
+                    ThereAreNoRecords = true
+                };
+            }
+
+            int pages = PageProvider(SiteType.Adresowo).Get(doc);
+
+            var result = Crawl(pages, searchQuery, doc);
+
+            result.Change(o => o.Site = SiteType.Adresowo);
+            result.Change(o => o.Deal = userSubscriptionFilter.Deal);
+            result.Change(o => o.CityId = userSubscriptionFilter.CityId);
+            result.Change(o => o.Property = userSubscriptionFilter.Property);
+
+            if (!(userSubscriptionFilter.DistrictId is null))
+            {
+                result.Change(o => o.DistrictId = userSubscriptionFilter.DistrictId);
+            }
+
+            return new ScrappResponse
+            {
+                Offers = result
+            };
         }
     }
 }

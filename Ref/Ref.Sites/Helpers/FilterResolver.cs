@@ -173,7 +173,7 @@ namespace Ref.Sites.Helpers
                         switch (marketType)
                         {
                             case MarketType.Primary: return string.Empty;
-                            case MarketType.Secondary: return "fuz";
+                            case MarketType.Secondary: return "fuz_l";
                             default: return string.Empty;
                         };
                     }

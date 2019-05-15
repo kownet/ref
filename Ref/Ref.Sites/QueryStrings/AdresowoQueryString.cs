@@ -28,7 +28,20 @@ namespace Ref.Sites.QueryStrings
 
         public string Get(UserSubscriptionFilter userSubscriptionFilter)
         {
-            string result = "";
+            var type = FilterResolver.Type(SiteType.Adresowo, userSubscriptionFilter.Property);
+            var deal = FilterResolver.Deal(SiteType.Adresowo, userSubscriptionFilter.Deal);
+            var market = FilterResolver.Market(SiteType.Adresowo, userSubscriptionFilter.Market);
+
+            var dist = userSubscriptionFilter.DistrictId is null ? "" : $"/{userSubscriptionFilter.District}{userSubscriptionFilter.AdrId}";
+
+            var cityName = userSubscriptionFilter.City;
+
+            if (userSubscriptionFilter.City.Contains(' '))
+                cityName = userSubscriptionFilter.City.Replace(' ', '-');
+
+            var result =
+                $"https://adresowo.pl/{type}/{cityName}{dist}/{market}";
+
             return result;
         }
 
