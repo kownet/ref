@@ -59,6 +59,7 @@ CREATE TABLE Offers(
 	[SiteOfferId] nvarchar(128) NOT NULL,
 	[Site] [int] NOT NULL,
 	[Deal] int NOT NULL,
+	[Property] int NULL,
 	[Url] nvarchar(255) NOT NULL,
 	[Header] nvarchar(255) NOT NULL,
 	[Price] [int] NOT NULL,

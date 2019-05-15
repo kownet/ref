@@ -1,4 +1,5 @@
-﻿using Ref.Data.Models;
+﻿using Ref.Data.Components;
+using Ref.Data.Models;
 using Ref.Data.Repositories.Standalone;
 using Ref.Sites.Helpers;
 
@@ -29,11 +30,17 @@ namespace Ref.Sites.QueryStrings
             return result;
         }
 
+        public string Get(UserSubscriptionFilter userSubscriptionFilter)
+        {
+            string result = "";
+            return result;
+        }
+
         public string Get(SearchFilter _filter)
         {
-            var type = FilterResolver.Type(SiteType.Gratka, _filter);
-            var deal = FilterResolver.Deal(SiteType.Gratka, _filter);
-            var market = FilterResolver.Market(SiteType.Gratka, _filter);
+            var type = FilterResolver.Type(SiteType.Gratka, _filter.Property);
+            var deal = FilterResolver.Deal(SiteType.Gratka, _filter.Deal);
+            var market = FilterResolver.Market(SiteType.Gratka, _filter.Market);
 
             var result =
                 $"https://gratka.pl/nieruchomosci/{type}/{_filter.LocationRaw}/{deal}?";

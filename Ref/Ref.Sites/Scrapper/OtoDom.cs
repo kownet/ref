@@ -1,7 +1,7 @@
 ﻿using HtmlAgilityPack;
+using Ref.Data.Components;
 using Ref.Data.Models;
 using Ref.Data.Repositories;
-using Ref.Data.Repositories.Standalone;
 using Ref.Shared.Extensions;
 using Ref.Shared.Providers;
 using Ref.Sites.Helpers;
@@ -65,6 +65,55 @@ namespace Ref.Sites.Scrapper
             if (!(district is null))
             {
                 result.Change(o => o.DistrictId = district.Id);
+            }
+
+            return new ScrappResponse
+            {
+                Offers = result
+            };
+        }
+
+        public ScrappResponse Scrapp(UserSubscriptionFilter userSubscriptionFilter)
+        {
+            var searchQuery = QueryStringProvider(SiteType.OtoDom).Get(userSubscriptionFilter);
+
+            var scrap = ScrapThis(searchQuery);
+
+            if (!scrap.Succeed)
+            {
+                return new ScrappResponse
+                {
+                    Offers = new List<Offer>(),
+                    ExceptionAccured = scrap.ExceptionAccured,
+                    ExceptionMessage = scrap.ExceptionMessage
+                };
+            }
+
+            HtmlNode doc = scrap.HtmlNode;
+
+            var noResult = doc.CssSelect(".search-location-extended-warning").FirstOrDefault();
+
+            if (!(noResult is null))
+            {
+                return new ScrappResponse
+                {
+                    Offers = new List<Offer>(),
+                    ThereAreNoRecords = true
+                };
+            }
+
+            int pages = PageProvider(SiteType.OtoDom).Get(doc);
+
+            var result = Crawl(pages, searchQuery, doc);
+
+            result.Change(o => o.Site = SiteType.OtoDom);
+            result.Change(o => o.Deal = userSubscriptionFilter.Deal);
+            result.Change(o => o.CityId = userSubscriptionFilter.CityId);
+            result.Change(o => o.Property = userSubscriptionFilter.Property);
+
+            if (!(userSubscriptionFilter.DistrictId is null))
+            {
+                result.Change(o => o.DistrictId = userSubscriptionFilter.DistrictId);
             }
 
             return new ScrappResponse
@@ -168,84 +217,5 @@ namespace Ref.Sites.Scrapper
 
             return result;
         }
-
-        #region Standalone
-        public SiteResponse Search(SearchFilter filter)
-        {
-            var result = new List<Ad>();
-
-            var searchQuery = QueryStringProvider(SiteType.OtoDom).Get(filter);
-
-            var scrap = ScrapThis(searchQuery);
-
-            if (!scrap.Succeed)
-            {
-                return new SiteResponse
-                {
-                    Advertisements = new List<Ad>(),
-                    ExceptionAccured = scrap.ExceptionAccured,
-                    ExceptionMessage = scrap.ExceptionMessage
-                };
-            }
-
-            HtmlNode doc = scrap.HtmlNode;
-
-            var noResult = doc.CssSelect(".search-location-extended-warning").FirstOrDefault();
-
-            if (noResult != null)
-            {
-                return new SiteResponse
-                {
-                    FilterName = filter.Name,
-                    Advertisements = result,
-                    FilterDesc = filter.Description()
-                };
-            }
-
-            int pages = PageProvider(SiteType.OtoDom).Get(doc);
-
-            for (int i = 1; i <= pages; i++)
-            {
-                doc = ScrapThis($@"{searchQuery}%page={i}").HtmlNode;
-
-                var listing = doc.CssSelect(".section-listing__row-content");
-
-                if (!(listing is null))
-                {
-                    var articles = listing.CssSelect("article");
-
-                    if (!(articles is null))
-                    {
-                        if (articles.AnyAndNotNull())
-                        {
-                            foreach (var article in articles)
-                            {
-                                var ad = new Ad
-                                {
-                                    Id = article.ByAttribute("data-tracking-id"),
-                                    Url = article.ByAttribute("data-url"),
-                                    Header = article.ByClass("offer-item-title"),
-                                    Price = article.ByClass("offer-item-price", @"[^0-9,.-]"),
-                                    Rooms = article.ByClass("offer-item-rooms", @"[^0-9 ,.-]"),
-                                    Area = article.ByClass("offer-item-area", @"[^0-9 ,.-]"),
-                                    PricePerMeter = article.ByClass("offer-item-price-per-m", @"[^0-9 ,.-]").RemoveLastIf("2"),
-                                    SiteType = SiteType.OtoDom
-                                };
-
-                                if (ad.IsValid())
-                                    result.Add(ad);
-                            }
-                        }
-                    }
-                }
-            }
-            return new SiteResponse
-            {
-                FilterName = filter.Name,
-                Advertisements = result,
-                FilterDesc = filter.Description()
-            };
-        }
-        #endregion
     }
 }

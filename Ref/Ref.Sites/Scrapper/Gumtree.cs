@@ -1,7 +1,7 @@
 ﻿using HtmlAgilityPack;
+using Ref.Data.Components;
 using Ref.Data.Models;
 using Ref.Data.Repositories;
-using Ref.Data.Repositories.Standalone;
 using Ref.Shared.Extensions;
 using Ref.Shared.Providers;
 using Ref.Sites.Helpers;
@@ -156,89 +156,9 @@ namespace Ref.Sites.Scrapper
             return result;
         }
 
-        #region Standalone
-        public SiteResponse Search(SearchFilter filter)
+        public ScrappResponse Scrapp(UserSubscriptionFilter userSubscriptionFilter)
         {
-            var result = new List<Ad>();
-
-            var searchQuery = QueryStringProvider(SiteType.Gumtree).Get(filter);
-
-            var code = FilterResolver.Code(filter);
-
-            var scrap = ScrapThis(searchQuery);
-
-            if (!scrap.Succeed)
-            {
-                return new SiteResponse
-                {
-                    Advertisements = new List<Ad>(),
-                    ExceptionAccured = scrap.ExceptionAccured,
-                    ExceptionMessage = scrap.ExceptionMessage
-                };
-            }
-
-            HtmlNode doc = scrap.HtmlNode;
-
-            int.TryParse(doc.ByClass("count", @"[^0-9]"), out int count);
-
-            if (count == 0)
-            {
-                return new SiteResponse
-                {
-                    FilterName = filter.Name,
-                    Advertisements = result,
-                    FilterDesc = filter.Description()
-                };
-            }
-
-            int pages = PageProvider(SiteType.Gumtree).Get(doc, code);
-
-            for (int i = 1; i <= pages; i++)
-            {
-                var sq = searchQuery.Replace($"{code}1", $"page-{i}/{code}{i}");
-
-                doc = ScrapThis($@"{sq}").HtmlNode;
-
-                var listing = doc.CssSelect(".result-link");
-
-                if (!(listing is null))
-                {
-                    if (listing.AnyAndNotNull())
-                    {
-                        foreach (var article in listing)
-                        {
-                            var ad = new Ad
-                            {
-                                SiteType = SiteType.Gumtree,
-                                Price = article.ByClass("amount", @"[^0-9,.-]")
-                            };
-
-                            var link = article.CssSelect(".href-link").FirstOrDefault();
-
-                            if (!(link is null))
-                            {
-                                ad.Url = $"https://www.gumtree.pl{link.ByAttribute("href")}";
-                                ad.Header = link.InnerText;
-
-                                if (!string.IsNullOrWhiteSpace(ad.Url))
-                                {
-                                    ad.Id = ad.Url.Split("/").Last();
-                                }
-                            }
-
-                            if (ad.IsValid())
-                                result.Add(ad);
-                        }
-                    }
-                }
-            }
-            return new SiteResponse
-            {
-                FilterName = filter.Name,
-                Advertisements = result,
-                FilterDesc = filter.Description()
-            };
+            throw new NotImplementedException();
         }
-        #endregion
     }
 }

@@ -1,4 +1,5 @@
-﻿using Ref.Data.Models;
+﻿using Ref.Data.Components;
+using Ref.Data.Models;
 using Ref.Data.Repositories.Standalone;
 using Ref.Sites.Helpers;
 using System;
@@ -25,11 +26,17 @@ namespace Ref.Sites.QueryStrings
             return result;
         }
 
+        public string Get(UserSubscriptionFilter userSubscriptionFilter)
+        {
+            string result = "";
+            return result;
+        }
+
         public string Get(SearchFilter _filter)
         {
-            var type = FilterResolver.Type(SiteType.Adresowo, _filter);
-            var deal = FilterResolver.Deal(SiteType.Adresowo, _filter);
-            var market = FilterResolver.Market(SiteType.Adresowo, _filter);
+            var type = FilterResolver.Type(SiteType.Adresowo, _filter.Property);
+            var deal = FilterResolver.Deal(SiteType.Adresowo, _filter.Deal);
+            var market = FilterResolver.Market(SiteType.Adresowo, _filter.Market);
 
             var result =
                 $"https://adresowo.pl/{type}/{_filter.LocationRaw}/";

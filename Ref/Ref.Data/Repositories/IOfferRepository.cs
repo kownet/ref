@@ -20,7 +20,7 @@ namespace Ref.Data.Repositories
         Task<int> UpdateAsync(Offer offer);
         Task<int> SetBadlyScrappedAsync(int offerId);
         Task<int> SetDistrict(int offerId, int districtId);
-        Task<IEnumerable<string>> GetScrapped(int cityId, SiteType siteType, DealType dealType);
+        Task<IEnumerable<string>> GetScrapped(int cityId, SiteType siteType, DealType dealType, PropertyType propertyType);
     }
 
     public class OfferRepository : IOfferRepository
@@ -85,6 +85,7 @@ namespace Ref.Data.Repositories
                         sbc.ColumnMappings.Add("Floor", "Floor");
                         sbc.ColumnMappings.Add("Content", "Content");
                         sbc.ColumnMappings.Add("DistrictId", "DistrictId");
+                        sbc.ColumnMappings.Add("Property", "Property");
 
                         sbc.WriteToServer(dt);
                     }
@@ -105,23 +106,24 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 var result = (await c.QueryAsync<Offer>(
-                    @"SELECT Id, CityId, SiteOfferId, Site, Deal, Url, Header, Price, DateAdded, Area, Rooms, PricePerMeter, IsScrapped, Floor, Content, DistrictId FROM Offers")).AsQueryable();
+                    @"SELECT Id, CityId, SiteOfferId, Site, Deal, Url, Header, Price, DateAdded, Area, Rooms, PricePerMeter, IsScrapped, Floor, Content, DistrictId, IsBadlyScrapped, Property FROM Offers")).AsQueryable();
 
                 return result.Where(predicate);
             }
         }
 
-        public async Task<IEnumerable<string>> GetScrapped(int cityId, SiteType siteType, DealType dealType)
+        public async Task<IEnumerable<string>> GetScrapped(int cityId, SiteType siteType, DealType dealType, PropertyType propertyType)
         {
             using (var c = _dbAccess.Connection)
             {
                 return await c.QueryAsync<string>(
-                    @"SELECT SiteOfferId FROM Offers WHERE CityId = @CityId AND Site = @Site AND Deal = @Deal",
+                    @"SELECT SiteOfferId FROM Offers WHERE CityId = @CityId AND Site = @Site AND Deal = @Deal AND Property = @Property",
                     new
                     {
                         CityId = cityId,
                         Site = siteType,
-                        Deal = dealType
+                        Deal = dealType,
+                        Property = propertyType
                     });
             }
         }

@@ -66,6 +66,19 @@ namespace Ref.Sites.Scrapper.Single
                 }
             }
 
+            if(offer.PricePerMeter == 0)
+            {
+                if (offer.Area > 0 && offer.Price > 0)
+                {
+                    var ppm = offer.Price / result.Area;
+
+                    if (ppm > 0)
+                    {
+                        result.PricePerMeter = ppm;
+                    }
+                }
+            }
+
             return result;
         }
     }

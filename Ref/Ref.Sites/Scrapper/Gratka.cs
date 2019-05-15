@@ -1,7 +1,7 @@
 ﻿using HtmlAgilityPack;
+using Ref.Data.Components;
 using Ref.Data.Models;
 using Ref.Data.Repositories;
-using Ref.Data.Repositories.Standalone;
 using Ref.Shared.Extensions;
 using Ref.Shared.Providers;
 using Ref.Sites.Helpers;
@@ -221,92 +221,9 @@ namespace Ref.Sites.Scrapper
             return result;
         }
 
-        #region Standalone
-        public SiteResponse Search(SearchFilter filter)
+        public ScrappResponse Scrapp(UserSubscriptionFilter userSubscriptionFilter)
         {
-            var result = new List<Ad>();
-
-            var searchQuery = QueryStringProvider(SiteType.Gratka).Get(filter);
-
-            var scrap = ScrapThis(searchQuery);
-
-            if (!scrap.Succeed)
-            {
-                return new SiteResponse
-                {
-                    Advertisements = new List<Ad>(),
-                    ExceptionAccured = scrap.ExceptionAccured,
-                    ExceptionMessage = scrap.ExceptionMessage
-                };
-            }
-
-            HtmlNode doc = scrap.HtmlNode;
-
-            var noResult = doc.CssSelect(".content__emptyListInfo").FirstOrDefault();
-
-            if (noResult != null)
-            {
-                return new SiteResponse
-                {
-                    FilterName = filter.Name,
-                    Advertisements = result,
-                    FilterDesc = filter.Description()
-                };
-            }
-
-            int pages = PageProvider(SiteType.Gratka).Get(doc);
-
-            for (int i = 1; i <= pages; i++)
-            {
-                doc = ScrapThis($@"{searchQuery}&page={i}").HtmlNode;
-
-                var listing = doc.CssSelect(".content__listing");
-
-                if (!(listing is null))
-                {
-                    var articles = listing.CssSelect("article");
-
-                    if (!(articles is null))
-                    {
-                        if (articles.AnyAndNotNull())
-                        {
-                            foreach (var article in articles)
-                            {
-                                var ad = new Ad
-                                {
-                                    Id = article.ByAttribute("id"),
-                                    Url = article.ByAttribute("data-href"),
-                                    SiteType = SiteType.Gratka
-                                };
-
-                                ad.Header = article.ByClass("teaser__anchor");
-
-                                var pricepm = article.ByClass("teaser__priceAdditional", @"[^0-9 ,.-]");
-
-                                ad.PricePerMeter = pricepm.RemoveLastIf("2");
-
-                                var price = article.CssSelect($".teaser__price").FirstOrDefault();
-
-                                if (!(price is null))
-                                {
-                                    ad.Price = price.FirstChild != null ? price.FirstChild.InnerHtml.Trim().Replace(" ", string.Empty) : string.Empty;
-                                }
-
-                                if (ad.IsValid())
-                                    result.Add(ad);
-                            }
-                        }
-                    }
-                }
-            }
-
-            return new SiteResponse
-            {
-                FilterName = filter.Name,
-                Advertisements = result,
-                FilterDesc = filter.Description()
-            };
+            throw new NotImplementedException();
         }
-        #endregion
     }
 }

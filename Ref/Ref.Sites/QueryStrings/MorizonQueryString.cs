@@ -1,4 +1,5 @@
-﻿using Ref.Data.Models;
+﻿using Ref.Data.Components;
+using Ref.Data.Models;
 using Ref.Data.Repositories.Standalone;
 using Ref.Sites.Helpers;
 
@@ -39,11 +40,17 @@ namespace Ref.Sites.QueryStrings
             return result;
         }
 
+        public string Get(UserSubscriptionFilter userSubscriptionFilter)
+        {
+            string result = "";
+            return result;
+        }
+
         public string Get(SearchFilter _filter)
         {
-            var type = FilterResolver.Type(SiteType.Morizon, _filter);
-            var deal = FilterResolver.Deal(SiteType.Morizon, _filter);
-            var market = FilterResolver.Market(SiteType.Morizon, _filter);
+            var type = FilterResolver.Type(SiteType.Morizon, _filter.Property);
+            var deal = FilterResolver.Deal(SiteType.Morizon, _filter.Deal);
+            var market = FilterResolver.Market(SiteType.Morizon, _filter.Market);
 
             var domain = "https://www.morizon.pl";
 

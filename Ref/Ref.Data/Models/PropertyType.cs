@@ -8,6 +8,9 @@ namespace Ref.Data.Models
         Flat = 0,
 
         [Description("Dom")]
-        House = 1
+        House = 1,
+
+        [Description("Działka")]
+        Plot = 2
     }
 }

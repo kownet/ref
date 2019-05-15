@@ -9,6 +9,7 @@ namespace Ref.Data.Models
         public string SiteOfferId { get; set; }
         public SiteType Site { get; set; }
         public DealType Deal { get; set; }
+        public PropertyType? Property { get; set; }
         public string Url { get; set; }
         public string Header { get; set; }
         public int Price { get; set; }

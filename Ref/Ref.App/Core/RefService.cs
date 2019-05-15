@@ -23,6 +23,8 @@ namespace Ref.App.Core
         private readonly IAppProvider _appProvider;
 
         private readonly ICitiesReport _citiesReport;
+        private readonly IUserSubscriptionReport _userSubscriptionReport;
+
         private readonly IOfferRepository _offerRepository;
         private readonly ISiteRepository _siteRepository;
         private readonly IEventRepository _eventRepository;
@@ -34,6 +36,7 @@ namespace Ref.App.Core
             Func<SiteType, ISiteToScrapp> siteAccessor,
             IAppProvider appProvider,
             ICitiesReport citiesReport,
+            IUserSubscriptionReport userSubscriptionReport,
             IOfferRepository offerRepository,
             ISiteRepository siteRepository,
             IEventRepository eventRepository,
@@ -43,6 +46,7 @@ namespace Ref.App.Core
             _siteAccessor = siteAccessor;
             _appProvider = appProvider;
             _citiesReport = citiesReport;
+            _userSubscriptionReport = userSubscriptionReport;
             _offerRepository = offerRepository;
             _siteRepository = siteRepository;
             _eventRepository = eventRepository;
@@ -59,34 +63,44 @@ namespace Ref.App.Core
                 .Where(s => sitesDefined.Contains(s.Type))
                 .Where(s => s.IsActive);
 
-            var cities = await _citiesReport.GetAllCitiesForActiveUsersAsync();
+            //var cities = await _citiesReport.GetAllCitiesForActiveUsersAsync();
 
-            var dealTypes = _appProvider.Deals().Select(s => (DealType)s);
+            //var dealTypes = _appProvider.Deals().Select(s => (DealType)s);
+
+            var activeFilters = await _userSubscriptionReport.GetAllActiveFiltersAsync();
 
             while (successTries < _appProvider.SuccessTries())
             {
                 try
                 {
-                    if (cities.AnyAndNotNull())
+                    if(activeFilters.AnyAndNotNull())
                     {
-                        foreach (var city in cities)
+                        foreach (var filter in activeFilters)
                         {
-                            if (city.HasDistricts)
-                            {
-                                var activeDistricts = await _citiesReport.GetAllDistrictsForActiveCityAsync(city.Id);
-
-                                if (activeDistricts.AnyAndNotNull())
-                                {
-                                    foreach (var district in activeDistricts)
-                                    {
-                                        await LoopForData(availableSites, dealTypes, city, district);
-                                    }
-                                }
-                            }
-
-                            await LoopForData(availableSites, dealTypes, city, null);
+                            await LookForData(availableSites, filter);
                         }
                     }
+
+                    //if (cities.AnyAndNotNull())
+                    //{
+                    //    foreach (var city in cities)
+                    //    {
+                    //        if (city.HasDistricts)
+                    //        {
+                    //            var activeDistricts = await _citiesReport.GetAllDistrictsForActiveCityAsync(city.Id);
+
+                    //            if (activeDistricts.AnyAndNotNull())
+                    //            {
+                    //                foreach (var district in activeDistricts)
+                    //                {
+                    //                    await LoopForData(availableSites, dealTypes, city, district);
+                    //                }
+                    //            }
+                    //        }
+
+                    //        await LoopForData(availableSites, dealTypes, city, null);
+                    //    }
+                    //}
 
                     successTries = _appProvider.SuccessTries();
                 }
@@ -114,130 +128,131 @@ namespace Ref.App.Core
             return 0;
         }
 
-        private async Task LoopForData(IEnumerable<Site> availableSites, IEnumerable<DealType> dealTypes, City city, District district)
+        private async Task LookForData(IEnumerable<Site> availableSites, UserSubscriptionFilter userSubscriptionFilter)
         {
             foreach (var site in availableSites)
             {
-                foreach (DealType dealType in dealTypes)
+                var result = _siteAccessor(site.Type).Scrapp(userSubscriptionFilter);
+
+                if (result.WeAreBanned)
                 {
-                    var result = _siteAccessor(site.Type).Scrapp(city, dealType, district);
+                    _logger.LogError(Labels.BannedMsg(site.Type.ToString()));
 
-                    if (result.WeAreBanned)
+                    site.IsActive = false;
+
+                    await _siteRepository.UpdateAsync(site);
+
+                    if (_appProvider.BannedNotifications())
                     {
-                        _logger.LogError(Labels.BannedMsg(site.Type.ToString()));
-
-                        site.IsActive = false;
-
-                        await _siteRepository.UpdateAsync(site);
-
-                        if (_appProvider.BannedNotifications())
-                        {
-                            _pushOverNotification.Send(
-                                Labels.BannedMsgTitle,
-                                Labels.BannedMsg(site.Type.ToString()));
-                        }
+                        _pushOverNotification.Send(
+                            Labels.BannedMsgTitle,
+                            Labels.BannedMsg(site.Type.ToString()));
                     }
+                }
 
-                    if (result.ThereAreNoRecords)
+                if (result.ThereAreNoRecords)
+                {
+                    _logger.LogError(Labels.NoRecordsMsg(site.Type.ToString(), userSubscriptionFilter.City));
+
+                    if (_appProvider.NoRecordsNotifications())
                     {
-                        _logger.LogError(Labels.NoRecordsMsg(site.Type.ToString(), city.Name));
-
-                        if (_appProvider.NoRecordsNotifications())
-                        {
-                            _pushOverNotification.Send(
-                                Labels.NoRecordsMsgTitle,
-                                Labels.NoRecordsMsg(site.Type.ToString(), city.Name));
-                        }
+                        _pushOverNotification.Send(
+                            Labels.NoRecordsMsgTitle,
+                            Labels.NoRecordsMsg(site.Type.ToString(), userSubscriptionFilter.City));
                     }
+                }
 
-                    if (result.ExceptionAccured)
+                if (result.ExceptionAccured)
+                {
+                    _logger.LogError(Labels.ExceptionMsg(site.Type.ToString(), result.ExceptionMessage, userSubscriptionFilter.City));
+
+                    if (_appProvider.ExceptionNotifications())
                     {
-                        _logger.LogError(Labels.ExceptionMsg(site.Type.ToString(), result.ExceptionMessage, city.Name));
-
-                        if (_appProvider.ExceptionNotifications())
-                        {
-                            _pushOverNotification.Send(
-                                Labels.ExceptionMsgTitle,
-                                Labels.ExceptionMsg(site.Type.ToString(), result.ExceptionMessage, city.Name));
-                        }
+                        _pushOverNotification.Send(
+                            Labels.ExceptionMsgTitle,
+                            Labels.ExceptionMsg(site.Type.ToString(), result.ExceptionMessage, userSubscriptionFilter.City));
                     }
+                }
 
-                    var newestFromCriteria = result.Offers;
+                var newestFromCriteria = result.Offers;
 
-                    if (site.Type != SiteType.Adresowo &&
-                        site.Type != SiteType.DomiPorta &&
-                        site.Type != SiteType.Gratka &&
-                        site.Type != SiteType.Morizon)
+                if (site.Type != SiteType.Adresowo &&
+                    site.Type != SiteType.DomiPorta &&
+                    site.Type != SiteType.Gratka &&
+                    site.Type != SiteType.Morizon)
+                {
+                    newestFromCriteria = newestFromCriteria
+                        .DistinctBy(p => p.Header);
+                }
+
+                if (!(userSubscriptionFilter.DistrictId is null))
+                {
+                    if (newestFromCriteria.AnyAndNotNull())
                     {
-                        newestFromCriteria = newestFromCriteria
-                            .DistinctBy(p => p.Header);
-                    }
-
-                    if (!(district is null))
-                    {
-                        if (newestFromCriteria.AnyAndNotNull())
+                        foreach (var item in newestFromCriteria)
                         {
-                            foreach (var item in newestFromCriteria)
+                            var r = (await _offerRepository
+                                .FindByAsync(o =>
+                                    o.SiteOfferId == item.SiteOfferId &&
+                                    !o.DistrictId.HasValue))
+                                .FirstOrDefault();
+
+                            if (!(r is null))
                             {
-                                var r = (await _offerRepository
-                                    .FindByAsync(o =>
-                                        o.SiteOfferId == item.SiteOfferId &&
-                                        !o.DistrictId.HasValue))
-                                    .FirstOrDefault();
-
-                                if (!(r is null))
-                                {
-                                    await _offerRepository.SetDistrict(r.Id, district.Id);
-                                }
+                                await _offerRepository.SetDistrict(r.Id, userSubscriptionFilter.DistrictId.Value);
                             }
                         }
                     }
+                }
 
-                    var newestFrom = Enumerable.Empty<Offer>();
+                var newestFrom = Enumerable.Empty<Offer>();
 
-                    if (newestFromCriteria.AnyAndNotNull())
+                if (newestFromCriteria.AnyAndNotNull())
+                {
+                    var old = await _offerRepository.
+                            GetScrapped(
+                        userSubscriptionFilter.CityId,
+                        site.Type,
+                        userSubscriptionFilter.Deal,
+                        userSubscriptionFilter.Property);
+
+                    newestFrom = newestFromCriteria
+                        .Where(p => old.All(p2 => p2 != p.SiteOfferId));
+                }
+
+                if (newestFrom.AnyAndNotNull())
+                {
+                    _offerRepository.BulkInsert(newestFrom);
+                }
+
+                var districted = userSubscriptionFilter.DistrictId is null ? $"\"District\": \"Empty\"," : $"\"District\": \"{userSubscriptionFilter.District}\",";
+
+                var msg =
+                    $"{{\"Site\": \"{site.Type.ToString()}\"," +
+                    $"\"Deal\": \"{userSubscriptionFilter.Deal.ToString()}\"," +
+                    $"\"City\": \"{userSubscriptionFilter.City}\"," +
+                    districted +
+                    $"\"Records\": {newestFromCriteria.Count()}," +
+                    $"\"New\": {newestFrom.Count()} }}";
+
+                _logger.LogTrace(msg);
+
+                if (_appProvider.EventUpdate())
+                {
+                    try
                     {
-                        var old = await _offerRepository.
-                                GetScrapped(city.Id, site.Type, dealType);
-
-                        newestFrom = newestFromCriteria
-                            .Where(p => old.All(p2 => p2 != p.SiteOfferId));
-                    }
-
-                    if (newestFrom.AnyAndNotNull())
-                    {
-                        _offerRepository.BulkInsert(newestFrom);
-                    }
-
-                    var districted = district is null ? $"\"District\": \"Empty\"," : $"\"District\": \"{district.NameRaw}\",";
-
-                    var msg =
-                        $"{{\"Site\": \"{site.Type.ToString()}\"," +
-                        $"\"Deal\": \"{dealType.ToString()}\"," +
-                        $"\"City\": \"{city.NameRaw}\"," +
-                        districted +
-                        $"\"Records\": {newestFromCriteria.Count()}," +
-                        $"\"New\": {newestFrom.Count()} }}";
-
-                    _logger.LogTrace(msg);
-
-                    if (_appProvider.EventUpdate())
-                    {
-                        try
+                        await _eventRepository.Upsert(new Event
                         {
-                            await _eventRepository.Upsert(new Event
-                            {
-                                Type = EventType.Success,
-                                Category = (EventCategory)site.Type,
-                                Message = msg
-                            });
-                        }
-                        catch (Exception ex)
-                        {
-                            var msgException = $"Message: {ex.GetFullMessage()}, StackTrace: {ex.StackTrace}";
+                            Type = EventType.Success,
+                            Category = (EventCategory)site.Type,
+                            Message = msg
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        var msgException = $"Message: {ex.GetFullMessage()}, StackTrace: {ex.StackTrace}";
 
-                            _logger.LogError(msgException);
-                        }
+                        _logger.LogError(msgException);
                     }
                 }
 
@@ -246,5 +261,138 @@ namespace Ref.App.Core
 
             Thread.Sleep(_appProvider.PauseTime());
         }
+
+        //private async Task LoopForData(IEnumerable<Site> availableSites, IEnumerable<DealType> dealTypes, City city, District district)
+        //{
+        //    foreach (var site in availableSites)
+        //    {
+        //        foreach (DealType dealType in dealTypes)
+        //        {
+        //            var result = _siteAccessor(site.Type).Scrapp(city, dealType, district);
+
+        //            if (result.WeAreBanned)
+        //            {
+        //                _logger.LogError(Labels.BannedMsg(site.Type.ToString()));
+
+        //                site.IsActive = false;
+
+        //                await _siteRepository.UpdateAsync(site);
+
+        //                if (_appProvider.BannedNotifications())
+        //                {
+        //                    _pushOverNotification.Send(
+        //                        Labels.BannedMsgTitle,
+        //                        Labels.BannedMsg(site.Type.ToString()));
+        //                }
+        //            }
+
+        //            if (result.ThereAreNoRecords)
+        //            {
+        //                _logger.LogError(Labels.NoRecordsMsg(site.Type.ToString(), city.Name));
+
+        //                if (_appProvider.NoRecordsNotifications())
+        //                {
+        //                    _pushOverNotification.Send(
+        //                        Labels.NoRecordsMsgTitle,
+        //                        Labels.NoRecordsMsg(site.Type.ToString(), city.Name));
+        //                }
+        //            }
+
+        //            if (result.ExceptionAccured)
+        //            {
+        //                _logger.LogError(Labels.ExceptionMsg(site.Type.ToString(), result.ExceptionMessage, city.Name));
+
+        //                if (_appProvider.ExceptionNotifications())
+        //                {
+        //                    _pushOverNotification.Send(
+        //                        Labels.ExceptionMsgTitle,
+        //                        Labels.ExceptionMsg(site.Type.ToString(), result.ExceptionMessage, city.Name));
+        //                }
+        //            }
+
+        //            var newestFromCriteria = result.Offers;
+
+        //            if (site.Type != SiteType.Adresowo &&
+        //                site.Type != SiteType.DomiPorta &&
+        //                site.Type != SiteType.Gratka &&
+        //                site.Type != SiteType.Morizon)
+        //            {
+        //                newestFromCriteria = newestFromCriteria
+        //                    .DistinctBy(p => p.Header);
+        //            }
+
+        //            if (!(district is null))
+        //            {
+        //                if (newestFromCriteria.AnyAndNotNull())
+        //                {
+        //                    foreach (var item in newestFromCriteria)
+        //                    {
+        //                        var r = (await _offerRepository
+        //                            .FindByAsync(o =>
+        //                                o.SiteOfferId == item.SiteOfferId &&
+        //                                !o.DistrictId.HasValue))
+        //                            .FirstOrDefault();
+
+        //                        if (!(r is null))
+        //                        {
+        //                            await _offerRepository.SetDistrict(r.Id, district.Id);
+        //                        }
+        //                    }
+        //                }
+        //            }
+
+        //            var newestFrom = Enumerable.Empty<Offer>();
+
+        //            if (newestFromCriteria.AnyAndNotNull())
+        //            {
+        //                var old = await _offerRepository.
+        //                        GetScrapped(city.Id, site.Type, dealType, PropertyType.Flat);
+
+        //                newestFrom = newestFromCriteria
+        //                    .Where(p => old.All(p2 => p2 != p.SiteOfferId));
+        //            }
+
+        //            if (newestFrom.AnyAndNotNull())
+        //            {
+        //                _offerRepository.BulkInsert(newestFrom);
+        //            }
+
+        //            var districted = district is null ? $"\"District\": \"Empty\"," : $"\"District\": \"{district.NameRaw}\",";
+
+        //            var msg =
+        //                $"{{\"Site\": \"{site.Type.ToString()}\"," +
+        //                $"\"Deal\": \"{dealType.ToString()}\"," +
+        //                $"\"City\": \"{city.NameRaw}\"," +
+        //                districted +
+        //                $"\"Records\": {newestFromCriteria.Count()}," +
+        //                $"\"New\": {newestFrom.Count()} }}";
+
+        //            _logger.LogTrace(msg);
+
+        //            if (_appProvider.EventUpdate())
+        //            {
+        //                try
+        //                {
+        //                    await _eventRepository.Upsert(new Event
+        //                    {
+        //                        Type = EventType.Success,
+        //                        Category = (EventCategory)site.Type,
+        //                        Message = msg
+        //                    });
+        //                }
+        //                catch (Exception ex)
+        //                {
+        //                    var msgException = $"Message: {ex.GetFullMessage()}, StackTrace: {ex.StackTrace}";
+
+        //                    _logger.LogError(msgException);
+        //                }
+        //            }
+        //        }
+
+        //        Thread.Sleep(_appProvider.PauseTime());
+        //    }
+
+        //    Thread.Sleep(_appProvider.PauseTime());
+        //}
     }
 }

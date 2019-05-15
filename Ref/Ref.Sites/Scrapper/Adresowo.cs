@@ -1,7 +1,7 @@
 ﻿using HtmlAgilityPack;
+using Ref.Data.Components;
 using Ref.Data.Models;
 using Ref.Data.Repositories;
-using Ref.Data.Repositories.Standalone;
 using Ref.Shared.Extensions;
 using Ref.Shared.Providers;
 using Ref.Sites.Helpers;
@@ -183,105 +183,9 @@ namespace Ref.Sites.Scrapper
             return result;
         }
 
-        #region Standalone
-        public SiteResponse Search(SearchFilter filter)
+        public ScrappResponse Scrapp(UserSubscriptionFilter userSubscriptionFilter)
         {
-            var result = new List<Ad>();
-
-            var searchQuery = QueryStringProvider(SiteType.Adresowo).Get(filter);
-
-            var scrap = ScrapThis(searchQuery, "iso-8859-2");
-
-            if (!scrap.Succeed)
-            {
-                return new SiteResponse
-                {
-                    Advertisements = new List<Ad>(),
-                    ExceptionAccured = scrap.ExceptionAccured,
-                    ExceptionMessage = scrap.ExceptionMessage
-                };
-            }
-
-            HtmlNode doc = scrap.HtmlNode;
-
-            if (doc.InnerHtml.Contains("jest pusta"))
-            {
-                return new SiteResponse
-                {
-                    FilterName = filter.Name,
-                    Advertisements = result,
-                    FilterDesc = filter.Description()
-                };
-            }
-
-            int pages = PageProvider(SiteType.Adresowo).Get(doc);
-
-            for (int i = 1; i <= pages; i++)
-            {
-                doc = ScrapThis($"{searchQuery}{i}", "iso-8859-2").HtmlNode;
-
-                var listing = doc.CssSelect(".search-block");
-
-                if (!(listing is null))
-                {
-                    var articles = listing.CssSelect(".search-results__item");
-
-                    if (!(articles is null))
-                    {
-                        if (articles.AnyAndNotNull())
-                        {
-                            foreach (var article in articles)
-                            {
-                                var ad = new Ad
-                                {
-                                    SiteType = SiteType.Adresowo
-                                };
-
-                                ad.Id = article.ByAttribute("data-public-code");
-                                ad.Url = $"https://adresowo.pl/o/{ad.Id}";
-
-                                var header = article.CssSelect(".result-info__header").FirstOrDefault();
-
-                                if (!(header is null))
-                                {
-                                    if (!string.IsNullOrWhiteSpace(header.InnerText))
-                                    {
-                                        ad.Header = header.InnerText
-                                            .Trim()
-                                            .Replace("\n", " ")
-                                            .Replace("Mieszkanie na sprzedaż", "");
-                                    }
-                                }
-
-                                var area = article.CssSelect(".result-info__basic").Skip(1).FirstOrDefault();
-
-                                if (!(area is null))
-                                {
-                                    if (!string.IsNullOrWhiteSpace(area.InnerText))
-                                    {
-                                        ad.Area = area.InnerText
-                                            .Replace("m&sup2;", "")
-                                            .Trim();
-                                    }
-                                }
-                                ad.Price = article.ByClass("result-info__price--total", @"[^0-9 ,.-]").Trim().Replace(" ", "");
-                                ad.PricePerMeter = article.ByClass("result-info__price--per-sqm", @"[^0-9 ,.-]").RemoveLastIf("2");
-
-                                if (ad.IsValid())
-                                    result.Add(ad);
-                            }
-                        }
-                    }
-                }
-            }
-
-            return new SiteResponse
-            {
-                FilterName = filter.Name,
-                Advertisements = result,
-                FilterDesc = filter.Description()
-            };
+            throw new NotImplementedException();
         }
-        #endregion
     }
 }
