@@ -1,6 +1,5 @@
 ﻿using Ref.Data.Components;
 using Ref.Data.Models;
-using Ref.Data.Repositories.Standalone;
 using Ref.Sites.Helpers;
 
 namespace Ref.Sites.QueryStrings
@@ -32,33 +31,21 @@ namespace Ref.Sites.QueryStrings
 
         public string Get(UserSubscriptionFilter userSubscriptionFilter)
         {
-            string result = "";
-            return result;
-        }
+            var type = FilterResolver.Type(SiteType.Gratka, userSubscriptionFilter.Property);
+            var deal = FilterResolver.Deal(SiteType.Gratka, userSubscriptionFilter.Deal);
+            var market = FilterResolver.Market(SiteType.Gratka, userSubscriptionFilter.Market);
 
-        public string Get(SearchFilter _filter)
-        {
-            var type = FilterResolver.Type(SiteType.Gratka, _filter.Property);
-            var deal = FilterResolver.Deal(SiteType.Gratka, _filter.Deal);
-            var market = FilterResolver.Market(SiteType.Gratka, _filter.Market);
+            var dist = userSubscriptionFilter.DistrictId is null ? "" : $"/{userSubscriptionFilter.District}";
+
+            var cityName = userSubscriptionFilter.City;
+
+            if (userSubscriptionFilter.City.Contains(' '))
+                cityName = userSubscriptionFilter.City.Replace(' ', '-');
 
             var result =
-                $"https://gratka.pl/nieruchomosci/{type}/{_filter.LocationRaw}/{deal}?";
+                $"https://gratka.pl/nieruchomosci/{type}/{cityName}{dist}/{deal}?";
 
-            if (_filter.PriceFrom != 0)
-                result = result + $"cena-calkowita:min={_filter.PriceFrom}";
-
-            if (_filter.PriceTo != 0)
-                result = result + $"&cena-calkowita:max={_filter.PriceTo}";
-
-            if (_filter.FlatAreaFrom != 0)
-                result = result + $"&powierzchnia-w-m2:min={_filter.FlatAreaFrom}";
-
-            if (_filter.FlatAreaTo != 0)
-                result = result + $"&powierzchnia-w-m2:max={_filter.FlatAreaTo}";
-
-            if (!string.IsNullOrWhiteSpace(market))
-                result = result + $"&rynek={market}";
+            result = result + $"&rynek={market}";
 
             result = result + $"&data-dodania-search=ostatnich-24h&sort=newest";
 

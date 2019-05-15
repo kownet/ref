@@ -80,7 +80,6 @@ namespace Ref.Sites.Scrapper
             {
                 Offers = result
             };
-
         }
 
         private List<Offer> Crawl(int pages, string searchQuery, HtmlNode doc)
@@ -223,7 +222,60 @@ namespace Ref.Sites.Scrapper
 
         public ScrappResponse Scrapp(UserSubscriptionFilter userSubscriptionFilter)
         {
-            throw new NotImplementedException();
+            var searchQuery = QueryStringProvider(SiteType.Gratka).Get(userSubscriptionFilter);
+
+            var scrap = ScrapThis(searchQuery);
+
+            if (!scrap.Succeed)
+            {
+                return new ScrappResponse
+                {
+                    Offers = new List<Offer>(),
+                    ExceptionAccured = scrap.ExceptionAccured,
+                    ExceptionMessage = scrap.ExceptionMessage
+                };
+            }
+
+            HtmlNode doc = scrap.HtmlNode;
+
+            if (doc.InnerHtml.Contains("tymczasowo zablokowany"))
+            {
+                return new ScrappResponse
+                {
+                    Offers = new List<Offer>(),
+                    WeAreBanned = true
+                };
+            }
+
+            var noResult = doc.CssSelect(".content__emptyListInfo").FirstOrDefault();
+
+            if (noResult != null)
+            {
+                return new ScrappResponse
+                {
+                    Offers = new List<Offer>(),
+                    ThereAreNoRecords = true
+                };
+            }
+
+            int pages = PageProvider(SiteType.Gratka).Get(doc);
+
+            var result = Crawl(pages, searchQuery, doc);
+
+            result.Change(o => o.Site = SiteType.Gratka);
+            result.Change(o => o.Deal = userSubscriptionFilter.Deal);
+            result.Change(o => o.CityId = userSubscriptionFilter.CityId);
+            result.Change(o => o.Property = userSubscriptionFilter.Property);
+
+            if (!(userSubscriptionFilter.DistrictId is null))
+            {
+                result.Change(o => o.DistrictId = userSubscriptionFilter.DistrictId);
+            }
+
+            return new ScrappResponse
+            {
+                Offers = result
+            };
         }
     }
 }
