@@ -27,7 +27,7 @@ namespace Ref.Data.Components
         public DateTime RegisteredAt { get; set; }
         public int? DistrictId { get; set; }
 
-        public bool DemoPassed
-            => (Subscription == SubscriptionType.Demo && (DateTime.Now - RegisteredAt).TotalHours > 24);
+        public bool DemoPassed(int hours)
+            => (Subscription == SubscriptionType.Demo && (DateTime.Now - RegisteredAt).TotalDays > hours);
     }
 }

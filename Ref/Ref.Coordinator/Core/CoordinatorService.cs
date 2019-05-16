@@ -57,7 +57,7 @@ namespace Ref.Coordinator.Core
                 try
                 {
                     var filtersToCheck = (await _userSubscriptionReport.GetAllActiveAsync())
-                        .Where(u => !u.DemoPassed);
+                        .Where(u => !u.DemoPassed(24));
 
                     var grouped = filtersToCheck.GroupBy(f => f.Notification);
 
@@ -180,8 +180,6 @@ namespace Ref.Coordinator.Core
                                     if (splittedPhrase.Any(matched.Content.Contains)
                                         || splittedPhrase.Any(matched.Header.ToLowerInvariant().Contains))
                                     {
-                                        _logger.LogTrace($"Offer {matched.Id} contain at least one from phrase {filter.ShouldContain}.");
-
                                         matchedOfferByShouldContain.Add(matched);
                                     }
                                 }
@@ -196,8 +194,6 @@ namespace Ref.Coordinator.Core
                                     if (matched.Content.Contains(WebUtility.HtmlDecode(filter.ShouldContain.Trim()))
                                         || matched.Header.ToLowerInvariant().Contains(WebUtility.HtmlDecode(filter.ShouldContain.Trim())))
                                     {
-                                        _logger.LogTrace($"Offer {matched.Id} contain at least one from phrase {filter.ShouldContain}.");
-
                                         matchedOfferByShouldContain.Add(matched);
                                     }
                                 }
@@ -222,8 +218,6 @@ namespace Ref.Coordinator.Core
                                     if (splittedPhrase.Any(matched.Content.Contains)
                                         || splittedPhrase.Any(matched.Header.ToLowerInvariant().Contains))
                                     {
-                                        _logger.LogTrace($"Offer {matched.Id} contain at least one from phrase {filter.ShouldNotContain}.");
-
                                         matched.ToDelete = true;
                                     }
                                 }
@@ -238,8 +232,6 @@ namespace Ref.Coordinator.Core
                                     if (matched.Content.Contains(WebUtility.HtmlDecode(filter.ShouldNotContain.Trim())) 
                                         || matched.Header.ToLowerInvariant().Contains(WebUtility.HtmlDecode(filter.ShouldNotContain.Trim())))
                                     {
-                                        _logger.LogTrace($"Offer {matched.Id} contain at least one from phrase {filter.ShouldNotContain}.");
-
                                         matched.ToDelete = true;
                                     }
                                 }

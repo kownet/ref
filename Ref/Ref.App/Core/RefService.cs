@@ -67,7 +67,8 @@ namespace Ref.App.Core
 
             //var dealTypes = _appProvider.Deals().Select(s => (DealType)s);
 
-            var activeFilters = await _userSubscriptionReport.GetAllActiveFiltersAsync();
+            var activeFilters = (await _userSubscriptionReport.GetAllActiveFiltersAsync())
+                .Where(u => !u.DemoPassed(24));
 
             while (successTries < _appProvider.SuccessTries())
             {
