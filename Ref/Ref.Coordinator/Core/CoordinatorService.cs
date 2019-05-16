@@ -131,6 +131,7 @@ namespace Ref.Coordinator.Core
                     o.CityId == filter.CityId &&
                     o.Deal == filter.Deal &&
                     o.DateAdded >= userRegisterDate &&
+                    o.Property == filter.Property &&
                     o.IsScrapped);
 
                 if (filter.PriceFrom.HasValue)
