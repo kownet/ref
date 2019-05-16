@@ -96,6 +96,59 @@ namespace Ref.Sites.Scrapper
             };
         }
 
+        public ScrappResponse Scrapp(UserSubscriptionFilter userSubscriptionFilter)
+        {
+            if (userSubscriptionFilter.Deal == DealType.Rent)
+            {
+                return new ScrappResponse
+                {
+                    Offers = new List<Offer>()
+                };
+            }
+
+            var searchQuery = QueryStringProvider(SiteType.Gumtree).Get(userSubscriptionFilter);
+
+            var code = userSubscriptionFilter.Deal == DealType.Sale ? userSubscriptionFilter.GumtreeCitySale : "";
+
+            if (!(userSubscriptionFilter.DistrictId is null))
+            {
+                code = userSubscriptionFilter.Deal == DealType.Sale ? $"{userSubscriptionFilter.GumtreeDistrictSale}" : "";
+            }
+
+            var scrap = ScrapThis(searchQuery);
+
+            if (!scrap.Succeed)
+            {
+                return new ScrappResponse
+                {
+                    Offers = new List<Offer>(),
+                    ExceptionAccured = scrap.ExceptionAccured,
+                    ExceptionMessage = scrap.ExceptionMessage
+                };
+            }
+
+            HtmlNode doc = scrap.HtmlNode;
+
+            int pages = PageProvider(SiteType.Gumtree).Get(doc, code);
+
+            var result = Crawl(pages, searchQuery, doc, code);
+
+            result.Change(o => o.Site = SiteType.Gumtree);
+            result.Change(o => o.Deal = userSubscriptionFilter.Deal);
+            result.Change(o => o.CityId = userSubscriptionFilter.CityId);
+            result.Change(o => o.Property = userSubscriptionFilter.Property);
+
+            if (!(userSubscriptionFilter.DistrictId is null))
+            {
+                result.Change(o => o.DistrictId = userSubscriptionFilter.DistrictId);
+            }
+
+            return new ScrappResponse
+            {
+                Offers = result
+            };
+        }
+
         private List<Offer> Crawl(int pages, string searchQuery, HtmlNode doc, string code)
         {
             var result = new List<Offer>();
@@ -154,11 +207,6 @@ namespace Ref.Sites.Scrapper
             }
 
             return result;
-        }
-
-        public ScrappResponse Scrapp(UserSubscriptionFilter userSubscriptionFilter)
-        {
-            throw new NotImplementedException();
         }
     }
 }
