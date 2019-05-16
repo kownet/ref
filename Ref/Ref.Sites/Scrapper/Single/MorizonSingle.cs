@@ -83,6 +83,22 @@ namespace Ref.Sites.Scrapper.Single
                 }
             }
 
+            if (!result.PricePerMeter.HasValue || (result.PricePerMeter.HasValue && result.PricePerMeter.Value == 0))
+            {
+                if (result.Area.HasValue && offer.Price > 0)
+                {
+                    if (result.Area.Value > 0)
+                    {
+                        var ppm = offer.Price / result.Area.Value;
+
+                        if (ppm > 0)
+                        {
+                            result.PricePerMeter = ppm;
+                        }
+                    }
+                }
+            }
+
             return result;
         }
     }
