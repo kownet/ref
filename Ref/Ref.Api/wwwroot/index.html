@@ -151,6 +151,12 @@
                             <input type="text" class="form-control required" id="filter-add-name" aria-describedby="name-help" placeholder="Nazwa" required="">
                         </div>
                         <div class="form-group">
+                            <label for="filter-property">Typ nieruchomości *</label>
+                            <select class="custom-select custom-select-sm required" id="filter-add-property">
+                                <option value="" selected disabled>Wybierz</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label for="filter-name">Miasto *</label>
                             <select class="custom-select custom-select-sm required" id="filter-add-city">
                                 <option value="" selected disabled>Wybierz</option>
@@ -238,6 +244,12 @@
                             <input type="text" class="form-control required-edit" id="filter-edit-name" aria-describedby="name-help" placeholder="Nazwa" required="">
                         </div>
                         <div class="form-group">
+                            <label for="filter-property">Typ nieruchomości *</label>
+                            <select class="custom-select custom-select-sm required" id="filter-edit-property">
+                                <option value="" selected disabled>Wybierz</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label for="filter-edit-city">Miasto *</label>
                             <select class="custom-select custom-select-sm required-edit" id="filter-edit-city">
                                 <option value="" selected disabled>Wybierz</option>
@@ -316,14 +328,15 @@
         var APP = {};
     </script>
 
-    <script type="text/javascript" src="/js/utils.js?2"></script>
-    <script type="text/javascript" src="/js/home.js?2"></script>
-    <script type="text/javascript" src="/js/users.js?2"></script>
-    <script type="text/javascript" src="/js/cities.js?2"></script>
-    <script type="text/javascript" src="/js/notificationtypes.js?2"></script>
-    <script type="text/javascript" src="/js/filters.js?2"></script>
-    <script type="text/javascript" src="/js/admininfos.js?2"></script>
-    <script type="text/javascript" src="/js/districts.js?2"></script>
+    <script type="text/javascript" src="/js/utils.js?3"></script>
+    <script type="text/javascript" src="/js/home.js?3"></script>
+    <script type="text/javascript" src="/js/users.js?3"></script>
+    <script type="text/javascript" src="/js/cities.js?3"></script>
+    <script type="text/javascript" src="/js/notificationtypes.js?3"></script>
+    <script type="text/javascript" src="/js/propertytypes.js?3"></script>
+    <script type="text/javascript" src="/js/filters.js?3"></script>
+    <script type="text/javascript" src="/js/admininfos.js?3"></script>
+    <script type="text/javascript" src="/js/districts.js?3"></script>
 
     <script type="text/javascript">
 
@@ -349,6 +362,12 @@
             cntEdit: '#filter-edit-notification'
         });
 
+        APP.propertytypes.getAll({
+            url: '/propertytypes',
+            cntAdd: '#filter-add-property',
+            cntEdit: '#filter-edit-property'
+        });
+
         APP.filters.addFilter({
             url: '/poc/addfilter',
             btn: '#filter-add-btn',
@@ -360,6 +379,7 @@
             cntPriceFrom: '#filter-add-price-from',
             cntPriceTo: '#filter-add-price-to',
             cntNtf: '#filter-add-notification',
+            cntPrp: '#filter-add-property',
             cntModal: '#filter-add',
             cntForm: '#filter-add-form',
             cntShouldContain: '#filter-add-should-contain',
@@ -382,6 +402,7 @@
             cntPriceFrom: '#filter-edit-price-from',
             cntPriceTo: '#filter-edit-price-to',
             cntNtf: '#filter-edit-notification',
+            cntPrp: '#filter-edit-property',
             cntModal: '#filter-edit',
             cntForm: '#filter-edit-form',
             cntShouldContain: '#filter-edit-should-contain',

@@ -57,6 +57,7 @@ namespace Ref.Services.Features.Queries.Poc
                                 UserId = filter.UserId,
                                 Name = WebUtility.HtmlDecode(filter.Name),
                                 Notification = filter.Notification,
+                                Property = filter.Property,
                                 ShouldContain = WebUtility.HtmlDecode(filter.ShouldContain),
                                 ShouldNotContain = WebUtility.HtmlDecode(filter.ShouldNotContain),
                                 PricePerMeterFrom = filter.PricePerMeterFrom,

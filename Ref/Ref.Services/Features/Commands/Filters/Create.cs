@@ -24,6 +24,7 @@ namespace Ref.Services.Features.Commands.Filters
             public int? PricePerMeterFrom { get; set; }
             public int? PricePerMeterTo { get; set; }
             public NotificationType Notification { get; set; }
+            public PropertyType Property { get; set; }
             public string Name { get; set; }
             public string ShouldContain { get; set; }
             public string ShouldNotContain { get; set; }
@@ -70,7 +71,7 @@ namespace Ref.Services.Features.Commands.Filters
                         var result = await _filterRepository.CreateAsync(new Filter
                         {
                             UserId = request.UserId,
-                            Property = PropertyType.Flat,
+                            Property = request.Property,
                             Deal = DealType.Sale,
                             Market = MarketType.Secondary,
                             CityId = request.CityId,

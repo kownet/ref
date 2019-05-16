@@ -63,9 +63,11 @@ namespace Ref.App.Core
                 .Where(s => sitesDefined.Contains(s.Type))
                 .Where(s => s.IsActive);
 
+            #region Old - Scrapp all for active cities
             //var cities = await _citiesReport.GetAllCitiesForActiveUsersAsync();
 
             //var dealTypes = _appProvider.Deals().Select(s => (DealType)s);
+            #endregion
 
             var activeFilters = (await _userSubscriptionReport.GetAllActiveFiltersAsync())
                 .Where(u => !u.DemoPassed(24));
@@ -82,6 +84,7 @@ namespace Ref.App.Core
                         }
                     }
 
+                    #region Old - Scrapp all for active cities
                     //if (cities.AnyAndNotNull())
                     //{
                     //    foreach (var city in cities)
@@ -102,6 +105,7 @@ namespace Ref.App.Core
                     //        await LoopForData(availableSites, dealTypes, city, null);
                     //    }
                     //}
+                    #endregion
 
                     successTries = _appProvider.SuccessTries();
                 }
@@ -263,6 +267,7 @@ namespace Ref.App.Core
             Thread.Sleep(_appProvider.PauseTime());
         }
 
+        #region Old - Scrapp all for active cities
         //private async Task LoopForData(IEnumerable<Site> availableSites, IEnumerable<DealType> dealTypes, City city, District district)
         //{
         //    foreach (var site in availableSites)
@@ -395,5 +400,6 @@ namespace Ref.App.Core
 
         //    Thread.Sleep(_appProvider.PauseTime());
         //}
+        #endregion
     }
 }

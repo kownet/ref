@@ -43,6 +43,7 @@ namespace Ref.Services.Features.Queries.Poc
             public int? PricePerMeterFrom { get; set; }
             public int? PricePerMeterTo { get; set; }
             public NotificationType Notification { get; set; }
+            public PropertyType Property { get; set; }
             public string NotificationFormatted => Notification.GetDescription();
             public DateTime? LastCheckedAt { get; set; }
             public string LastCheckedAtFormatted => LastCheckedAt.Format("niesprawdzany");
@@ -66,7 +67,7 @@ namespace Ref.Services.Features.Queries.Poc
                 {
                     using (var c = _dbAccess.Connection)
                     {
-                        var entities = await c.QueryAsync<FilterPoc>(@"SELECT F.Id, F.UserId, F.Name, C.Name as City, D.Name as District, F.FlatAreaFrom, F.FlatAreaTo, F.PriceFrom, F.PriceTo, F.Notification, F.LastCheckedAt, F.ShouldContain, F.ShouldNotContain, F.PricePerMeterFrom, F.PricePerMeterTo, F.DistrictId  
+                        var entities = await c.QueryAsync<FilterPoc>(@"SELECT F.Id, F.UserId, F.Name, C.Name as City, D.Name as District, F.FlatAreaFrom, F.FlatAreaTo, F.PriceFrom, F.PriceTo, F.Notification, F.LastCheckedAt, F.ShouldContain, F.ShouldNotContain, F.PricePerMeterFrom, F.PricePerMeterTo, F.DistrictId, F.Property  
                                         FROM Filters F
                                         INNER JOIN Cities C on F.CityId = C.Id
                                         LEFT JOIN Districts D on F.DistrictId = D.Id 

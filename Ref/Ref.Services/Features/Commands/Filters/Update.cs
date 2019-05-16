@@ -24,6 +24,7 @@ namespace Ref.Services.Features.Commands.Filters
             public int? PricePerMeterTo { get; set; }
             public string Name { get; set; }
             public NotificationType Notification { get; set; }
+            public PropertyType Property { get; set; }
             public string ShouldContain { get; set; }
             public string ShouldNotContain { get; set; }
             public int? DistrictId { get; set; }
@@ -55,7 +56,7 @@ namespace Ref.Services.Features.Commands.Filters
                     {
                         Id = request.Id,
                         UserId = request.UserId,
-                        Property = PropertyType.Flat,
+                        Property = request.Property,
                         Deal = DealType.Sale,
                         Market = MarketType.Secondary,
                         FlatAreaFrom = request.FlatAreaFrom,

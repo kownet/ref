@@ -15,6 +15,7 @@ namespace Ref.Services.Features.Shared
         public int? PricePerMeterFrom { get; set; }
         public int? PricePerMeterTo { get; set; }
         public NotificationType Notification { get; set; }
+        public PropertyType Property { get; set; }
         public string ShouldContain { get; set; }
         public string ShouldNotContain { get; set; }
         public int? DistrictId { get; set; }

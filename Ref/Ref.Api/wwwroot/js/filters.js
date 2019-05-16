@@ -185,6 +185,7 @@
                 pricePerMeterFrom: $(opts.cntPpmFrom).val(),
                 pricePerMeterTo: $(opts.cntPpmTo).val(),
                 notification: $(opts.cntNtf).val(),
+                property: $(opts.cntPrp).val(),
                 name: $(opts.cntName).val(),
                 shouldContain: $(opts.cntShouldContain).val(),
                 shouldNotContain: $(opts.cntShouldNotContain).val(),
@@ -264,6 +265,7 @@
                         $(opts.cntAreaFrom).val(data.filter.flatAreaFrom);
                         $(opts.cntAreaTo).val(data.filter.flatAreaTo);
                         $(opts.cntNtf).val(data.filter.notification);
+                        $(opts.cntPrp).val(data.filter.property);
                         $(opts.cntShouldContain).val(data.filter.shouldContain);
                         $(opts.cntShouldNotContain).val(data.filter.shouldNotContain);
                         $(opts.cntDistrictEdit).val(data.filter.districtId);
@@ -306,6 +308,7 @@
                 pricePerMeterFrom: $(opts.cntPpmFrom).val(),
                 pricePerMeterTo: $(opts.cntPpmTo).val(),
                 notification: $(opts.cntNtf).val(),
+                property: $(opts.cntPrp).val(),
                 name: $(opts.cntName).val(),
                 shouldContain: $(opts.cntShouldContain).val(),
                 shouldNotContain: $(opts.cntShouldNotContain).val(),
