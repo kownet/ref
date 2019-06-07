@@ -220,5 +220,19 @@ namespace Ref.Api.Controllers
                 return BadRequest(result.Message);
             }
         }
+
+        [HttpPost("email")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Email(Email.Cmd cmd)
+        {
+            var result = await Mediator.Send(cmd);
+
+            if (!result.Succeed)
+                _logger.LogError(result.Message);
+            else
+                _logger.LogInformation($"Changing email OK for user: {cmd.Id}");
+
+            return Ok(result);
+        }
     }
 }

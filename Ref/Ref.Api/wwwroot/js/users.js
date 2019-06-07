@@ -33,9 +33,31 @@
 
     };
 
+    var checkIfActive = function (opts) {
+
+        if (opts.active === 0) {
+            swal({
+                title: $.errorHeader,
+                text: $.notActiveUserMessage,
+                icon: "error",
+                dangerMode: true
+            }).then((goOut) => {
+                if (goOut) {
+
+                    window.location.replace($.homeUrl);
+
+                }
+            });
+        }
+
+    };
+
     return {
         updateEmail: function (opts) {
             updateEmail(opts);
+        },
+        checkIfActive: function (opts) {
+            checkIfActive(opts);
         }
     };
 

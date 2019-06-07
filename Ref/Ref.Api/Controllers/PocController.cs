@@ -27,31 +27,31 @@ namespace Ref.Api.Controllers
             _logger = logger;
         }
 
-        [HttpPost("verify")]
-        public async Task<IActionResult> Verify(Verify.Query q)
-        {
-            var result = await Mediator.Send(q);
+        //[HttpPost("verify")]
+        //public async Task<IActionResult> Verify(Verify.Query q)
+        //{
+        //    var result = await Mediator.Send(q);
 
-            if (!result.Succeed)
-                _logger.LogError(result.Message);
-            else
-                _logger.LogInformation($"Verification OK for GUID: {q.Guid}");
+        //    if (!result.Succeed)
+        //        _logger.LogError(result.Message);
+        //    else
+        //        _logger.LogInformation($"Verification OK for GUID: {q.Guid}");
 
-            return Ok(result);
-        }
+        //    return Ok(result);
+        //}
 
-        [HttpPost("email")]
-        public async Task<IActionResult> Email(Email.Cmd cmd)
-        {
-            var result = await Mediator.Send(cmd);
+        //[HttpPost("email")]
+        //public async Task<IActionResult> Email(Email.Cmd cmd)
+        //{
+        //    var result = await Mediator.Send(cmd);
 
-            if (!result.Succeed)
-                _logger.LogError(result.Message);
-            else
-                _logger.LogInformation($"Changing email OK for user: {cmd.Id}");
+        //    if (!result.Succeed)
+        //        _logger.LogError(result.Message);
+        //    else
+        //        _logger.LogInformation($"Changing email OK for user: {cmd.Id}");
 
-            return Ok(result);
-        }
+        //    return Ok(result);
+        //}
 
         [HttpPost("filters")]
         public async Task<IActionResult> Filters(Filters.Query q)

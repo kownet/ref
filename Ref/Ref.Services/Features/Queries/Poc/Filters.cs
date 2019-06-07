@@ -22,35 +22,35 @@ namespace Ref.Services.Features.Queries.Poc
         {
             public Result()
             {
-                Filters = new HashSet<FilterPoc>();
+                Filters = new HashSet<FilterResult>();
             }
 
-            public IEnumerable<FilterPoc> Filters { get; set; }
+            public IEnumerable<FilterResult> Filters { get; set; }
         }
 
-        public class FilterPoc
-        {
-            public int Id { get; set; }
-            public int UserId { get; set; }
-            public string Name { get; set; }
-            public string City { get; set; }
-            public string District { get; set; }
-            public int? DistrictId { get; set; }
-            public int? FlatAreaFrom { get; set; }
-            public int? FlatAreaTo { get; set; }
-            public int? PriceFrom { get; set; }
-            public int? PriceTo { get; set; }
-            public int? PricePerMeterFrom { get; set; }
-            public int? PricePerMeterTo { get; set; }
-            public NotificationType Notification { get; set; }
-            public PropertyType Property { get; set; }
-            public string NotificationFormatted => Notification.GetDescription();
-            public DateTime? LastCheckedAt { get; set; }
-            public string LastCheckedAtFormatted => LastCheckedAt.Format("niesprawdzany");
-            public string ShouldContain { get; set; }
-            public string ShouldNotContain { get; set; }
-            public string CityWithDistrict => string.IsNullOrWhiteSpace(District) ? City : $"{City} ({District})";
-        }
+        //public class FilterPoc
+        //{
+        //    public int Id { get; set; }
+        //    public int UserId { get; set; }
+        //    public string Name { get; set; }
+        //    public string City { get; set; }
+        //    public string District { get; set; }
+        //    public int? DistrictId { get; set; }
+        //    public int? FlatAreaFrom { get; set; }
+        //    public int? FlatAreaTo { get; set; }
+        //    public int? PriceFrom { get; set; }
+        //    public int? PriceTo { get; set; }
+        //    public int? PricePerMeterFrom { get; set; }
+        //    public int? PricePerMeterTo { get; set; }
+        //    public NotificationType Notification { get; set; }
+        //    public PropertyType Property { get; set; }
+        //    public string NotificationFormatted => Notification.GetDescription();
+        //    public DateTime? LastCheckedAt { get; set; }
+        //    public string LastCheckedAtFormatted => LastCheckedAt.Format("niesprawdzany");
+        //    public string ShouldContain { get; set; }
+        //    public string ShouldNotContain { get; set; }
+        //    public string CityWithDistrict => string.IsNullOrWhiteSpace(District) ? City : $"{City} ({District})";
+        //}
 
         public class Handler : IRequestHandler<Query, Result>
         {
@@ -67,7 +67,7 @@ namespace Ref.Services.Features.Queries.Poc
                 {
                     using (var c = _dbAccess.Connection)
                     {
-                        var entities = await c.QueryAsync<FilterPoc>(@"SELECT F.Id, F.UserId, F.Name, C.Name as City, D.Name as District, F.FlatAreaFrom, F.FlatAreaTo, F.PriceFrom, F.PriceTo, F.Notification, F.LastCheckedAt, F.ShouldContain, F.ShouldNotContain, F.PricePerMeterFrom, F.PricePerMeterTo, F.DistrictId, F.Property  
+                        var entities = await c.QueryAsync<FilterResult>(@"SELECT F.Id, F.UserId, F.Name, C.Name as City, D.Name as District, F.FlatAreaFrom, F.FlatAreaTo, F.PriceFrom, F.PriceTo, F.Notification, F.LastCheckedAt, F.ShouldContain, F.ShouldNotContain, F.PricePerMeterFrom, F.PricePerMeterTo, F.DistrictId, F.Property  
                                         FROM Filters F
                                         INNER JOIN Cities C on F.CityId = C.Id
                                         LEFT JOIN Districts D on F.DistrictId = D.Id 

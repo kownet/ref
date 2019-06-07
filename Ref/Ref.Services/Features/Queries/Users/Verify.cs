@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Ref.Services.Features.Queries.Poc
+namespace Ref.Services.Features.Queries.Users
 {
     public class Verify
     {
