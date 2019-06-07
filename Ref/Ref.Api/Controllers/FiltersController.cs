@@ -167,5 +167,17 @@ namespace Ref.Api.Controllers
                 return BadRequest(result.Message);
             }
         }
+
+        [HttpPost("allbyuserid")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Filters(AllByUserId.Query q)
+        {
+            var result = await Mediator.Send(q);
+
+            if (!result.Succeed)
+                _logger.LogError(result.Message);
+
+            return Ok(result);
+        }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using MediatR;
 using Ref.Data.Db;
-using Ref.Data.Models;
 using Ref.Services.Features.Shared;
 using Ref.Shared.Extensions;
 using System;
@@ -9,9 +8,9 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Ref.Services.Features.Queries.Poc
+namespace Ref.Services.Features.Queries.Filters
 {
-    public class Filters
+    public class AllByUserId
     {
         public class Query : IRequest<Result>
         {
@@ -27,30 +26,6 @@ namespace Ref.Services.Features.Queries.Poc
 
             public IEnumerable<FilterResult> Filters { get; set; }
         }
-
-        //public class FilterPoc
-        //{
-        //    public int Id { get; set; }
-        //    public int UserId { get; set; }
-        //    public string Name { get; set; }
-        //    public string City { get; set; }
-        //    public string District { get; set; }
-        //    public int? DistrictId { get; set; }
-        //    public int? FlatAreaFrom { get; set; }
-        //    public int? FlatAreaTo { get; set; }
-        //    public int? PriceFrom { get; set; }
-        //    public int? PriceTo { get; set; }
-        //    public int? PricePerMeterFrom { get; set; }
-        //    public int? PricePerMeterTo { get; set; }
-        //    public NotificationType Notification { get; set; }
-        //    public PropertyType Property { get; set; }
-        //    public string NotificationFormatted => Notification.GetDescription();
-        //    public DateTime? LastCheckedAt { get; set; }
-        //    public string LastCheckedAtFormatted => LastCheckedAt.Format("niesprawdzany");
-        //    public string ShouldContain { get; set; }
-        //    public string ShouldNotContain { get; set; }
-        //    public string CityWithDistrict => string.IsNullOrWhiteSpace(District) ? City : $"{City} ({District})";
-        //}
 
         public class Handler : IRequestHandler<Query, Result>
         {
