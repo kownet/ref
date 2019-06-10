@@ -6,7 +6,7 @@
     <div class="container">
 
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6 mt-1">
                 <div class="card mb-6 shadow-sm text-white bg-primary">
                     <div class="card-header">Adres do powiadomień</div>
                     <div class="card-body">
@@ -23,7 +23,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 mt-1">
                 <div class="card mb-6 shadow-sm text-white bg-secondary">
                     <div class="card-header">Informacje systemowe</div>
                     <div class="card-body" id="admin-info">
@@ -41,11 +41,11 @@
                             <thead class="thead-light">
                                 <tr>
                                     <th scope="col">Nazwa</th>
-                                    <th scope="col">Miasto</th>
-                                    <th scope="col">Metraż [m<sup>2</sup>]</th>
-                                    <th scope="col">Cena [zł]</th>
-                                    <th scope="col">Cena za m<sup>2</sup> [zł]</th>
-                                    <th scope="col">Powiadomienia</th>
+                                    <th scope="col" class="d-none d-sm-table-cell">Miasto</th>
+                                    <th scope="col" class="d-none d-md-table-cell">Metraż [m<sup>2</sup>]</th>
+                                    <th scope="col" class="d-none d-md-table-cell">Cena [zł]</th>
+                                    <th scope="col" class="d-none d-md-table-cell">Cena za m<sup>2</sup> [zł]</th>
+                                    <th scope="col" class="d-none d-lg-table-cell">Powiadomienia</th>
                                     <th scope="col">Inne</th>
                                 </tr>
                             </thead>
@@ -54,9 +54,9 @@
                         <div class="d-flex justify-content-between align-items-center">
 
                             <div class="btn-group">
-                                <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal" data-target="#filter-add">
+                                <a class="btn btn-sm btn-outline-secondary" href="/add/@Model.Guid">
                                     Dodaj
-                                </button>
+                                </a>
                             </div>
                             <!--<small class="text-muted">Możesz utworzyć: 5 filtrów</small>-->
                         </div>

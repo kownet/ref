@@ -42,9 +42,10 @@ namespace Ref.Services.Features.Queries.Filters
                 {
                     using (var c = _dbAccess.Connection)
                     {
-                        var entities = await c.QueryAsync<FilterResult>(@"SELECT F.Id, F.UserId, F.Name, C.Name as City, D.Name as District, F.FlatAreaFrom, F.FlatAreaTo, F.PriceFrom, F.PriceTo, F.Notification, F.LastCheckedAt, F.ShouldContain, F.ShouldNotContain, F.PricePerMeterFrom, F.PricePerMeterTo, F.DistrictId, F.Property  
+                        var entities = await c.QueryAsync<FilterResult>(@"SELECT F.Id, F.UserId, F.Name, C.Name as City, D.Name as District, F.FlatAreaFrom, F.FlatAreaTo, F.PriceFrom, F.PriceTo, F.Notification, F.LastCheckedAt, F.ShouldContain, F.ShouldNotContain, F.PricePerMeterFrom, F.PricePerMeterTo, F.DistrictId, F.Property, U.Guid as UserGuid  
                                         FROM Filters F
                                         INNER JOIN Cities C on F.CityId = C.Id
+                                        INNER JOIN Users U on F.UserId = U.Id 
                                         LEFT JOIN Districts D on F.DistrictId = D.Id 
                                         WHERE F.UserId = @UserId", new { request.UserId });
 

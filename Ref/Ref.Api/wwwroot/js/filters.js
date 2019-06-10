@@ -4,7 +4,7 @@
 
         function parseValues(from, to) {
 
-            var info = "<td>";
+            var info = "<td class=\"d-none d-md-table-cell\">";
 
             if (from === null && to === null) {
                 info = info + "brak";
@@ -65,13 +65,13 @@
                             var keywordsContain = !item.shouldContain
                                 ? ""
                                 : "<tr class=\"tr-small\">" +
-                                "<td colspan=\"7\">&nbsp;<i>Ogłoszenia powinny zawierać frazy:</i> '" + item.shouldContain + "'</td>" +
+                                "<td colspan=\"7\" class=\"d-none d-sm-table-cell\">&nbsp;<i>Ogłoszenia powinny zawierać frazy:</i> '" + item.shouldContain + "'</td>" +
                                 "</tr>";
 
                             var keywordsNotContain = !item.shouldNotContain
                                 ? ""
                                 : "<tr class=\"tr-small\">" +
-                                "<td colspan=\"7\">&nbsp;<i>Ogłoszenia <strong>nie</strong> powinny zawierać fraz:</i> '" + item.shouldNotContain + "'</td>" +
+                                "<td colspan=\"7\" class=\"d-none d-sm-table-cell\">&nbsp;<i>Ogłoszenia <strong>nie</strong> powinny zawierać fraz:</i> '" + item.shouldNotContain + "'</td>" +
                                 "</tr>";
 
                             var ppmInfo = parseValues(item.pricePerMeterFrom, item.pricePerMeterTo);
@@ -84,15 +84,15 @@
 
                             var rows = "<tr>" +
                                 "<td>" + item.name + "<br><small>ostatnie powiadomienie: " + item.lastCheckedAtFormatted + "</small>" + "</td>" +
-                                "<td>" + city + "</td>" +
+                                "<td class=\"d-none d-sm-table-cell\">" + city + "</td>" +
                                 faInfo +
                                 pInfo +
                                 ppmInfo +
-                                "<td>" + item.notificationFormatted + "</td>" +
+                                "<td class=\"d-none d-lg-table-cell\">" + item.notificationFormatted + "</td>" +
                                 "<td>" +
                                 "<div class=\"btn-group btn-group-sm\">" +
                                 "<button type=\"button\" class=\"btn btn-sm btn-danger\" id=\"btn-filter-del\" data-id=" + item.id + " data-user-id=" + item.userId + "> Usuń</button>" +
-                                "<button type=\"button\" class=\"btn btn-sm btn-warning\" id=\"btn-filter-edit\" data-id=" + item.id + " data-user-id=" + item.userId + " data-district-id=" + item.districtId + " data-toggle=\"modal\" data-target=\"#filter-edit\"> Edytuj</button>" +
+                                "<a class=\"btn btn-sm btn-warning\" id=\"btn-filter-edit\" data-id=" + item.id + " data-user-id=" + item.userId + " data-district-id=" + item.districtId + " href=\"/edit/" + item.userGuid + "/" + item.id + "\"> Edytuj</a>" +
                                 "</div >" + "</td>" +
                                 "</tr>" +
                                 keywordsContain +
@@ -144,7 +144,7 @@
                                 });
 
                                 APP.filters.getUserFilters({
-                                    url: '/poc/filters',
+                                    url: '/filters/allbyuserid',
                                     userId: userId,
                                     cntFiltersTable: '#filters-table'
                                 });

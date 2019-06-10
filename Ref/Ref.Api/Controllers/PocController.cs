@@ -55,18 +55,18 @@ namespace Ref.Api.Controllers
             return Ok(result);
         }
 
-        [HttpGet("getfilter/{id}")]
-        public async Task<IActionResult> GetFilter(int id)
-        {
-            var q = new FilterById.Query(id);
+        //[HttpGet("getfilter/{id}")]
+        //public async Task<IActionResult> GetFilter(int id)
+        //{
+        //    var q = new FilterById.Query(id);
 
-            var result = await Mediator.Send(q);
+        //    var result = await Mediator.Send(q);
 
-            if (!result.Succeed)
-                _logger.LogError(result.Message);
+        //    if (!result.Succeed)
+        //        _logger.LogError(result.Message);
 
-            return Ok(result);
-        }
+        //    return Ok(result);
+        //}
 
         [HttpPut("update")]
         [ProducesResponseType(200)]
