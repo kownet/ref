@@ -41,32 +41,6 @@ namespace Ref.Api.Controllers
             return Ok(result);
         }
 
-        [HttpPost("addfilter")]
-        public async Task<IActionResult> AddFilter(Create.Cmd cmd)
-        {
-            var result = await Mediator.Send(cmd);
-
-            if (!result.Succeed)
-                _logger.LogError(result.Message);
-            else
-                _logger.LogInformation($"Creating filter OK for user: {cmd.UserId}, filter: {cmd.Name}");
-
-            return Ok(result);
-        }
-
-        //[HttpGet("getfilter/{id}")]
-        //public async Task<IActionResult> GetFilter(int id)
-        //{
-        //    var q = new FilterById.Query(id);
-
-        //    var result = await Mediator.Send(q);
-
-        //    if (!result.Succeed)
-        //        _logger.LogError(result.Message);
-
-        //    return Ok(result);
-        //}
-
         [HttpPut("update")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]

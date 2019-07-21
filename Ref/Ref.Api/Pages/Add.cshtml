@@ -5,12 +5,11 @@
 
     <div class="container">
 
-        <form class="was-validated">
+        <form class="was-validated" method="post">
             <div class="form-group row">
                 <label for="f-name" class="col-sm-2 col-form-label">Nazwa</label>
                 <div class="col-sm-6">
-                    <input type="text" id="f-name" class="form-control" aria-describedby="f-name-help" placeholder="Nazwa filtra" required>
-
+                    <input type="text" id="f-name" name="name" class="form-control" aria-describedby="f-name-help" placeholder="Nazwa filtra" required>
                     <div class="valid-feedback">OK.</div>
                     <div class="invalid-feedback">Pole obowiązkowe.</div>
                 </div>
@@ -24,7 +23,7 @@
             <div class="form-group row">
                 <label for="f-property" class="col-sm-2 col-form-label">Typ nieruchomości</label>
                 <div class="col-sm-6">
-                    <select class="custom-select " id="f-a-property" required>
+                    <select class="custom-select " id="f-a-property" name="property" required>
                         <option value="">Wybierz</option>
                     </select>
                     <div class="valid-feedback">OK.</div>
@@ -40,7 +39,7 @@
             <div class="form-group row">
                 <label for="f-city" class="col-sm-2 col-form-label">Miasto</label>
                 <div class="col-sm-6">
-                    <select class="custom-select" id="f-a-city" required>
+                    <select class="custom-select" id="f-a-city" name="city" required>
                         <option value="">Wybierz</option>
                     </select>
                     <div class="valid-feedback">OK.</div>
@@ -56,7 +55,7 @@
             <div class="form-group row">
                 <label for="f-district" class="col-sm-2 col-form-label">Dzielnica</label>
                 <div class="col-sm-6">
-                    <select class="custom-select" id="f-a-district" disabled>
+                    <select class="custom-select" id="f-a-district" name="district" disabled>
                         <option value="" selected disabled>Wybierz</option>
                     </select>
                 </div>
@@ -70,7 +69,7 @@
             <div class="form-group row">
                 <label for="f-notification" class="col-sm-2 col-form-label">Powiadomienia</label>
                 <div class="col-sm-6">
-                    <select class="custom-select" id="f-a-notification" required>
+                    <select class="custom-select" id="f-a-notification" name="notification" required>
                         <option value="">Wybierz</option>
                     </select>
                     <div class="valid-feedback">OK.</div>
@@ -86,10 +85,10 @@
             <div class="form-group row">
                 <label for="f-area" class="col-sm-2 col-form-label">Metraż [m<sup>2</sup>]</label>
                 <div class="col-sm-3">
-                    <input type="number" class="form-control" id="f-a-area-from" placeholder="od" min="0" max="1000" step="1" oninput="this.value = Math.abs(this.value)">
+                    <input type="number" class="form-control" id="f-a-area-from" name="areafrom" placeholder="od" min="0" max="1000" step="1" oninput="this.value = Math.abs(this.value)">
                 </div>
                 <div class="col-sm-3">
-                    <input type="number" class="form-control" id="f-a-area-to" placeholder="do" min="0" max="1000" step="1" oninput="this.value = Math.abs(this.value)">
+                    <input type="number" class="form-control" id="f-a-area-to" name="areato" placeholder="do" min="0" max="1000" step="1" oninput="this.value = Math.abs(this.value)">
                 </div>
                 <div class="col-sm-4">
                     <small id="f-name-help" class="form-text text-muted">
@@ -101,10 +100,10 @@
             <div class="form-group row">
                 <label for="f-price" class="col-sm-2 col-form-label">Cena [zł]</label>
                 <div class="col-sm-3">
-                    <input type="number" class="form-control" id="f-a-price-from" placeholder="od" min="0" max="100000000" step="1000" oninput="this.value = Math.abs(this.value)">
+                    <input type="number" class="form-control" id="f-a-price-from" name="pricefrom" placeholder="od" min="0" max="100000000" step="1000" oninput="this.value = Math.abs(this.value)">
                 </div>
                 <div class="col-sm-3">
-                    <input type="number" class="form-control" id="f-a-price-to" placeholder="do" min="0" max="100000000" step="1000" oninput="this.value = Math.abs(this.value)">
+                    <input type="number" class="form-control" id="f-a-price-to" name="priceto" placeholder="do" min="0" max="100000000" step="1000" oninput="this.value = Math.abs(this.value)">
                 </div>
                 <div class="col-sm-4">
                     <small id="f-name-help" class="form-text text-muted">
@@ -116,10 +115,10 @@
             <div class="form-group row">
                 <label for="f-ppm" class="col-sm-2 col-form-label">Cena za m<sup>2</sup></label>
                 <div class="col-sm-3">
-                    <input type="number" class="form-control" id="f-a-ppm-from" placeholder="od" min="0" max="100000" step="500" oninput="this.value = Math.abs(this.value)">
+                    <input type="number" class="form-control" id="f-a-ppm-from" name="ppmfrom" placeholder="od" min="0" max="100000" step="500" oninput="this.value = Math.abs(this.value)">
                 </div>
                 <div class="col-sm-3">
-                    <input type="number" class="form-control" id="f-a-ppm-to" placeholder="do" min="0" max="100000" step="500" oninput="this.value = Math.abs(this.value)">
+                    <input type="number" class="form-control" id="f-a-ppm-to" name="ppmto" placeholder="do" min="0" max="100000" step="500" oninput="this.value = Math.abs(this.value)">
                 </div>
                 <div class="col-sm-4">
                     <small id="f-name-help" class="form-text text-muted">
@@ -131,7 +130,7 @@
             <div class="form-group row">
                 <label for="f-ppm" class="col-sm-2 col-form-label col-form-label-sm">Ogłoszenie powinno zawierać</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control form-control-sm" id="f-a-keywords-shouldcontain">
+                    <input type="text" class="form-control form-control-sm" id="f-a-keywords-shouldcontain" name="shouldcontain">
                 </div>
                 <div class="col-sm-4">
                     <small id="f-name-help" class="form-text text-muted">
@@ -143,7 +142,7 @@
             <div class="form-group row">
                 <label for="f-ppm" class="col-sm-2 col-form-label col-form-label-sm">Ogłoszenie nie powinno zawierać</label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control form-control-sm" id="f-a-keywords-shouldnotcontain">
+                    <input type="text" class="form-control form-control-sm" id="f-a-keywords-shouldnotcontain" name="shouldnotcontain">
                 </div>
                 <div class="col-sm-4">
                     <small id="f-name-help" class="form-text text-muted">
@@ -152,10 +151,11 @@
                 </div>
             </div>
 
-            <input type="hidden" id="f-userid" value="@Model.Guid" class="form-control">
+            <input type="hidden" id="f-userid" value="@Model.UserId" class="form-control" name="userid">
+            <input type="hidden" id="f-guid" value="@Model.Guid" class="form-control" name="guid">
 
             <div class="btn-group offset-sm-2" role="group">
-                <button type="submit" class="btn btn-primary">Zapisz filtr</button>
+                <button type="submit" class="btn btn-primary" id="btn-f-create">Zapisz filtr</button>
                 <button type="button" class="btn btn-secondary" onclick="javascript:window.history.back();">Anuluj</button>
             </div>
 

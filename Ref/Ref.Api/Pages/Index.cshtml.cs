@@ -45,7 +45,7 @@ namespace Ref.Api.Pages
                 };
             }
             else
-                _logger.LogError(result.Message);
+                _logger.LogError($"{result.Message}, GUID: {guid}");
         }
     }
 }

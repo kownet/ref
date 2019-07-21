@@ -163,76 +163,6 @@
 
     };
 
-    var addFilter = function (opts) {
-
-        APP.filters.validateRequired({
-            requiredClass: '.required',
-            disabledClass: '.toggle-disabled',
-            notClass: '.not'
-        });
-
-        $(document).on('click', opts.btn, function () {
-
-            var userId = $(opts.cntUserId).val();
-
-            var params = JSON.stringify({
-                userId: userId,
-                cityId: $(opts.cntCity).val(),
-                flatAreaFrom: $(opts.cntAreaFrom).val(),
-                flatAreaTo: $(opts.cntAreaTo).val(),
-                priceFrom: $(opts.cntPriceFrom).val(),
-                priceTo: $(opts.cntPriceTo).val(),
-                pricePerMeterFrom: $(opts.cntPpmFrom).val(),
-                pricePerMeterTo: $(opts.cntPpmTo).val(),
-                notification: $(opts.cntNtf).val(),
-                property: $(opts.cntPrp).val(),
-                name: $(opts.cntName).val(),
-                shouldContain: $(opts.cntShouldContain).val(),
-                shouldNotContain: $(opts.cntShouldNotContain).val(),
-                districtId: $(opts.cntDistrictAdd).val()
-            });
-
-            $.ajax({
-                contentType: 'application/json',
-                type: 'POST',
-                url: opts.url,
-                data: params,
-                success: function (data) {
-
-                    if (data.succeed) {
-
-                        swal($.successHeader, {
-                            icon: "success"
-                        });
-
-                        $(opts.cntForm).trigger("reset");
-
-                        APP.filters.closeModal({
-                            cntModal: opts.cntModal
-                        });
-
-                        APP.filters.getUserFilters({
-                            url: '/poc/filters',
-                            userId: userId,
-                            cntFiltersTable: '#filters-table'
-                        });
-
-                    } else {
-
-                        APP.filters.closeModal({
-                            cntModal: opts.cntModal
-                        });
-
-                        swal($.errorHeader, data.message, "error");
-                    }
-
-                }
-            });
-
-        });
-
-    };
-
     var editFilter = function (opts) {
 
         APP.filters.validateRequired({
@@ -356,47 +286,6 @@
 
     };
 
-    var closeModal = function (opts) {
-
-        $(opts.cntModal).modal('hide');
-        //hide the modal
-
-        $('body').removeClass('modal-open');
-        //modal-open class is added on body so it has to be removed
-
-        $('.modal-backdrop').remove();
-        //need to remove div with modal-backdrop class
-    };
-
-    var validateRequired = function (opts) {
-
-        $(document).on('change keyup', opts.requiredClass, function () {
-
-            let disabled = true;
-
-            var classR = opts.requiredClass + ':not(' + opts.notClass + ')';
-
-            $(classR).each(function () {
-
-                let value = this.value;
-
-                if ((value) && (value.trim() !== '')) {
-                    disabled = false;
-                } else {
-                    disabled = true;
-                    return false;
-                }
-            });
-
-            if (disabled) {
-                $(opts.disabledClass).prop("disabled", true);
-            } else {
-                $(opts.disabledClass).prop("disabled", false);
-            }
-        });
-
-    };
-
     return {
         getUserFilters: function (opts) {
             getUserFilters(opts);
@@ -404,17 +293,8 @@
         deleteFilter: function (opts) {
             deleteFilter(opts);
         },
-        addFilter: function (opts) {
-            addFilter(opts);
-        },
         editFilter: function (opts) {
             editFilter(opts);
-        },
-        closeModal: function (opts) {
-            closeModal(opts);
-        },
-        validateRequired: function (opts) {
-            validateRequired(opts);
         }
     };
 
