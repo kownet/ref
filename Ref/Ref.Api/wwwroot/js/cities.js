@@ -19,7 +19,6 @@
                 $.each(data, function (i, item) {
                     var rows = "<option value='" + item.id + "'>" + item.nameFormatted + "</option>";
                     $(opts.cntAdd).append(rows);
-                    $(opts.cntEdit).append(rows);
                 });
 
             });
@@ -43,29 +42,6 @@
 
             } else {
                 clearContainer(opts.cntDistrictAdd);
-            }
-
-        });
-
-        $(opts.cntEdit).change(function () {
-
-            var selectedCity = $(this).children("option:selected").val();
-
-            var city = parseInt(selectedCity);
-
-            clearContainer(opts.cntDistrictEdit);
-
-            if (cities.includes(city)) {
-
-                APP.districts.getAll({
-                    url: '/districts/city/' + city,
-                    cntAdd: opts.cntDistrictEdit
-                });
-
-                $(opts.cntDistrictEdit).prop("disabled", false);
-
-            } else {
-                clearContainer(opts.cntDistrictEdit);
             }
 
         });
