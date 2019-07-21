@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HtmlAgilityPack" Version="1.8.14" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.9" />
     <PackageReference Include="ScrapySharp" Version="3.0.0" />
   </ItemGroup>
 

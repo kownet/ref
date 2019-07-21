@@ -8,25 +8,40 @@
         <div class="row">
             <div class="col-md-6 mt-1">
                 <div class="card mb-6 shadow-sm text-white bg-primary">
-                    <div class="card-header">Adres do powiadomień</div>
+                    <div class="card-header">
+                        Adres do powiadomień
+                        <a class="btn btn-secondary btn-sm float-sm-right" data-toggle="collapse" href="#email-block" aria-expanded="true" aria-controls="email-block">
+                            kliknij by zmienić
+                        </a>
+                    </div>
                     <div class="card-body">
-                        <p class="card-text">
-                            <input type="hidden" id="user-id" name="user-id" value="@Model.IndexViewModel.UserId">
-                            <input type="email" id="input-email" class="form-control" placeholder="Email adres" required="" value="@Model.IndexViewModel.Email">
-                        </p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="btn-group">
-                                <button type="button" id="input-email-save" class="btn btn-sm btn-outline-dark">Zapisz</button>
+                        <div id="email-block" class="collapse">
+                            <p class="card-text">
+                                <input type="hidden" id="user-id" name="user-id" value="@Model.IndexViewModel.UserId">
+                                <input type="email" id="input-email" class="form-control" placeholder="Email adres" required="" value="@Model.IndexViewModel.Email">
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <button type="button" id="input-email-save" class="btn btn-sm btn-outline-dark">Zmień</button>
+                                </div>
+                                <small id="registered-at-info">@Model.IndexViewModel.RegisteredAtFormatted</small>
                             </div>
-                            <small id="registered-at-info">@Model.IndexViewModel.RegisteredAtFormatted</small>
                         </div>
+
                     </div>
                 </div>
             </div>
             <div class="col-md-6 mt-1">
                 <div class="card mb-6 shadow-sm text-white bg-secondary">
-                    <div class="card-header">Informacje systemowe</div>
-                    <div class="card-body" id="admin-info">
+                    <div class="card-header">
+                        Informacje systemowe
+                        <a class="btn bg-primary btn-sm float-sm-right" data-toggle="collapse" href="#infos-block" aria-expanded="true" aria-controls="infos-block">
+                            kliknij by wyświetlić
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        <div id="infos-block" class="collapse">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -54,11 +69,11 @@
                         <div class="d-flex justify-content-between align-items-center">
 
                             <div class="btn-group">
-                                <a class="btn btn-sm btn-outline-secondary" href="/add/@Model.Guid">
+                                <a class="btn btn-sm btn-outline-primary" href="/add/@Model.Guid">
                                     Dodaj
                                 </a>
                             </div>
-                            <!--<small class="text-muted">Możesz utworzyć: 5 filtrów</small>-->
+                            <small class="text-muted">@Model.IndexViewModel.FiltersNumberFormatted</small>
                         </div>
                     </div>
                 </div>
@@ -79,7 +94,7 @@
 
         APP.admininfos.getAll({
             url: '/admininfos',
-            cnt: '#admin-info'
+            cnt: '#infos-block'
         });
 
         APP.users.updateEmail({

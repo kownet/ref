@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Ref.Data.Models;
 using Ref.Data.Repositories;
 using Ref.Services.Features.Shared;
 using Ref.Shared.Extensions;
@@ -22,6 +23,7 @@ namespace Ref.Services.Features.Queries.Users
             public string Email { get; set; }
             public string RegisteredAt { get; set; }
             public bool IsActive { get; set; }
+            public SubscriptionType SubscriptionType { get; set; }
         }
 
         public class Handler : IRequestHandler<Query, Result>
@@ -49,7 +51,7 @@ namespace Ref.Services.Features.Queries.Users
                         if (user.DemoPassed)
                             return new Result { Message = "Twój okres próbny minął. Prosimy o kontakt w celu dalszego korzystania z usługi." };
 
-                        return new Result { UserId = user.Id, Email = user.Email, RegisteredAt = user.RegisteredAt.Format(), IsActive = user.IsActive };
+                        return new Result { UserId = user.Id, Email = user.Email, RegisteredAt = user.RegisteredAt.Format(), IsActive = user.IsActive, SubscriptionType = user.Subscription };
                     }
                 }
                 catch (Exception ex)

@@ -1,8 +1,8 @@
 CREATE TABLE Users(
 	[Id] [int] PRIMARY KEY IDENTITY(1,1) NOT NULL,
 	[Email] nvarchar(128) NOT NULL,
-	[PasswordHash] binary(64) NOT NULL,
-	[PasswordSalt] binary(128) NOT NULL,
+	[PasswordHash] binary(64) NULL,
+	[PasswordSalt] binary(128) NULL,
 	[Role] nvarchar(32) NOT NULL,
 	[Subscription] int NOT NULL DEFAULT(100),
 	[RegisteredAt] datetime NOT NULL,
@@ -14,8 +14,8 @@ CREATE TABLE Cities(
 	[Id] [int] PRIMARY KEY IDENTITY(1,1) NOT NULL,
 	[Name] nvarchar(256) NOT NULL,
 	[NameRaw] nvarchar(256) NOT NULL,
-	[GtCodeSale] nvarchar(128) NOT NULL,
-	[GtCodeRent] nvarchar(128) NOT NULL,
+	[GtCodeSale] nvarchar(128) NULL,
+	[GtCodeRent] nvarchar(128) NULL,
 	[HasDistricts] bit NOT NULL DEFAULT(0)
 )
 
@@ -24,8 +24,8 @@ CREATE TABLE Districts(
 	[CityId] [int] REFERENCES Cities(Id),
 	[Name] nvarchar(256) NOT NULL,
 	[NameRaw] nvarchar(256) NOT NULL,
-	[GtCodeSale] nvarchar(128) NOT NULL,
-	[GtCodeRent] nvarchar(128) NOT NULL,
+	[GtCodeSale] nvarchar(128) NULL,
+	[GtCodeRent] nvarchar(128) NULL,
 	[OtoDomId] int NULL,
 	[OlxId] int NULL,
 	[AdrId] varchar(10) null
@@ -68,8 +68,8 @@ CREATE TABLE Offers(
 	[PricePerMeter] [int] NULL,
 	[Floor] [int] NULL,
 	[DateAdded] datetime NOT NULL,
-	[IsScrapped] bit NOT NULL DEFAULT(0) WITH VALUES,
-	[IsBadlyScrapped] bit NOT NULL DEFAULT(0) WITH VALUES
+	[IsScrapped] bit NOT NULL DEFAULT(0),
+	[IsBadlyScrapped] bit NOT NULL DEFAULT(0),
 	[Content] nvarchar(3072) NULL
 )
 

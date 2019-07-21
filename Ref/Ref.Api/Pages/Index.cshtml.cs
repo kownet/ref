@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Ref.Api.ViewModels;
 using Ref.Services.Features.Queries.Users;
+using Ref.Services.Helpers;
 using System.Threading.Tasks;
 
 namespace Ref.Api.Pages
@@ -39,7 +40,8 @@ namespace Ref.Api.Pages
                     UserId = result.UserId,
                     RegisteredAt = result.RegisteredAt,
                     Email = result.Email,
-                    IsActive = result.IsActive
+                    IsActive = result.IsActive,
+                    FiltersNumber = SubscriptionProvider.MaxNumberOfFilters(result.SubscriptionType) + 1
                 };
             }
             else

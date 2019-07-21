@@ -104,17 +104,7 @@ namespace Ref.Api
 
             app.UseAuthentication();
 
-            //app.UseDefaultFiles();
             app.UseStaticFiles();
-            //app.UseStaticFiles(new StaticFileOptions
-            //{
-            //    OnPrepareResponse = ctx =>
-            //    {
-            //        const int durationInSeconds = 60;
-            //        ctx.Context.Response.Headers[HeaderNames.CacheControl] =
-            //            "public,max-age=" + durationInSeconds;
-            //    }
-            //});
 
             app.UseMvc();
         }
