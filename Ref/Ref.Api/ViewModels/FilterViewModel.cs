@@ -1,6 +1,6 @@
 ﻿namespace Ref.Api.ViewModels
 {
-    public class AddViewModel
+    public class FilterViewModel
     {
         public string Name { get; set; }
         public int Property { get; set; }

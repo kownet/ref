@@ -22,8 +22,9 @@ namespace Ref.Api.Pages
         }
 
         public string Guid { get; set; }
-
+        public bool Succeed { get; set; }
         public IndexViewModel IndexViewModel { get; set; }
+        public ErrorIndexViewModel ErrorIndexViewModel { get; set; }
 
         public async Task OnGetAsync(string guid)
         {
@@ -31,9 +32,11 @@ namespace Ref.Api.Pages
 
             var result = await _mediator.Send(new Verify.Query { Guid = Guid });
 
+            Succeed = result.Succeed;
+
             if (result.Succeed)
             {
-                _logger.LogInformation($"Verification OK for GUID: {Guid}");
+                _logger.LogInformation($"Verification on IndexPage OK for GUID: {Guid}");
 
                 IndexViewModel = new IndexViewModel
                 {
@@ -45,7 +48,15 @@ namespace Ref.Api.Pages
                 };
             }
             else
+            {
                 _logger.LogError($"{result.Message}, GUID: {guid}");
+
+                ErrorIndexViewModel = new ErrorIndexViewModel
+                {
+                    Message = result.Message,
+                    DemoPassed = result.DemoPassed
+                };
+            }
         }
     }
 }

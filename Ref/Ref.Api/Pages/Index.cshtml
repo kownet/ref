@@ -5,80 +5,107 @@
 
     <div class="container">
 
-        <div class="row">
-            <div class="col-md-6 mt-1">
-                <div class="card mb-6 shadow-sm text-white bg-primary">
-                    <div class="card-header">
-                        Adres do powiadomień
-                        <a class="btn btn-secondary btn-sm float-sm-right" data-toggle="collapse" href="#email-block" aria-expanded="true" aria-controls="email-block">
-                            kliknij by zmienić
-                        </a>
-                    </div>
-                    <div class="card-body">
-                        <div id="email-block" class="collapse">
-                            <p class="card-text">
-                                <input type="hidden" id="user-id" name="user-id" value="@Model.IndexViewModel.UserId">
-                                <input type="email" id="input-email" class="form-control" placeholder="Email adres" required="" value="@Model.IndexViewModel.Email">
-                            </p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="btn-group">
-                                    <button type="button" id="input-email-save" class="btn btn-sm btn-outline-dark">Zmień</button>
+        @if (Model.Succeed)
+        {
+            <div class="row">
+                <div class="col-md-6 mt-1">
+                    <div class="card mb-6 shadow-sm text-white bg-primary">
+                        <div class="card-header">
+                            Adres do powiadomień
+                            <a class="btn btn-secondary btn-sm float-sm-right" data-toggle="collapse" href="#email-block" aria-expanded="true" aria-controls="email-block">
+                                kliknij by zmienić
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <div id="email-block" class="collapse">
+                                <p class="card-text">
+                                    <input type="hidden" id="user-id" name="user-id" value="@Model.IndexViewModel.UserId">
+                                    <input type="email" id="input-email" class="form-control" placeholder="Email adres" required="" value="@Model.IndexViewModel.Email">
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="btn-group">
+                                        <button type="button" id="input-email-save" class="btn btn-sm btn-outline-dark">Zmień</button>
+                                    </div>
+                                    <small id="registered-at-info">@Model.IndexViewModel.RegisteredAtFormatted</small>
                                 </div>
-                                <small id="registered-at-info">@Model.IndexViewModel.RegisteredAtFormatted</small>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mt-1">
+                    <div class="card mb-6 shadow-sm text-white bg-secondary">
+                        <div class="card-header">
+                            Informacje systemowe
+                            <a class="btn bg-primary btn-sm float-sm-right" data-toggle="collapse" href="#infos-block" aria-expanded="true" aria-controls="infos-block">
+                                kliknij by wyświetlić
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <div id="infos-block" class="collapse">
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 mt-1">
-                <div class="card mb-6 shadow-sm text-white bg-secondary">
-                    <div class="card-header">
-                        Informacje systemowe
-                        <a class="btn bg-primary btn-sm float-sm-right" data-toggle="collapse" href="#infos-block" aria-expanded="true" aria-controls="infos-block">
-                            kliknij by wyświetlić
-                        </a>
-                    </div>
-                    <div class="card-body">
-                        <div id="infos-block" class="collapse">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <div class="row mt-2">
-            <div class="col-md-12">
-                <div class="card mb-12 shadow-sm text-white bg-dark">
-                    <div class="card-header">Filtry</div>
-                    <div class="card-body">
-                        <table class="table table-bordered table-dark table-responsive-md">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th scope="col">Nazwa</th>
-                                    <th scope="col" class="d-none d-sm-table-cell">Miasto</th>
-                                    <th scope="col" class="d-none d-md-table-cell">Metraż [m<sup>2</sup>]</th>
-                                    <th scope="col" class="d-none d-md-table-cell">Cena [zł]</th>
-                                    <th scope="col" class="d-none d-md-table-cell">Cena za m<sup>2</sup> [zł]</th>
-                                    <th scope="col" class="d-none d-lg-table-cell">Powiadomienia</th>
-                                    <th scope="col">Inne</th>
-                                </tr>
-                            </thead>
-                            <tbody id="filters-table"></tbody>
-                        </table>
-                        <div class="d-flex justify-content-between align-items-center">
+            <div class="row mt-2">
+                <div class="col-md-12">
+                    <div class="card mb-12 shadow-sm text-white bg-dark">
+                        <div class="card-header">Filtry</div>
+                        <div class="card-body">
+                            <table class="table table-bordered table-dark table-responsive-md">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col">Nazwa</th>
+                                        <th scope="col" class="d-none d-sm-table-cell">Miasto</th>
+                                        <th scope="col" class="d-none d-md-table-cell">Metraż [m<sup>2</sup>]</th>
+                                        <th scope="col" class="d-none d-md-table-cell">Cena [zł]</th>
+                                        <th scope="col" class="d-none d-md-table-cell">Cena za m<sup>2</sup> [zł]</th>
+                                        <th scope="col" class="d-none d-lg-table-cell">Powiadomienia</th>
+                                        <th scope="col">Inne</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="filters-table"></tbody>
+                            </table>
+                            <div class="d-flex justify-content-between align-items-center">
 
-                            <div class="btn-group">
-                                <a class="btn btn-sm btn-outline-primary" href="/add/@Model.Guid">
-                                    Dodaj
-                                </a>
+                                <div class="btn-group">
+                                    <a class="btn btn-sm btn-outline-primary" href="/add/@Model.Guid">
+                                        Dodaj
+                                    </a>
+                                </div>
+                                <small class="text-muted">@Model.IndexViewModel.FiltersNumberFormatted</small>
                             </div>
-                            <small class="text-muted">@Model.IndexViewModel.FiltersNumberFormatted</small>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        }
+        else
+        {
+            <div class="card mb-6 shadow-sm text-white bg-danger">
+                <div class="card-header">
+                    @Model.ErrorIndexViewModel.FormattedHeader
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        @Model.ErrorIndexViewModel.Message
+                    </p>
+                    <div class="btn-group">
+                        @if (Model.ErrorIndexViewModel.DemoPassed)
+                        {
+                            <button type="button" class="btn btn-sm btn-success">Kupuje</button>
+                            <a href="https://pewnemieszkanie.pl" class="btn btn-sm btn-outline-light">Nie, dziękuje!</a>
+                        }
+                        else
+                        {
+                            <a href="https://pewnemieszkanie.pl" class="btn btn-sm btn-outline-light">Zabierz mnie stąd!</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
 
     </div>
 
@@ -86,7 +113,10 @@
 
 @section Scripts
     {
-    <script type="text/javascript">
+
+    @if (Model.Succeed)
+    {
+        <script type="text/javascript">
 
         APP.users.checkIfActive({
             active: @Model.IndexViewModel.Active
@@ -110,5 +140,12 @@
             cntFiltersTable: '#filters-table'
         });
 
-    </script>
+        </script>
+    }
+    else
+    {
+        <script type="text/javascript">
+
+        </script>
+    }
 }

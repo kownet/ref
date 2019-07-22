@@ -25,6 +25,8 @@ namespace Ref.Api.Pages
 
         public string Guid { get; set; }
         public int UserId { get; set; }
+        public bool Succeed { get; set; }
+        public ErrorAddViewModel ErrorAddViewModel { get; set; }
 
         public async Task OnGetAsync(string guid)
         {
@@ -32,41 +34,58 @@ namespace Ref.Api.Pages
 
             var result = await _mediator.Send(new Verify.Query { Guid = Guid });
 
+            Succeed = result.Succeed;
+
             if (result.Succeed)
             {
-                _logger.LogInformation($"Verification OK for GUID: {Guid}");
+                _logger.LogInformation($"Verification on AddPage OK for GUID: {Guid}");
 
                 UserId = result.UserId;
+
+                ErrorAddViewModel = new ErrorAddViewModel
+                {
+                    IsDemo = result.SubscriptionType == SubscriptionType.Demo,
+                };
             }
             else
+            {
                 _logger.LogError($"{result.Message}, GUID: {guid}");
+
+                ErrorAddViewModel = new ErrorAddViewModel
+                {
+                    Message = result.Message,
+                    IsException = true
+                };
+            }
         }
 
         [BindProperty]
-        public AddViewModel AddViewModel { get; set; }
+        public FilterViewModel FilterViewModel { get; set; }
 
         public async Task<IActionResult> OnPostAsync()
         {
             var result = await _mediator.Send(new Create.Cmd
             {
-                Name = AddViewModel.Name,
-                Property = (PropertyType)AddViewModel.Property,
-                CityId = AddViewModel.City,
-                DistrictId = AddViewModel.District,
-                Notification = (NotificationType)AddViewModel.Notification,
-                FlatAreaFrom = AddViewModel.AreaFrom,
-                FlatAreaTo = AddViewModel.AreaTo,
-                PriceFrom = AddViewModel.PriceFrom,
-                PriceTo = AddViewModel.PriceTo,
-                PricePerMeterFrom = AddViewModel.PpmFrom,
-                PricePerMeterTo = AddViewModel.PpmTo,
-                ShouldContain = AddViewModel.ShouldContain,
-                ShouldNotContain = AddViewModel.ShouldNotContain,
-                UserId = AddViewModel.UserId
+                Name = FilterViewModel.Name,
+                Property = (PropertyType)FilterViewModel.Property,
+                CityId = FilterViewModel.City,
+                DistrictId = FilterViewModel.District,
+                Notification = (NotificationType)FilterViewModel.Notification,
+                FlatAreaFrom = FilterViewModel.AreaFrom,
+                FlatAreaTo = FilterViewModel.AreaTo,
+                PriceFrom = FilterViewModel.PriceFrom,
+                PriceTo = FilterViewModel.PriceTo,
+                PricePerMeterFrom = FilterViewModel.PpmFrom,
+                PricePerMeterTo = FilterViewModel.PpmTo,
+                ShouldContain = FilterViewModel.ShouldContain,
+                ShouldNotContain = FilterViewModel.ShouldNotContain,
+                UserId = FilterViewModel.UserId
             });
 
-            //if(result.Succeed)
-            return RedirectToPage("Index", new { guid = AddViewModel.Guid });
+            if (!result.Succeed)
+                _logger.LogError($"{result.Message}, GUID: {FilterViewModel.Guid}");
+
+            return RedirectToPage("Index", new { guid = FilterViewModel.Guid });
         }
     }
 }

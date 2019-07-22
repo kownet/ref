@@ -24,6 +24,7 @@ namespace Ref.Services.Features.Queries.Users
             public string RegisteredAt { get; set; }
             public bool IsActive { get; set; }
             public SubscriptionType SubscriptionType { get; set; }
+            public bool DemoPassed { get; set; }
         }
 
         public class Handler : IRequestHandler<Query, Result>
@@ -49,7 +50,7 @@ namespace Ref.Services.Features.Queries.Users
                     else
                     {
                         if (user.DemoPassed)
-                            return new Result { Message = "Twój okres próbny minął. Prosimy o kontakt w celu dalszego korzystania z usługi." };
+                            return new Result { Message = "Twój okres próbny minął. Prosimy o kontakt w celu dalszego korzystania z usługi.", DemoPassed = true };
 
                         return new Result { UserId = user.Id, Email = user.Email, RegisteredAt = user.RegisteredAt.Format(), IsActive = user.IsActive, SubscriptionType = user.Subscription };
                     }
