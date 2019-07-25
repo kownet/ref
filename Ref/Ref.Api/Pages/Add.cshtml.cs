@@ -45,6 +45,7 @@ namespace Ref.Api.Pages
                 ErrorAddViewModel = new ErrorAddViewModel
                 {
                     IsDemo = result.SubscriptionType == SubscriptionType.Demo,
+                    UserGuid = Guid
                 };
             }
             else
@@ -54,7 +55,8 @@ namespace Ref.Api.Pages
                 ErrorAddViewModel = new ErrorAddViewModel
                 {
                     Message = result.Message,
-                    IsException = true
+                    IsException = true,
+                    UserGuid = guid
                 };
             }
         }
@@ -83,9 +85,22 @@ namespace Ref.Api.Pages
             });
 
             if (!result.Succeed)
-                _logger.LogError($"{result.Message}, GUID: {FilterViewModel.FilterId}");
+            {
+                _logger.LogError($"{result.Message}, GUID: {FilterViewModel.UserGuid}");
 
-            return RedirectToPage("Index", new { guid = FilterViewModel.FilterId });
+                ErrorAddViewModel = new ErrorAddViewModel
+                {
+                    Message = result.Message,
+                    IsException = true,
+                    IsTooMuch = result.TooMuch,
+                    UserGuid = FilterViewModel.UserGuid
+                };
+
+                return Page();
+            }
+                
+
+            return RedirectToPage("Index", new { guid = FilterViewModel.UserGuid });
         }
     }
 }

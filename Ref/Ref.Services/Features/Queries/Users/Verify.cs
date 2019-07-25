@@ -50,7 +50,7 @@ namespace Ref.Services.Features.Queries.Users
                     else
                     {
                         if (user.DemoPassed)
-                            return new Result { Message = "Twój okres próbny minął. Prosimy o kontakt w celu dalszego korzystania z usługi.", DemoPassed = true };
+                            return new Result { Message = "Twój okres próbny minął. Prosimy o kontakt w celu dalszego korzystania z usługi.", DemoPassed = true, Email = user.Email, SubscriptionType = user.Subscription };
 
                         return new Result { UserId = user.Id, Email = user.Email, RegisteredAt = user.RegisteredAt.Format(), IsActive = user.IsActive, SubscriptionType = user.Subscription };
                     }

@@ -54,7 +54,8 @@ namespace Ref.Api.Pages
                 ErrorIndexViewModel = new ErrorIndexViewModel
                 {
                     Message = result.Message,
-                    DemoPassed = result.DemoPassed
+                    DemoPassed = result.DemoPassed,
+                    UserGuid = guid
                 };
             }
         }

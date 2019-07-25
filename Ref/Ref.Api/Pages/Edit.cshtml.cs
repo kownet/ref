@@ -68,7 +68,8 @@ namespace Ref.Api.Pages
                 ErrorAddViewModel = new ErrorAddViewModel
                 {
                     Message = result.Message,
-                    IsException = true
+                    IsException = true,
+                    UserGuid = Guid
                 };
             }
         }

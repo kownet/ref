@@ -25,9 +25,7 @@
                 <div class="form-group row">
                     <label for="f-property" class="col-sm-2 col-form-label">Typ nieruchomości</label>
                     <div class="col-sm-6">
-                        <select class="custom-select" id="f-a-property" name="property" required>
-                            @*<option value="">Wybierz</option>*@
-                        </select>
+                        <select class="custom-select" id="f-a-property" name="property" required></select>
                         <div class="valid-feedback">OK.</div>
                         <div class="invalid-feedback">Pole obowiązkowe.</div>
                     </div>
@@ -41,15 +39,13 @@
                 <div class="form-group row">
                     <label for="f-city" class="col-sm-2 col-form-label">Miasto</label>
                     <div class="col-sm-6">
-                        <select class="custom-select" id="f-a-city" name="city" required>
-                            @*<option value="">Wybierz</option>*@
-                        </select>
+                        <select class="custom-select" id="f-a-city" name="city" required></select>
                         <div class="valid-feedback">OK.</div>
                         <div class="invalid-feedback">Pole obowiązkowe.</div>
                     </div>
                     <div class="col-sm-4">
                         <small id="f-name-help" class="form-text text-muted">
-                            Miasto w którym szukasz nieruchomości. Brakuje Twojego miasta? <a href="">Napisz do nas a my je dodamy</a>.
+                            Miasto w którym szukasz nieruchomości. Brakuje Twojego miasta? <a href="/contact/@Model.Guid/3">Napisz do nas a my je dodamy</a>.
                         </small>
                     </div>
                 </div>
@@ -63,7 +59,7 @@
                     </div>
                     <div class="col-sm-4">
                         <small id="f-name-help" class="form-text text-muted">
-                            Pole aktywne dla wybranych miast. Brakuje dzielnic Twojego miasta? <a href="">Napisz do nas a my je dodamy</a>.
+                            Pole aktywne dla wybranych miast. Brakuje dzielnic Twojego miasta? <a href="/contact/@Model.Guid/4">Napisz do nas a my je dodamy</a>.
                         </small>
                     </div>
                 </div>
@@ -71,9 +67,7 @@
                 <div class="form-group row">
                     <label for="f-notification" class="col-sm-2 col-form-label">Powiadomienia</label>
                     <div class="col-sm-6">
-                        <select class="custom-select" id="f-a-notification" name="notification" required>
-                            @*<option value="">Wybierz</option>*@
-                        </select>
+                        <select class="custom-select" id="f-a-notification" name="notification" required></select>
                         <div class="valid-feedback">OK.</div>
                         <div class="invalid-feedback">Pole obowiązkowe.</div>
                     </div>
@@ -102,10 +96,10 @@
                 <div class="form-group row">
                     <label for="f-price" class="col-sm-2 col-form-label">Cena [zł]</label>
                     <div class="col-sm-3">
-                        <input type="number" value="@Model.FilterViewModel.PriceFrom" class="form-control" id="f-a-price-from" name="pricefrom" placeholder="od" min="0" max="100000000" step="1000" oninput="this.value = Math.abs(this.value)">
+                        <input type="number" value="@Model.FilterViewModel.PriceFrom" class="form-control" id="f-a-price-from" name="pricefrom" placeholder="od" min="0" max="100000000" step="100" oninput="this.value = Math.abs(this.value)">
                     </div>
                     <div class="col-sm-3">
-                        <input type="number" value="@Model.FilterViewModel.PriceTo" class="form-control" id="f-a-price-to" name="priceto" placeholder="do" min="0" max="100000000" step="1000" oninput="this.value = Math.abs(this.value)">
+                        <input type="number" value="@Model.FilterViewModel.PriceTo" class="form-control" id="f-a-price-to" name="priceto" placeholder="do" min="0" max="100000000" step="100" oninput="this.value = Math.abs(this.value)">
                     </div>
                     <div class="col-sm-4">
                         <small id="f-name-help" class="form-text text-muted">
@@ -117,10 +111,10 @@
                 <div class="form-group row">
                     <label for="f-ppm" class="col-sm-2 col-form-label">Cena za m<sup>2</sup></label>
                     <div class="col-sm-3">
-                        <input type="number" value="@Model.FilterViewModel.PpmFrom" class="form-control" id="f-a-ppm-from" name="ppmfrom" placeholder="od" min="0" max="100000" step="500" oninput="this.value = Math.abs(this.value)">
+                        <input type="number" value="@Model.FilterViewModel.PpmFrom" class="form-control" id="f-a-ppm-from" name="ppmfrom" placeholder="od" min="0" max="100000" step="10" oninput="this.value = Math.abs(this.value)">
                     </div>
                     <div class="col-sm-3">
-                        <input type="number" value="@Model.FilterViewModel.PpmTo" class="form-control" id="f-a-ppm-to" name="ppmto" placeholder="do" min="0" max="100000" step="500" oninput="this.value = Math.abs(this.value)">
+                        <input type="number" value="@Model.FilterViewModel.PpmTo" class="form-control" id="f-a-ppm-to" name="ppmto" placeholder="do" min="0" max="100000" step="10" oninput="this.value = Math.abs(this.value)">
                     </div>
                     <div class="col-sm-4">
                         <small id="f-name-help" class="form-text text-muted">

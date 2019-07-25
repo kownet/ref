@@ -4,6 +4,7 @@
     {
         public bool DemoPassed { get; set; }
         public string Message { get; set; }
+        public string UserGuid { get; set; }
 
         public string FormattedHeader
             => DemoPassed

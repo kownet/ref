@@ -66,7 +66,7 @@
                     </div>
                     <div class="col-sm-4">
                         <small id="f-name-help" class="form-text text-muted">
-                            Miasto w którym szukasz nieruchomości. Brakuje Twojego miasta? <a href="">Napisz do nas a my je dodamy</a>.
+                            Miasto w którym szukasz nieruchomości. Brakuje Twojego miasta? <a href="/contact/@Model.Guid/3">Napisz do nas a my je dodamy</a>.
                         </small>
                     </div>
                 </div>
@@ -80,7 +80,7 @@
                     </div>
                     <div class="col-sm-4">
                         <small id="f-name-help" class="form-text text-muted">
-                            Pole aktywne dla wybranych miast. Brakuje dzielnic Twojego miasta? <a href="">Napisz do nas a my je dodamy</a>.
+                            Pole aktywne dla wybranych miast. Brakuje dzielnic Twojego miasta? <a href="/contact/@Model.Guid/4">Napisz do nas a my je dodamy</a>.
                         </small>
                     </div>
                 </div>
@@ -119,10 +119,10 @@
                 <div class="form-group row">
                     <label for="f-price" class="col-sm-2 col-form-label">Cena [zł]</label>
                     <div class="col-sm-3">
-                        <input type="number" class="form-control" id="f-a-price-from" name="pricefrom" placeholder="od" min="0" max="100000000" step="1000" oninput="this.value = Math.abs(this.value)">
+                        <input type="number" class="form-control" id="f-a-price-from" name="pricefrom" placeholder="od" min="0" max="100000000" step="100" oninput="this.value = Math.abs(this.value)">
                     </div>
                     <div class="col-sm-3">
-                        <input type="number" class="form-control" id="f-a-price-to" name="priceto" placeholder="do" min="0" max="100000000" step="1000" oninput="this.value = Math.abs(this.value)">
+                        <input type="number" class="form-control" id="f-a-price-to" name="priceto" placeholder="do" min="0" max="100000000" step="100" oninput="this.value = Math.abs(this.value)">
                     </div>
                     <div class="col-sm-4">
                         <small id="f-name-help" class="form-text text-muted">
@@ -134,10 +134,10 @@
                 <div class="form-group row">
                     <label for="f-ppm" class="col-sm-2 col-form-label">Cena za m<sup>2</sup></label>
                     <div class="col-sm-3">
-                        <input type="number" class="form-control" id="f-a-ppm-from" name="ppmfrom" placeholder="od" min="0" max="100000" step="500" oninput="this.value = Math.abs(this.value)">
+                        <input type="number" class="form-control" id="f-a-ppm-from" name="ppmfrom" placeholder="od" min="0" max="100000" step="10" oninput="this.value = Math.abs(this.value)">
                     </div>
                     <div class="col-sm-3">
-                        <input type="number" class="form-control" id="f-a-ppm-to" name="ppmto" placeholder="do" min="0" max="100000" step="500" oninput="this.value = Math.abs(this.value)">
+                        <input type="number" class="form-control" id="f-a-ppm-to" name="ppmto" placeholder="do" min="0" max="100000" step="10" oninput="this.value = Math.abs(this.value)">
                     </div>
                     <div class="col-sm-4">
                         <small id="f-name-help" class="form-text text-muted">
@@ -170,8 +170,8 @@
                     </div>
                 </div>
 
+                <input type="hidden" id="f-guid" value="@Model.Guid" class="form-control" name="userguid">
                 <input type="hidden" id="f-userid" value="@Model.UserId" class="form-control" name="userid">
-                <input type="hidden" id="f-guid" value="@Model.Guid" class="form-control" name="guid">
 
                 <div class="btn-group offset-sm-2" role="group">
                     <button type="submit" class="btn btn-primary" id="btn-f-create">Zapisz filtr</button>
@@ -188,12 +188,22 @@
                 </div>
                 <div class="card-body">
                     <p class="card-text">
-                        @Model.ErrorAddViewModel.Message
+                        @if (Model.ErrorAddViewModel.IsTooMuch)
+                        {
+                            <p>
+                                Limit filtrów został wyczerpany, potrzebujesz więcej? 
+                            </p>
+                            <a href="/contact/@Model.ErrorAddViewModel.UserGuid/2" type="button" class="btn btn-sm btn-success">Kupuje</a>
+                        }
+                        else
+                        {
+                            @Model.ErrorAddViewModel.Message
+                        }
                     </p>
                     <div class="btn-group">
                         @if (Model.ErrorAddViewModel.IsException)
                         {
-                            <a href="https://pewnemieszkanie.pl" class="btn btn-sm btn-outline-light">Zabierz mnie stąd!</a>
+                            <a href="/@Model.ErrorAddViewModel.UserGuid" class="btn btn-sm btn-outline-light">Zabierz mnie stąd!</a>
                         }
                     </div>
                 </div>

@@ -31,7 +31,10 @@ namespace Ref.Services.Features.Commands.Filters
             public int? DistrictId { get; set; }
         }
 
-        public class Result : BaseResult { }
+        public class Result : BaseResult
+        {
+            public bool TooMuch { get; set; }
+        }
 
         public class Handler : IRequestHandler<Cmd, Result>
         {
@@ -84,8 +87,8 @@ namespace Ref.Services.Features.Commands.Filters
                             Notification = request.Notification,
                             Name = WebUtility.HtmlEncode(request.Name),
                             LastCheckedAt = DateTime.Now,
-                            ShouldContain = WebUtility.HtmlEncode(request.ShouldContain.ToLowerInvariant()),
-                            ShouldNotContain = WebUtility.HtmlEncode(request.ShouldNotContain.ToLowerInvariant()),
+                            ShouldContain = request.ShouldContain is null ? string.Empty : WebUtility.HtmlEncode(request.ShouldContain.ToLowerInvariant()),
+                            ShouldNotContain = request.ShouldNotContain is null ? string.Empty : WebUtility.HtmlEncode(request.ShouldNotContain.ToLowerInvariant()),
                             DistrictId = request.DistrictId
                         });
 
@@ -99,12 +102,13 @@ namespace Ref.Services.Features.Commands.Filters
                 else
                 {
                     var s = maximumForCurrentSubscription + 1 > 0
-                            ? $"{maximumForCurrentSubscription + 1} filtr"
-                            : $"{maximumForCurrentSubscription + 1} filtry";
+                            ? $"{maximumForCurrentSubscription + 1} filtry"
+                            : $"{maximumForCurrentSubscription + 1} filtr";
 
                     return new Result
                     {
-                        Message = $"Możesz utworzyć - {s} dla Twojego planu."
+                        Message = $"Możesz utworzyć - {s} dla Twojego planu.",
+                        TooMuch = true
                     };
                 }
             }
