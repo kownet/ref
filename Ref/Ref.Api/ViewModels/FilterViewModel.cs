@@ -15,7 +15,9 @@
         public int? PpmTo { get; set; }
         public string ShouldContain { get; set; }
         public string ShouldNotContain { get; set; }
+        public string UserGuid { get; set; }
         public int UserId { get; set; }
-        public string Guid { get; set; }
+        public int FilterId { get; set; }
+        public int CityHasDistricts { get; set; }
     }
 }

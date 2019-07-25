@@ -32,13 +32,16 @@ namespace Ref.Services.Features.Queries.Filters
         {
             private readonly IFilterRepository _filterRepository;
             private readonly IUserRepository _userRepository;
+            private readonly ICitiesRepository _citiesRepository;
 
             public Handler(
                 IFilterRepository filterRepository,
-                IUserRepository userRepository)
+                IUserRepository userRepository,
+                ICitiesRepository citiesRepository)
             {
                 _filterRepository = filterRepository;
                 _userRepository = userRepository;
+                _citiesRepository = citiesRepository;
             }
 
             public async Task<Result> Handle(Query request, CancellationToken cancellationToken)
@@ -55,6 +58,9 @@ namespace Ref.Services.Features.Queries.Filters
 
                         if (!(filter is null))
                         {
+                            var city = (await _citiesRepository.FindByAsync(f => f.Id == filter.CityId))
+                                .FirstOrDefault();
+
                             return new Result
                             {
                                 Filter = new FilterResult
@@ -73,7 +79,8 @@ namespace Ref.Services.Features.Queries.Filters
                                     ShouldNotContain = WebUtility.HtmlDecode(filter.ShouldNotContain),
                                     PricePerMeterFrom = filter.PricePerMeterFrom,
                                     PricePerMeterTo = filter.PricePerMeterTo,
-                                    DistrictId = filter.DistrictId
+                                    DistrictId = filter.DistrictId,
+                                    HasDistricts = city.HasDistricts
                                 }
                             };
                         }

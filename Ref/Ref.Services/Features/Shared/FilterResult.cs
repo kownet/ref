@@ -28,5 +28,6 @@ namespace Ref.Services.Features.Shared
         public string ShouldContain { get; set; }
         public string ShouldNotContain { get; set; }
         public string CityWithDistrict => string.IsNullOrWhiteSpace(District) ? City : $"{City} ({District})";
+        public bool HasDistricts { get; set; }
     }
 }

@@ -25,8 +25,8 @@
                 <div class="form-group row">
                     <label for="f-property" class="col-sm-2 col-form-label">Typ nieruchomości</label>
                     <div class="col-sm-6">
-                        <select class="custom-select " id="f-a-property" name="property" required>
-                            <option value="">Wybierz</option>
+                        <select class="custom-select" id="f-a-property" name="property" required>
+                            @*<option value="">Wybierz</option>*@
                         </select>
                         <div class="valid-feedback">OK.</div>
                         <div class="invalid-feedback">Pole obowiązkowe.</div>
@@ -42,7 +42,7 @@
                     <label for="f-city" class="col-sm-2 col-form-label">Miasto</label>
                     <div class="col-sm-6">
                         <select class="custom-select" id="f-a-city" name="city" required>
-                            <option value="">Wybierz</option>
+                            @*<option value="">Wybierz</option>*@
                         </select>
                         <div class="valid-feedback">OK.</div>
                         <div class="invalid-feedback">Pole obowiązkowe.</div>
@@ -57,8 +57,8 @@
                 <div class="form-group row">
                     <label for="f-district" class="col-sm-2 col-form-label">Dzielnica</label>
                     <div class="col-sm-6">
-                        <select class="custom-select" id="f-a-district" name="district" disabled>
-                            <option value="" selected disabled>Wybierz</option>
+                        <select class="custom-select" id="f-a-district" name="district">
+                            <option value="" selected>Wybierz</option>
                         </select>
                     </div>
                     <div class="col-sm-4">
@@ -72,7 +72,7 @@
                     <label for="f-notification" class="col-sm-2 col-form-label">Powiadomienia</label>
                     <div class="col-sm-6">
                         <select class="custom-select" id="f-a-notification" name="notification" required>
-                            <option value="">Wybierz</option>
+                            @*<option value="">Wybierz</option>*@
                         </select>
                         <div class="valid-feedback">OK.</div>
                         <div class="invalid-feedback">Pole obowiązkowe.</div>
@@ -153,8 +153,9 @@
                     </div>
                 </div>
 
-                @*<input type="hidden" id="f-userid" value="@Model.UserId" class="form-control" name="userid">*@
-                <input type="hidden" id="f-guid" value="@Model.Guid" class="form-control" name="guid">
+                <input type="hidden" id="f-filterid" value="@Model.Id" class="form-control" name="filterid">
+                <input type="hidden" id="f-guid" value="@Model.Guid" class="form-control" name="userguid">
+                <input type="hidden" id="f-userid" value="@Model.FilterViewModel.UserId" class="form-control" name="userid">
 
                 <div class="btn-group offset-sm-2" role="group">
                     <button type="submit" class="btn btn-primary" id="btn-f-create">Zapisz filtr</button>
@@ -195,18 +196,23 @@
 
             APP.propertytypes.getAll({
                 url: '/propertytypes',
-                cnt: '#f-a-property'
+                cnt: '#f-a-property',
+                selectedProperty: @Model.FilterViewModel.Property
             });
 
-            APP.cities.getAll({
+            APP.cities.getAllForEdit({
                 url: '/cities',
                 cntAdd: '#f-a-city',
-                cntDistrictAdd: '#f-a-district'
+                selectedCity: @Model.FilterViewModel.City,
+                cntDistAdd: '#f-a-district',
+                selectedDistrict: '@Model.FilterViewModel.District',
+                hasDistricts: @Model.FilterViewModel.CityHasDistricts
             });
 
             APP.notificationtypes.getAll({
                 url: '/notificationtypes',
-                cntAdd: '#f-a-notification'
+                cntAdd: '#f-a-notification',
+                selectedNotification: @Model.FilterViewModel.Notification
             });
 
             $('#f-a-keywords-shouldcontain').tokenfield({

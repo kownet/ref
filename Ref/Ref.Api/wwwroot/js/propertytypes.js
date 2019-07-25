@@ -10,6 +10,10 @@
                     $(opts.cnt).append(rows);
                 });
 
+                if (opts.selectedProperty !== null) {
+                    $(opts.cnt).val(opts.selectedProperty);
+                }
+
             });
 
     };

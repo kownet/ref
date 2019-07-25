@@ -83,9 +83,9 @@ namespace Ref.Api.Pages
             });
 
             if (!result.Succeed)
-                _logger.LogError($"{result.Message}, GUID: {FilterViewModel.Guid}");
+                _logger.LogError($"{result.Message}, GUID: {FilterViewModel.FilterId}");
 
-            return RedirectToPage("Index", new { guid = FilterViewModel.Guid });
+            return RedirectToPage("Index", new { guid = FilterViewModel.FilterId });
         }
     }
 }
