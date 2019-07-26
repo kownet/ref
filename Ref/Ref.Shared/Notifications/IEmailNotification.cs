@@ -51,16 +51,20 @@ namespace Ref.Shared.Notifications
                     Sender = _senderProvider.Sender(),
                     Subject = title,
                     Text = rawMessage,
-                    Html = htmlMessage,
-                    Headers = new List<EmailPayloadCustomHeader>
+                    Html = htmlMessage
+                };
+
+                if (!string.IsNullOrWhiteSpace(_senderProvider.ReplyTo()))
+                {
+                    payload.Headers = new List<EmailPayloadCustomHeader>
                     {
                         new EmailPayloadCustomHeader
                         {
                             Header = "Reply-To",
                             Value = _senderProvider.ReplyTo()
                         }
-                    }
-                };
+                    };
+                }
 
                 using (var request = new HttpRequestMessage(HttpMethod.Post, "email/send"))
                 {

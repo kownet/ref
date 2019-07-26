@@ -6,6 +6,7 @@ using Ref.Api.ViewModels;
 using Ref.Data.Models;
 using Ref.Services.Features.Queries.Users;
 using Ref.Shared.Extensions;
+using Ref.Shared.Notifications;
 using System.Threading.Tasks;
 
 namespace Ref.Api.Pages
@@ -15,12 +16,16 @@ namespace Ref.Api.Pages
         private readonly ILogger<ContactModel> _logger;
         private readonly IMediator _mediator;
 
+        private readonly IEmailNotification _emailNotification;
+
         public ContactModel(
             ILogger<ContactModel> logger,
-            IMediator mediator)
+            IMediator mediator,
+            IEmailNotification emailNotification)
         {
             _logger = logger;
             _mediator = mediator;
+            _emailNotification = emailNotification;
         }
 
         public string Guid { get; set; }
@@ -37,7 +42,7 @@ namespace Ref.Api.Pages
 
             Succeed = result.Succeed;
 
-            if(result.DemoPassed || result.Succeed)
+            if (result.DemoPassed || result.Succeed)
             {
                 Succeed = true;
 
@@ -66,10 +71,32 @@ namespace Ref.Api.Pages
         public ContactViewModel ContactViewModel { get; set; }
         public bool Sent { get; set; }
 
-        public async Task<IActionResult> OnPostAsync()
+        public IActionResult OnPost()
         {
-            Sent = true;
             Guid = ContactViewModel.UserGuid;
+
+            var emailSent = _emailNotification.Send(
+                $"[PM] {ContactViewModel.Subject}",
+                $"{ContactViewModel.Email} pisze: {ContactViewModel.Message}",
+                $"{ContactViewModel.Email} pisze: {ContactViewModel.Message}",
+                new string[] { "tkowalczyk.poczta@gmail.com" }
+                );
+
+            if (!emailSent.IsSuccess)
+            {
+                ErrorContactViewModel = new ErrorContactViewModel
+                {
+                    IsException = true,
+                    Message = emailSent.Message,
+                    UserGuid = Guid
+                };
+
+                _logger.LogError($"{emailSent.Message}, GUID: {Guid}");
+            }
+            else
+            {
+                Sent = true;
+            }
 
             return Page();
         }

@@ -8,10 +8,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Ref.Api.Helpers;
+using Ref.Api.Settings;
 using Ref.Data.Db;
 using Ref.Data.Repositories;
 using Ref.Services.Contracts;
 using Ref.Services.Features.Commands.Users;
+using Ref.Shared.Notifications;
+using Ref.Shared.Providers;
 using System.Reflection;
 using System.Text;
 
@@ -81,6 +84,25 @@ namespace Ref.Api
                     ValidateAudience = false
                 };
             });
+
+            var emailSettingsSection = Configuration.GetSection("EmailSettings");
+            services.Configure<EmailSettings>(emailSettingsSection);
+
+            var emailSettings = emailSettingsSection.Get<EmailSettings>();
+
+            services.AddTransient<IEmailProvider>(
+                s => new EmailProvider(
+                    emailSettings.Host,
+                    emailSettings.ApiKey)
+                );
+
+            services.AddTransient<ISenderProvider>(
+                s => new SenderProvider(
+                    emailSettings.Sender,
+                    emailSettings.ReplyTo)
+                );
+
+            services.AddTransient<IEmailNotification, EmailNotification>();
 
             services.AddScoped<IDbAccess>(
                 db => new DbAccess(Configuration.GetConnectionString("RefDb")));
