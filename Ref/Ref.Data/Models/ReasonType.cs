@@ -14,6 +14,9 @@ namespace Ref.Data.Models
         CityProposition = 3,
 
         [Description("Propozycja dodania dzielnic")]
-        DistrictProposition = 4
+        DistrictProposition = 4,
+
+        [Description("Kontakt ze strony PewneMieszkanie.pl")]
+        ContactFromPm = 5
     }
 }

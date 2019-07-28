@@ -32,7 +32,7 @@ namespace Ref.Notifier.UI
             foreach (var filter in Filters)
             {
                 sbRaw.AppendLine($"Filtr: {filter.Key}:");
-                sbHtml.AppendLine($"<br><strong><a href=\"https://app.pewnemieszkanie.pl/index.html?guid={Token}\">Filtr - {filter.Key}</a></strong>:<br><br>");
+                sbHtml.AppendLine($"<br><strong><a href=\"https://app.pewnemieszkanie.pl/{Token}\">Filtr - {filter.Key}</a></strong> - <small>kliknij by edytować</small>:<br><br>");
 
                 var siteGrouped = filter.Value.GroupBy(s => s.Site);
 
