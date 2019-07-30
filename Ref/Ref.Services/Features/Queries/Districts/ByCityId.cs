@@ -4,6 +4,7 @@ using Ref.Services.Features.Shared;
 using Ref.Shared.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -54,7 +55,7 @@ namespace Ref.Services.Features.Queries.Districts
                             result.Add(new DistrictResult { Id = entity.Id, Name = entity.Name, NameRaw = entity.NameRaw, CityId = entity.CityId });
                         }
 
-                        return new Result { Districts = result };
+                        return new Result { Districts = result.OrderBy(r => r.Name).ToList() };
                     }
                     else return new Result { Message = "No districts in database for this city" };
                 }

@@ -4,6 +4,7 @@ using Ref.Services.Features.Shared;
 using Ref.Shared.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -46,7 +47,7 @@ namespace Ref.Services.Features.Queries.Cities
                             result.Add(new CityResult { Id = entity.Id, Name = entity.Name, NameRaw = entity.NameRaw, HasDistricts = entity.HasDistricts });
                         }
 
-                        return new Result { Cities = result };
+                        return new Result { Cities = result.OrderBy(r => r.Name).ToList() };
                     }
                     else return new Result { Message = "No cities in database" };
                 }
