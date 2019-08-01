@@ -63,6 +63,10 @@ namespace Ref.Notifier.Core
                         {
                             var email = new EmailUI(user.Token);
 
+                            var filterNames = user.Filters.Select(f => f.Filter);
+
+                            var mailTitle = FiltersTopicResolver.GetAbbreviation(filterNames);
+
                             foreach (var filter in user.Filters)
                             {
                                 var offersForEachFilter = await _mailReport.GetAllOffersForFilterAsync(filter.FilterId);
@@ -73,7 +77,7 @@ namespace Ref.Notifier.Core
                                 }
                             }
 
-                            var emailToSend = email.Prepare();
+                            var emailToSend = email.Prepare(mailTitle);
 
                             if (email.CanBeSend)
                             {

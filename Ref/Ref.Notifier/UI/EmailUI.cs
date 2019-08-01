@@ -19,7 +19,7 @@ namespace Ref.Notifier.UI
         public Dictionary<string, IEnumerable<MailReportOffer>> Filters { get; set; }
         public string Token { get; private set; }
 
-        public EmailMessage Prepare()
+        public EmailMessage Prepare(string mailTitle = "")
         {
             var sbRaw = new StringBuilder();
             var sbHtml = new StringBuilder();
@@ -55,8 +55,12 @@ namespace Ref.Notifier.UI
 
             sbHtml.AppendLine(sbFooter);
 
+            var title = string.IsNullOrWhiteSpace(mailTitle)
+                ? Labels.RecordsFoundTitle
+                : Labels.RecordsFoundFormatted(mailTitle);
+
             return new EmailMessage(
-                $"{Labels.RecordsFoundTitle}",
+                $"{title}",
                 sbRaw.ToString(),
                 sbHtml.ToString());
         }

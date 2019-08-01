@@ -23,6 +23,9 @@
         public static string NoNewRecordsMsgContent => "Może przy następnym sprawdzaniu coś się pojawi.";
 
         public static string RecordsFoundTitle => $"{App} Nowe ogłoszenia";
+
+        public static string RecordsFoundFormatted(string title) => $"{App} Nowe dla: {title}";
+
         public static string RecordsFoundPushoverContent => "linki do ogłoszeń przesłane będą w mailu.";
 
         public static string FilterDescPrice => "Cena (zł)";
