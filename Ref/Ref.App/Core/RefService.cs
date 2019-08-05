@@ -34,7 +34,6 @@ namespace Ref.App.Core
             ILogger<RefService> logger,
             Func<SiteType, ISiteToScrapp> siteAccessor,
             IAppProvider appProvider,
-            ICitiesReport citiesReport,
             IUserSubscriptionReport userSubscriptionReport,
             IOfferRepository offerRepository,
             ISiteRepository siteRepository,

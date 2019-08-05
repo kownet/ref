@@ -94,6 +94,9 @@ namespace Ref.Scrapper.Core
                                         if (result.PricePerMeter.HasValue)
                                             offer.PricePerMeter = result.PricePerMeter.Value;
 
+                                        if (!string.IsNullOrWhiteSpace(result.Abstract))
+                                            offer.Abstract = result.Abstract;
+
                                         await _offerRepository.UpdateAsync(offer);
                                     }
 

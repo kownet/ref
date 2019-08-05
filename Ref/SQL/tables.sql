@@ -70,7 +70,8 @@ CREATE TABLE Offers(
 	[DateAdded] datetime NOT NULL,
 	[IsScrapped] bit NOT NULL DEFAULT(0),
 	[IsBadlyScrapped] bit NOT NULL DEFAULT(0),
-	[Content] nvarchar(3072) NULL
+	[Content] nvarchar(3072) NULL,
+	[Abstract] nvarchar(55) NULL
 )
 
 CREATE TABLE OfferFilters(

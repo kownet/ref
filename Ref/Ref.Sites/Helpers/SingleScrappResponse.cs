@@ -2,6 +2,8 @@
 {
     public class SingleScrappResponse
     {
+        private static readonly int _maxLenght = 50;
+
         public int? Floor { get; set; }
         public string Content { get; set; }
         public bool IsDeleted { get; set; }
@@ -16,5 +18,8 @@
 
         public bool Succeed
             => !string.IsNullOrWhiteSpace(Content) && !IsDeleted && !IsRedirected && ParamsAreValid;
+
+        public string Abstract
+            => $"{Content.PadRight(_maxLenght).Substring(0, _maxLenght).TrimEnd().ToLowerInvariant()}";
     }
 }

@@ -161,11 +161,12 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 return await c.ExecuteAsync(
-                    @"UPDATE Offers SET Content = @Content, Floor = @Floor, IsScrapped = @IsScrapped, Area = @Area, Rooms = @Rooms, PricePerMeter = @PricePerMeter WHERE Id = @Id",
+                    @"UPDATE Offers SET Content = @Content, Abstract = @Abstract, Floor = @Floor, IsScrapped = @IsScrapped, Area = @Area, Rooms = @Rooms, PricePerMeter = @PricePerMeter WHERE Id = @Id",
                     new
                     {
                         offer.Id,
                         offer.Content,
+                        offer.Abstract,
                         offer.Floor,
                         offer.IsScrapped,
                         offer.Area,

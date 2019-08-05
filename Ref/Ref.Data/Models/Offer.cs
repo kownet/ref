@@ -20,6 +20,7 @@ namespace Ref.Data.Models
         public bool IsScrapped { get; set; }
         public int? Floor { get; set; }
         public string Content { get; set; }
+        public string Abstract { get; set; }
         public int? DistrictId { get; set; }
         public bool IsBadlyScrapped { get; set; }
 
