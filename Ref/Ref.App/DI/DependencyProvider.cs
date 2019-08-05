@@ -61,7 +61,6 @@ namespace Ref.App.DI
             #region Repositories
             services.AddTransient<IOfferRepository, OfferRepository>();
             services.AddTransient<ISiteRepository, SiteRepository>();
-            services.AddTransient<ICitiesReport, CitiesReport>();
             services.AddTransient<IUserSubscriptionReport, UserSubscriptionReport>();
             services.AddTransient<IDistrictRepository, DistrictRepository>();
             services.AddTransient<IEventRepository, EventRepository>();
