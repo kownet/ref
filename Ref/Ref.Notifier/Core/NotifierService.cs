@@ -19,8 +19,6 @@ namespace Ref.Notifier.Core
 
         private readonly IAppNotifierProvider _appProvider;
 
-        private readonly IOfferFilterRepository _offerFilterRepository;
-
         private readonly IMailReport _mailReport;
 
         private readonly IEmailNotification _emailNotification;
@@ -29,14 +27,12 @@ namespace Ref.Notifier.Core
         public NotifierService(
             ILogger<NotifierService> logger,
             IAppNotifierProvider appProvider,
-            IOfferFilterRepository offerFilterRepository,
             IMailReport mailReport,
             IEmailNotification emailNotification,
             IPushOverNotification pushOverNotification)
         {
             _logger = logger;
             _appProvider = appProvider;
-            _offerFilterRepository = offerFilterRepository;
             _mailReport = mailReport;
             _emailNotification = emailNotification;
             _pushOverNotification = pushOverNotification;
@@ -63,9 +59,7 @@ namespace Ref.Notifier.Core
                         {
                             var email = new EmailUI(user.Token);
 
-                            var filterNames = user.Filters.Select(f => f.Filter);
-
-                            var mailTitle = FiltersTopicResolver.GetAbbreviation(filterNames);
+                            var mailTitle = string.Empty;
 
                             foreach (var filter in user.Filters)
                             {
@@ -73,6 +67,7 @@ namespace Ref.Notifier.Core
 
                                 if (offersForEachFilter.AnyAndNotNull())
                                 {
+                                    mailTitle += $"{FiltersTopicResolver.GetAbbreviation(filter.Filter)}";
                                     email.Filters.Add(filter.Filter, offersForEachFilter);
                                 }
                             }

@@ -27,5 +27,15 @@ namespace Ref.Shared.Utils
             else
                 return string.Empty;
         }
+
+        public static string GetAbbreviation(string filterName)
+        {
+            if (string.IsNullOrWhiteSpace(filterName))
+                return string.Empty;
+            else
+            {
+                return $"{filterName.PadRight(_maxLenght).Substring(0, _maxLenght).TrimEnd()}...";
+            }
+        }
     }
 }
