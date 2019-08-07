@@ -68,6 +68,17 @@ namespace Ref.Sites.Scrapper.Single
                                     result.Floor = a;
                                 }
                             }
+
+                            if (element.InnerText.Contains("Numer referencyjny"))
+                            {
+                                result.IsFromAgency = true;
+                                result.IsFromPrivate = false;
+                            }
+                            else
+                            {
+                                result.IsFromAgency = false;
+                                result.IsFromPrivate = true;
+                            }
                         }
                     }
                 }

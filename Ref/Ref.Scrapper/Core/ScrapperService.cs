@@ -97,6 +97,9 @@ namespace Ref.Scrapper.Core
                                         if (!string.IsNullOrWhiteSpace(result.Abstract))
                                             offer.Abstract = result.Abstract;
 
+                                        offer.IsFromPrivate = result.IsFromPrivate;
+                                        offer.IsFromAgency = result.IsFromAgency;
+
                                         await _offerRepository.UpdateAsync(offer);
                                     }
 

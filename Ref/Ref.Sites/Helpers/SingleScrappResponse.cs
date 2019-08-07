@@ -13,6 +13,9 @@
         public int? Rooms { get; set; }
         public int? Area { get; set; }
 
+        public bool IsFromPrivate { get; set; }
+        public bool IsFromAgency { get; set; }
+
         public bool ParamsAreValid
             => (Area.HasValue && Area.Value != 0) && (PricePerMeter.HasValue && PricePerMeter.Value != 0);
 
