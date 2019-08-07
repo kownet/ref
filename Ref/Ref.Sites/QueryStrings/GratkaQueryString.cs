@@ -22,9 +22,9 @@ namespace Ref.Sites.QueryStrings
             var result =
                 $"https://gratka.pl/nieruchomosci/{type}/{cityName}{dist}/{deal}?";
 
-            result = result + $"&rynek={market}";
+            result += $"&rynek={market}";
 
-            result = result + $"&data-dodania-search=ostatnich-24h&sort=newest";
+            result += $"&data-dodania-search=ostatnich-24h&sort=newest";
 
             return result;
         }
@@ -45,9 +45,9 @@ namespace Ref.Sites.QueryStrings
             var result =
                 $"https://gratka.pl/nieruchomosci/{type}/{cityName}{dist}/{deal}?";
 
-            result = result + $"&rynek={market}";
+            result += $"&rynek={market}";
 
-            result = result + $"&data-dodania-search=ostatnich-24h&sort=newest";
+            result += $"&data-dodania-search=ostatnich-24h&sort=newest";
 
             return result;
         }

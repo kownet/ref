@@ -20,7 +20,8 @@ namespace Ref.Data.Components
         public string GumtreeDistrictSale { get; set; }
         public int? OlxId { get; set; }
         public string AdrId { get; set; }
-
+        public bool AllowPrivate { get; set; }
+        public bool AllowFromAgency { get; set; }
         public SubscriptionType Subscription { get; set; }
         public DateTime RegisteredAt { get; set; }
 

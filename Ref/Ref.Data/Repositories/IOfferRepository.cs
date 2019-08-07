@@ -86,6 +86,8 @@ namespace Ref.Data.Repositories
                         sbc.ColumnMappings.Add("Content", "Content");
                         sbc.ColumnMappings.Add("DistrictId", "DistrictId");
                         sbc.ColumnMappings.Add("Property", "Property");
+                        sbc.ColumnMappings.Add("IsFromPrivate", "IsFromPrivate");
+                        sbc.ColumnMappings.Add("IsFromAgency", "IsFromAgency");
 
                         sbc.WriteToServer(dt);
                     }

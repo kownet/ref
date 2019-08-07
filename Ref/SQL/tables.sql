@@ -49,7 +49,9 @@ CREATE TABLE Filters(
 	[Notification] [int] NOT NULL DEFAULT(100),
 	[LastCheckedAt] datetime NULL,
 	[ShouldContain] nvarchar(128) NULL,
-	[ShouldNotContain] nvarchar(128) NULL
+	[ShouldNotContain] nvarchar(128) NULL,
+	[AllowPrivate] bit NOT NULL DEFAULT(1),
+	[AllowFromAgency] bit NOT NULL DEFAULT(1)
 )
 
 CREATE TABLE Offers(
@@ -71,7 +73,9 @@ CREATE TABLE Offers(
 	[IsScrapped] bit NOT NULL DEFAULT(0),
 	[IsBadlyScrapped] bit NOT NULL DEFAULT(0),
 	[Content] nvarchar(3072) NULL,
-	[Abstract] nvarchar(55) NULL
+	[Abstract] nvarchar(55) NULL,
+	[IsFromPrivate] bit NULL,
+	[IsFromAgency] bit NULL
 )
 
 CREATE TABLE OfferFilters(

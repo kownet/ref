@@ -110,6 +110,8 @@ namespace Ref.Sites.Scrapper
             result.Change(o => o.Deal = userSubscriptionFilter.Deal);
             result.Change(o => o.CityId = userSubscriptionFilter.CityId);
             result.Change(o => o.Property = userSubscriptionFilter.Property);
+            result.Change(o => o.IsFromPrivate = userSubscriptionFilter.AllowPrivate);
+            result.Change(o => o.IsFromAgency = userSubscriptionFilter.AllowFromAgency);
 
             if (!(userSubscriptionFilter.DistrictId is null))
             {

@@ -22,5 +22,7 @@ namespace Ref.Data.Models
         public string ShouldContain { get; set; }
         public string ShouldNotContain { get; set; }
         public int? DistrictId { get; set; }
+        public bool AllowPrivate { get; set; }
+        public bool AllowFromAgency { get; set; }
     }
 }

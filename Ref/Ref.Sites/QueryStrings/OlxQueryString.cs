@@ -23,16 +23,16 @@ namespace Ref.Sites.QueryStrings
             var result =
                 $"https://www.olx.pl/nieruchomosci/{type}/{deal}/{cityName}/?";
 
-            result = result + $"{divider}Border%5D=created_at%3Adesc&";
+            result += $"{divider}Border%5D=created_at%3Adesc&";
 
             if (dealType == DealType.Sale)
             {
-                result = result + $"{divider}filter_enum_market%5D%5B0%5D={market}&";
+                result += $"{divider}filter_enum_market%5D%5B0%5D={market}&";
             }
 
             if(!(district is null) && district.IsOlxAvailable)
             {
-                result = result + $"{divider}district_id%5D={district.OlxId.Value}&";
+                result += $"{divider}district_id%5D={district.OlxId.Value}&";
             }
 
             return result.RemoveLastIf("&");
@@ -54,16 +54,21 @@ namespace Ref.Sites.QueryStrings
             var result =
                 $"https://www.olx.pl/nieruchomosci/{type}/{deal}/{cityName}/?";
 
-            result = result + $"{divider}Border%5D=created_at%3Adesc&";
+            result += $"{divider}Border%5D=created_at%3Adesc&";
 
             if (userSubscriptionFilter.Deal == DealType.Sale)
             {
-                result = result + $"{divider}filter_enum_market%5D%5B0%5D={market}&";
+                result += $"{divider}filter_enum_market%5D%5B0%5D={market}&";
             }
 
             if (!(userSubscriptionFilter.DistrictId is null) && userSubscriptionFilter.OlxId.HasValue)
             {
-                result = result + $"{divider}district_id%5D={userSubscriptionFilter.OlxId.Value}&";
+                result += $"{divider}district_id%5D={userSubscriptionFilter.OlxId.Value}&";
+            }
+
+            if (userSubscriptionFilter.AllowPrivate && !userSubscriptionFilter.AllowFromAgency)
+            {
+                result += $"{divider}private_business%5D=private&";
             }
 
             return result.RemoveLastIf("&");

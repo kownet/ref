@@ -59,11 +59,16 @@ namespace Ref.Sites.QueryStrings
 
             var divider = "search%5B";
 
-            result = result + $"{divider}created_since%5D={newest}&";
+            result += $"{divider}created_since%5D={newest}&";
 
             if (userSubscriptionFilter.Deal == DealType.Sale)
             {
-                result = result + $"{divider}filter_enum_market%5D%5B0%5D={market}&";
+                result += $"{divider}filter_enum_market%5D%5B0%5D={market}&";
+            }
+
+            if(userSubscriptionFilter.AllowPrivate && !userSubscriptionFilter.AllowFromAgency)
+            {
+                result += $"{divider}private_business%5D=private&";
             }
 
             return result.RemoveLastIf("&");

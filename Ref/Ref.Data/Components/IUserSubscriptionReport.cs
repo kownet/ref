@@ -35,7 +35,7 @@ namespace Ref.Data.Components
             using (var c = _dbAccess.Connection)
             {
                 return await c.QueryAsync<UserSubscriptionFilter>(
-                    @"SELECT F.Property, F.Deal, F.Market, F.CityId, C.NameRaw as City, C.GtCodeSale as GumtreeCitySale, F.FlatAreaFrom, F.FlatAreaTo, F.PriceFrom, F.PriceTo, F.DistrictId, D.NameRaw as District, D.OlxId, D.AdrId, D.GtCodeSale as GumtreeDistrictSale, U.Subscription, U.RegisteredAt 
+                    @"SELECT F.Property, F.Deal, F.Market, F.CityId, C.NameRaw as City, C.GtCodeSale as GumtreeCitySale, F.FlatAreaFrom, F.FlatAreaTo, F.PriceFrom, F.PriceTo, F.DistrictId, D.NameRaw as District, D.OlxId, D.AdrId, D.GtCodeSale as GumtreeDistrictSale, U.Subscription, U.RegisteredAt, F.AllowPrivate, F.AllowFromAgency 
                         FROM Filters as F 
                         INNER JOIN Users U on F.UserId = U.Id 
                         INNER JOIN Cities C on F.CityId = C.Id 
