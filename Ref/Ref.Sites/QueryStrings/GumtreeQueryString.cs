@@ -70,7 +70,12 @@ namespace Ref.Sites.QueryStrings
             var result =
                 $"https://www.gumtree.pl/{type}{deal}/{cityName}/{houseOrFlat}{code}{page}?";
 
-            result = result + $"&sort=dt&order=desc";
+            if (userSubscriptionFilter.AllowPrivate && !userSubscriptionFilter.AllowFromAgency)
+            {
+                result += $"df=ownr";
+            }
+
+            result += $"&sort=dt&order=desc";
 
             return result;
         }
