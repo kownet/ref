@@ -88,6 +88,26 @@ namespace Ref.Sites.Scrapper.Single
                                         }
                                     }
                                 }
+
+                                if (name.InnerText.Contains("Na sprzedaż przez"))
+                                {
+                                    var vali = val.InnerText;
+
+                                    if (!string.IsNullOrWhiteSpace(vali))
+                                    {
+                                        if (string.Equals("Agencja", vali))
+                                        {
+                                            result.IsFromAgency = true;
+                                            result.IsFromPrivate = false;
+                                        }
+
+                                        if (string.Equals("Właściciel", vali))
+                                        {
+                                            result.IsFromAgency = false;
+                                            result.IsFromPrivate = true;
+                                        }
+                                    }
+                                }
                             }
                         }
                     }

@@ -39,6 +39,9 @@ namespace Ref.Sites.Scrapper.Single
                 result.IsDeleted = true;
             }
 
+            result.IsFromAgency = false;
+            result.IsFromPrivate = true;
+
             var content = doc.CssSelect(".description__container").FirstOrDefault();
 
             if (!(content is null))
@@ -73,11 +76,6 @@ namespace Ref.Sites.Scrapper.Single
                             {
                                 result.IsFromAgency = true;
                                 result.IsFromPrivate = false;
-                            }
-                            else
-                            {
-                                result.IsFromAgency = false;
-                                result.IsFromPrivate = true;
                             }
                         }
                     }
