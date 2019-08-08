@@ -158,6 +158,9 @@ namespace Ref.Coordinator.Core
                     predicate = predicate.And(o => o.DistrictId == filter.DistrictId.Value);
                 }
 
+                if(!filter.AllowFromAgency)
+                    predicate = predicate.And(o => !o.IsFromAgency);
+
                 var matchCriteriaOffers = await _offerRepository
                     .FindByAsync(predicate);
 

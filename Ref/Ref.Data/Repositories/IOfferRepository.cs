@@ -108,7 +108,7 @@ namespace Ref.Data.Repositories
             using (var c = _dbAccess.Connection)
             {
                 var result = (await c.QueryAsync<Offer>(
-                    @"SELECT Id, CityId, SiteOfferId, Site, Deal, Url, Header, Price, DateAdded, Area, Rooms, PricePerMeter, IsScrapped, Floor, Content, DistrictId, IsBadlyScrapped, Property FROM Offers")).AsQueryable();
+                    @"SELECT Id, CityId, SiteOfferId, Site, Deal, Url, Header, Price, DateAdded, Area, Rooms, PricePerMeter, IsScrapped, Floor, Content, DistrictId, IsBadlyScrapped, Property, IsFromPrivate, IsFromAgency FROM Offers")).AsQueryable();
 
                 return result.Where(predicate);
             }
