@@ -72,6 +72,25 @@ namespace Ref.Sites.Scrapper.Single
                                 }
                             }
 
+                            if (item.InnerText.Contains("Oferta od"))
+                            {
+                                var val = item.ByClass("value");
+
+                                if (!string.IsNullOrWhiteSpace(val))
+                                {
+                                    if (string.Equals("Osoby prywatnej", val))
+                                    {
+                                        result.IsFromPrivate = true;
+                                        result.IsFromAgency = false;
+                                    }
+                                    else
+                                    {
+                                        result.IsFromPrivate = false;
+                                        result.IsFromAgency = true;
+                                    }
+                                }
+                            }
+
                             if (item.InnerText.Contains("Poziom"))
                             {
                                 var val = item.ByClass("value", @"[^0-9,.-]");

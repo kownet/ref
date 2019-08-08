@@ -110,8 +110,12 @@ namespace Ref.Sites.Scrapper
             result.Change(o => o.Deal = userSubscriptionFilter.Deal);
             result.Change(o => o.CityId = userSubscriptionFilter.CityId);
             result.Change(o => o.Property = userSubscriptionFilter.Property);
-            result.Change(o => o.IsFromPrivate = userSubscriptionFilter.AllowPrivate);
-            result.Change(o => o.IsFromAgency = userSubscriptionFilter.AllowFromAgency);
+
+            if (userSubscriptionFilter.AllowPrivate && !userSubscriptionFilter.AllowFromAgency)
+            {
+                result.Change(o => o.IsFromPrivate = userSubscriptionFilter.AllowPrivate);
+                result.Change(o => o.IsFromAgency = userSubscriptionFilter.AllowFromAgency);
+            }
 
             if (!(userSubscriptionFilter.DistrictId is null))
             {
@@ -207,6 +211,29 @@ namespace Ref.Sites.Scrapper
                                 if (int.TryParse(article.ByClass("offer-item-price-per-m", @"[^0-9,.-]"), out int ppm))
                                 {
                                     ad.PricePerMeter = ppm;
+                                }
+
+                                var privOrAgency = article.CssSelect(".offer-item-details-bottom").FirstOrDefault();
+
+                                if (!(privOrAgency is null))
+                                {
+                                    var privOrAgencyStr = privOrAgency.InnerText;
+
+                                    if(!string.IsNullOrWhiteSpace(privOrAgencyStr))
+                                    {
+                                        privOrAgencyStr = privOrAgencyStr.Trim();
+
+                                        if(string.Equals("Oferta prywatna", privOrAgencyStr))
+                                        {
+                                            ad.IsFromPrivate = true;
+                                            ad.IsFromAgency = false;
+                                        }
+                                        else
+                                        {
+                                            ad.IsFromPrivate = false;
+                                            ad.IsFromAgency = true;
+                                        }
+                                    }
                                 }
 
                                 if (ad.IsValidToAdd())
