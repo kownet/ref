@@ -58,7 +58,8 @@ namespace Ref.Api.Pages
                     Property = (int)result.Filter.Property,
                     UserGuid = result.Filter.UserGuid,
                     UserId = result.Filter.UserId,
-                    CityHasDistricts = result.Filter.HasDistricts ? 1 : 0
+                    CityHasDistricts = result.Filter.HasDistricts ? 1 : 0,
+                    AllowFromAgency = result.Filter.AllowFromAgency ? 1 : 0
                 };
             }
             else
@@ -95,7 +96,8 @@ namespace Ref.Api.Pages
                 PricePerMeterFrom = FilterViewModel.PpmFrom,
                 PricePerMeterTo = FilterViewModel.PpmTo,
                 ShouldContain = FilterViewModel.ShouldContain,
-                ShouldNotContain = FilterViewModel.ShouldNotContain
+                ShouldNotContain = FilterViewModel.ShouldNotContain,
+                AllowFromAgency = FilterViewModel.AllowFromAgency
             });
 
             if (!result.Succeed)

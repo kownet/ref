@@ -81,7 +81,8 @@ namespace Ref.Api.Pages
                 PricePerMeterTo = FilterViewModel.PpmTo,
                 ShouldContain = FilterViewModel.ShouldContain,
                 ShouldNotContain = FilterViewModel.ShouldNotContain,
-                UserId = FilterViewModel.UserId
+                UserId = FilterViewModel.UserId,
+                AllowFromAgency = FilterViewModel.AllowFromAgency
             });
 
             if (!result.Succeed)

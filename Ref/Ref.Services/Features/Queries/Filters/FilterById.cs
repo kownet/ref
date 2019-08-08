@@ -80,7 +80,9 @@ namespace Ref.Services.Features.Queries.Filters
                                     PricePerMeterFrom = filter.PricePerMeterFrom,
                                     PricePerMeterTo = filter.PricePerMeterTo,
                                     DistrictId = filter.DistrictId,
-                                    HasDistricts = city.HasDistricts
+                                    HasDistricts = city.HasDistricts,
+                                    AllowFromAgency = filter.AllowFromAgency,
+                                    AllowPrivate = filter.AllowPrivate
                                 }
                             };
                         }

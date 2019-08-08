@@ -67,9 +67,26 @@
         }
     };
 
+    var yesOrNo = function (opts) {
+
+        var rowYes = "<option value=\"1\">Tak</option>";
+        var rowNo = "<option value=\"0\">Nie</option>";
+
+        $(opts.cntAdd).append(rowYes);
+        $(opts.cntAdd).append(rowNo);
+
+        if (opts.selected !== null) {
+            $(opts.cntAdd).val(opts.selected);
+        }
+
+    };
+
     return {
         checkGuid: function (opts) {
             checkGuid(opts);
+        },
+        yesOrNo: function (opts) {
+            yesOrNo(opts);
         }
     };
 

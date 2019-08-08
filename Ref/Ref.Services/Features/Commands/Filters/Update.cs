@@ -28,6 +28,7 @@ namespace Ref.Services.Features.Commands.Filters
             public string ShouldContain { get; set; }
             public string ShouldNotContain { get; set; }
             public int? DistrictId { get; set; }
+            public int AllowFromAgency { get; set; }
         }
 
         public class Result : BaseResult { }
@@ -71,7 +72,8 @@ namespace Ref.Services.Features.Commands.Filters
                         ShouldNotContain = request.ShouldNotContain is null ? string.Empty : WebUtility.HtmlEncode(request.ShouldNotContain.ToLowerInvariant()),
                         PricePerMeterFrom = request.PricePerMeterFrom,
                         PricePerMeterTo = request.PricePerMeterTo,
-                        DistrictId = request.DistrictId
+                        DistrictId = request.DistrictId,
+                        AllowFromAgency = request.AllowFromAgency == 1 ? true : false
                     });
 
                     return new Result();

@@ -7,156 +7,170 @@
 
         @if (Model.Succeed)
         {
-            <form class="was-validated" method="post">
-                <div class="form-group row">
-                    <label for="f-name" class="col-sm-2 col-form-label">Nazwa</label>
-                    <div class="col-sm-6">
-                        <input type="text" value="@Model.FilterViewModel.Name" id="f-name" name="name" class="form-control" aria-describedby="f-name-help" placeholder="Nazwa filtra" required>
-                        <div class="valid-feedback">OK.</div>
-                        <div class="invalid-feedback">Pole obowiązkowe.</div>
-                    </div>
-                    <div class="col-sm-4">
-                        <small id="f-name-help" class="form-text text-muted">
-                            Dowolna nazwa, jednoznacznie określająca filtr (np. kawalerki na Mokotowie).
-                        </small>
-                    </div>
+        <form class="was-validated" method="post">
+            <div class="form-group row">
+                <label for="f-name" class="col-sm-2 col-form-label">Nazwa</label>
+                <div class="col-sm-6">
+                    <input type="text" value="@Model.FilterViewModel.Name" id="f-name" name="name" class="form-control" aria-describedby="f-name-help" placeholder="Nazwa filtra" required>
+                    <div class="valid-feedback">OK.</div>
+                    <div class="invalid-feedback">Pole obowiązkowe.</div>
                 </div>
-
-                <div class="form-group row">
-                    <label for="f-property" class="col-sm-2 col-form-label">Typ nieruchomości</label>
-                    <div class="col-sm-6">
-                        <select class="custom-select" id="f-a-property" name="property" required></select>
-                        <div class="valid-feedback">OK.</div>
-                        <div class="invalid-feedback">Pole obowiązkowe.</div>
-                    </div>
-                    <div class="col-sm-4">
-                        <small id="f-name-help" class="form-text text-muted">
-                            Jeśli szukasz mieszkania, wybierz <strong>Mieszkanie</strong>, jeżeli domu, wybierz <strong>Dom</strong>.
-                        </small>
-                    </div>
+                <div class="col-sm-4">
+                    <small id="f-name-help" class="form-text text-muted">
+                        Dowolna nazwa, jednoznacznie określająca filtr (np. kawalerki na Mokotowie).
+                    </small>
                 </div>
+            </div>
 
-                <div class="form-group row">
-                    <label for="f-city" class="col-sm-2 col-form-label">Miasto</label>
-                    <div class="col-sm-6">
-                        <select class="custom-select" id="f-a-city" name="city" required></select>
-                        <div class="valid-feedback">OK.</div>
-                        <div class="invalid-feedback">Pole obowiązkowe.</div>
-                    </div>
-                    <div class="col-sm-4">
-                        <small id="f-name-help" class="form-text text-muted">
-                            Miasto w którym szukasz nieruchomości. Brakuje Twojego miasta? <a href="/contact/@Model.Guid/3">Napisz do nas a my je dodamy</a>.
-                        </small>
-                    </div>
+            <div class="form-group row">
+                <label for="f-property" class="col-sm-2 col-form-label">Typ nieruchomości</label>
+                <div class="col-sm-6">
+                    <select class="custom-select" id="f-a-property" name="property" required></select>
+                    <div class="valid-feedback">OK.</div>
+                    <div class="invalid-feedback">Pole obowiązkowe.</div>
                 </div>
-
-                <div class="form-group row">
-                    <label for="f-district" class="col-sm-2 col-form-label">Dzielnica</label>
-                    <div class="col-sm-6">
-                        <select class="custom-select" id="f-a-district" name="district">
-                            <option value="" selected>Wybierz</option>
-                        </select>
-                    </div>
-                    <div class="col-sm-4">
-                        <small id="f-name-help" class="form-text text-muted">
-                            Pole aktywne dla wybranych miast. Brakuje dzielnic Twojego miasta? <a href="/contact/@Model.Guid/4">Napisz do nas a my je dodamy</a>.
-                        </small>
-                    </div>
+                <div class="col-sm-4">
+                    <small id="f-name-help" class="form-text text-muted">
+                        Jeśli szukasz mieszkania, wybierz <strong>Mieszkanie</strong>, jeżeli domu, wybierz <strong>Dom</strong>.
+                    </small>
                 </div>
+            </div>
 
-                <div class="form-group row">
-                    <label for="f-notification" class="col-sm-2 col-form-label">Powiadomienia</label>
-                    <div class="col-sm-6">
-                        <select class="custom-select" id="f-a-notification" name="notification" required></select>
-                        <div class="valid-feedback">OK.</div>
-                        <div class="invalid-feedback">Pole obowiązkowe.</div>
-                    </div>
-                    <div class="col-sm-4">
-                        <small id="f-name-help" class="form-text text-muted">
-                            Wybierz jak szybko po znalezieniu pasującego ogłoszenia, mamy Cię poinformować.
-                        </small>
-                    </div>
+            <div class="form-group row">
+                <label for="f-city" class="col-sm-2 col-form-label">Miasto</label>
+                <div class="col-sm-6">
+                    <select class="custom-select" id="f-a-city" name="city" required></select>
+                    <div class="valid-feedback">OK.</div>
+                    <div class="invalid-feedback">Pole obowiązkowe.</div>
                 </div>
-
-                <div class="form-group row">
-                    <label for="f-area" class="col-sm-2 col-form-label">Metraż [m<sup>2</sup>]</label>
-                    <div class="col-sm-3">
-                        <input type="number" value="@Model.FilterViewModel.AreaFrom" class="form-control" id="f-a-area-from" name="areafrom" placeholder="od" min="0" max="1000" step="1" oninput="this.value = Math.abs(this.value)">
-                    </div>
-                    <div class="col-sm-3">
-                        <input type="number" value="@Model.FilterViewModel.AreaTo" class="form-control" id="f-a-area-to" name="areato" placeholder="do" min="0" max="1000" step="1" oninput="this.value = Math.abs(this.value)">
-                    </div>
-                    <div class="col-sm-4">
-                        <small id="f-name-help" class="form-text text-muted">
-                            Możesz określić powierzchnie nieruchomości. Podając wartości np. od 25 do 45, znajdziemy takie, których powierzchnia mieści się w tym zakresie.
-                        </small>
-                    </div>
+                <div class="col-sm-4">
+                    <small id="f-name-help" class="form-text text-muted">
+                        Miasto w którym szukasz nieruchomości. Brakuje Twojego miasta? <a href="/contact/@Model.Guid/3">Napisz do nas a my je dodamy</a>.
+                    </small>
                 </div>
+            </div>
 
-                <div class="form-group row">
-                    <label for="f-price" class="col-sm-2 col-form-label">Cena [zł]</label>
-                    <div class="col-sm-3">
-                        <input type="number" value="@Model.FilterViewModel.PriceFrom" class="form-control" id="f-a-price-from" name="pricefrom" placeholder="od" min="0" max="100000000" step="100" oninput="this.value = Math.abs(this.value)">
-                    </div>
-                    <div class="col-sm-3">
-                        <input type="number" value="@Model.FilterViewModel.PriceTo" class="form-control" id="f-a-price-to" name="priceto" placeholder="do" min="0" max="100000000" step="100" oninput="this.value = Math.abs(this.value)">
-                    </div>
-                    <div class="col-sm-4">
-                        <small id="f-name-help" class="form-text text-muted">
-                            Możesz określić cenę nieruchomości. Podając wartości np. od 150000 do 300000, znajdziemy nieruchomości, których cena mieści się w tym zakresie.
-                        </small>
-                    </div>
+            <div class="form-group row">
+                <label for="f-district" class="col-sm-2 col-form-label">Dzielnica</label>
+                <div class="col-sm-6">
+                    <select class="custom-select" id="f-a-district" name="district">
+                        <option value="" selected>Wybierz</option>
+                    </select>
                 </div>
-
-                <div class="form-group row">
-                    <label for="f-ppm" class="col-sm-2 col-form-label">Cena za m<sup>2</sup></label>
-                    <div class="col-sm-3">
-                        <input type="number" value="@Model.FilterViewModel.PpmFrom" class="form-control" id="f-a-ppm-from" name="ppmfrom" placeholder="od" min="0" max="100000" step="10" oninput="this.value = Math.abs(this.value)">
-                    </div>
-                    <div class="col-sm-3">
-                        <input type="number" value="@Model.FilterViewModel.PpmTo" class="form-control" id="f-a-ppm-to" name="ppmto" placeholder="do" min="0" max="100000" step="10" oninput="this.value = Math.abs(this.value)">
-                    </div>
-                    <div class="col-sm-4">
-                        <small id="f-name-help" class="form-text text-muted">
-                            Możesz określić cenę za m<sup>2</sup> nieruchomości. Podając wartości np. od 2500 do 4500, znajdziemy nieruchomości, których cena za m<sup>2</sup> mieści się w tym zakresie.
-                        </small>
-                    </div>
+                <div class="col-sm-4">
+                    <small id="f-name-help" class="form-text text-muted">
+                        Pole aktywne dla wybranych miast. Brakuje dzielnic Twojego miasta? <a href="/contact/@Model.Guid/4">Napisz do nas a my je dodamy</a>.
+                    </small>
                 </div>
+            </div>
 
-                <div class="form-group row">
-                    <label for="f-ppm" class="col-sm-2 col-form-label col-form-label-sm">Ogłoszenie powinno zawierać</label>
-                    <div class="col-sm-6">
-                        <input type="text" value="@Model.FilterViewModel.ShouldContain" class="form-control form-control-sm" id="f-a-keywords-shouldcontain" name="shouldcontain">
-                    </div>
-                    <div class="col-sm-4">
-                        <small id="f-name-help" class="form-text text-muted">
-                            Możesz określić jakie zwroty, słowa kluczowe <strong>powinny</strong> się znaleźć w treści ogłoszenia. Szukasz mieszkania do remontu? Wpisz np. <strong>do remontu</strong> i naciśnij <i>Enter</i>.
-                        </small>
-                    </div>
+            <div class="form-group row">
+                <label for="f-notification" class="col-sm-2 col-form-label">Powiadomienia</label>
+                <div class="col-sm-6">
+                    <select class="custom-select" id="f-a-notification" name="notification" required></select>
+                    <div class="valid-feedback">OK.</div>
+                    <div class="invalid-feedback">Pole obowiązkowe.</div>
                 </div>
-
-                <div class="form-group row">
-                    <label for="f-ppm" class="col-sm-2 col-form-label col-form-label-sm">Ogłoszenie nie powinno zawierać</label>
-                    <div class="col-sm-6">
-                        <input type="text" value="@Model.FilterViewModel.ShouldNotContain" class="form-control form-control-sm" id="f-a-keywords-shouldnotcontain" name="shouldnotcontain">
-                    </div>
-                    <div class="col-sm-4">
-                        <small id="f-name-help" class="form-text text-muted">
-                            Możesz określić jakie zwroty, słowa kluczowe <strong>nie powinny</strong> się znaleźć w treści ogłoszenia. Unikasz nowych mieszkań? Wpisz np. <strong>od dewelopera</strong> i naciśnij <i>Enter</i>.
-                        </small>
-                    </div>
+                <div class="col-sm-4">
+                    <small id="f-name-help" class="form-text text-muted">
+                        Wybierz jak szybko po znalezieniu pasującego ogłoszenia, mamy Cię poinformować.
+                    </small>
                 </div>
+            </div>
 
-                <input type="hidden" id="f-filterid" value="@Model.Id" class="form-control" name="filterid">
-                <input type="hidden" id="f-guid" value="@Model.Guid" class="form-control" name="userguid">
-                <input type="hidden" id="f-userid" value="@Model.FilterViewModel.UserId" class="form-control" name="userid">
-
-                <div class="btn-group offset-sm-2" role="group">
-                    <button type="submit" class="btn btn-primary" id="btn-f-create">Zapisz filtr</button>
-                    <button type="button" class="btn btn-secondary" onclick="javascript:window.history.back();">Anuluj</button>
+            <div class="form-group row">
+                <label for="f-area" class="col-sm-2 col-form-label">Metraż [m<sup>2</sup>]</label>
+                <div class="col-sm-3">
+                    <input type="number" value="@Model.FilterViewModel.AreaFrom" class="form-control" id="f-a-area-from" name="areafrom" placeholder="od" min="0" max="1000" step="1" oninput="this.value = Math.abs(this.value)">
                 </div>
+                <div class="col-sm-3">
+                    <input type="number" value="@Model.FilterViewModel.AreaTo" class="form-control" id="f-a-area-to" name="areato" placeholder="do" min="0" max="1000" step="1" oninput="this.value = Math.abs(this.value)">
+                </div>
+                <div class="col-sm-4">
+                    <small id="f-name-help" class="form-text text-muted">
+                        Możesz określić powierzchnie nieruchomości. Podając wartości np. od 25 do 45, znajdziemy takie, których powierzchnia mieści się w tym zakresie.
+                    </small>
+                </div>
+            </div>
 
-            </form>
+            <div class="form-group row">
+                <label for="f-price" class="col-sm-2 col-form-label">Cena [zł]</label>
+                <div class="col-sm-3">
+                    <input type="number" value="@Model.FilterViewModel.PriceFrom" class="form-control" id="f-a-price-from" name="pricefrom" placeholder="od" min="0" max="100000000" step="100" oninput="this.value = Math.abs(this.value)">
+                </div>
+                <div class="col-sm-3">
+                    <input type="number" value="@Model.FilterViewModel.PriceTo" class="form-control" id="f-a-price-to" name="priceto" placeholder="do" min="0" max="100000000" step="100" oninput="this.value = Math.abs(this.value)">
+                </div>
+                <div class="col-sm-4">
+                    <small id="f-name-help" class="form-text text-muted">
+                        Możesz określić cenę nieruchomości. Podając wartości np. od 150000 do 300000, znajdziemy nieruchomości, których cena mieści się w tym zakresie.
+                    </small>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="f-ppm" class="col-sm-2 col-form-label">Cena za m<sup>2</sup></label>
+                <div class="col-sm-3">
+                    <input type="number" value="@Model.FilterViewModel.PpmFrom" class="form-control" id="f-a-ppm-from" name="ppmfrom" placeholder="od" min="0" max="100000" step="10" oninput="this.value = Math.abs(this.value)">
+                </div>
+                <div class="col-sm-3">
+                    <input type="number" value="@Model.FilterViewModel.PpmTo" class="form-control" id="f-a-ppm-to" name="ppmto" placeholder="do" min="0" max="100000" step="10" oninput="this.value = Math.abs(this.value)">
+                </div>
+                <div class="col-sm-4">
+                    <small id="f-name-help" class="form-text text-muted">
+                        Możesz określić cenę za m<sup>2</sup> nieruchomości. Podając wartości np. od 2500 do 4500, znajdziemy nieruchomości, których cena za m<sup>2</sup> mieści się w tym zakresie.
+                    </small>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="f-ppm" class="col-sm-2 col-form-label col-form-label-sm">Ogłoszenie powinno zawierać</label>
+                <div class="col-sm-6">
+                    <input type="text" value="@Model.FilterViewModel.ShouldContain" class="form-control form-control-sm" id="f-a-keywords-shouldcontain" name="shouldcontain">
+                </div>
+                <div class="col-sm-4">
+                    <small id="f-name-help" class="form-text text-muted">
+                        Możesz określić jakie zwroty, słowa kluczowe <strong>powinny</strong> się znaleźć w treści ogłoszenia. Szukasz mieszkania do remontu? Wpisz np. <strong>do remontu</strong> i naciśnij <i>Enter</i>.
+                    </small>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="f-ppm" class="col-sm-2 col-form-label col-form-label-sm">Ogłoszenie nie powinno zawierać</label>
+                <div class="col-sm-6">
+                    <input type="text" value="@Model.FilterViewModel.ShouldNotContain" class="form-control form-control-sm" id="f-a-keywords-shouldnotcontain" name="shouldnotcontain">
+                </div>
+                <div class="col-sm-4">
+                    <small id="f-name-help" class="form-text text-muted">
+                        Możesz określić jakie zwroty, słowa kluczowe <strong>nie powinny</strong> się znaleźć w treści ogłoszenia. Unikasz nowych mieszkań? Wpisz np. <strong>od dewelopera</strong> i naciśnij <i>Enter</i>.
+                    </small>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="f-ppm" class="col-sm-2 col-form-label col-form-label-sm">Ogłoszenia agencyjne</label>
+                <div class="col-sm-6">
+                    <select class="custom-select" id="f-a-allowfromagency" name="allowfromagency" required></select>
+                    <div class="valid-feedback">OK.</div>
+                    <div class="invalid-feedback">Pole obowiązkowe.</div>
+                </div>
+                <div class="col-sm-4">
+                    <small id="f-name-help" class="form-text text-muted">
+                        Jeśli chcesz dostawać informacje o ogłoszeniach dodanych przez <strong>agencje</strong> wybierz <i>Tak</i>, jeśli <i>Nie</i> dostawać będziesz jedynie ogłoszenia od <strong>osób prywatnych</strong>.
+                    </small>
+                </div>
+            </div>
+
+            <input type="hidden" id="f-filterid" value="@Model.Id" class="form-control" name="filterid">
+            <input type="hidden" id="f-guid" value="@Model.Guid" class="form-control" name="userguid">
+            <input type="hidden" id="f-userid" value="@Model.FilterViewModel.UserId" class="form-control" name="userid">
+
+            <div class="btn-group offset-sm-2" role="group">
+                <button type="submit" class="btn btn-primary" id="btn-f-create">Zapisz filtr</button>
+                <button type="button" class="btn btn-secondary" onclick="javascript:window.history.back();">Anuluj</button>
+            </div>
+
+        </form>
         }
         else
         {
@@ -207,6 +221,11 @@
                 url: '/notificationtypes',
                 cntAdd: '#f-a-notification',
                 selectedNotification: @Model.FilterViewModel.Notification
+            });
+
+            APP.home.yesOrNo({
+                cntAdd: '#f-a-allowfromagency',
+                selected: @Model.FilterViewModel.AllowFromAgency
             });
 
             $('#f-a-keywords-shouldcontain').tokenfield({

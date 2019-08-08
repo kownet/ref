@@ -19,5 +19,6 @@
         public int UserId { get; set; }
         public int FilterId { get; set; }
         public int CityHasDistricts { get; set; }
+        public int AllowFromAgency { get; set; }
     }
 }

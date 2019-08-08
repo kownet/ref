@@ -45,6 +45,17 @@
             return info;
         }
 
+        function parseProperty(property) {
+
+            if (property === 0) {
+                return "- mieszkania";
+            }
+
+            if (property === 1) {
+                return "- domy";
+            }
+        }
+
         var params = JSON.stringify({ userId: opts.userId });
 
         $.ajax({
@@ -82,8 +93,12 @@
                                 ? item.city
                                 : item.city + "<br>" + "<small>(" + item.district + ")</small>";
 
+                            var property = parseProperty(item.property);
+
+                            var allOrPrivate = item.allowFromAgency ? "<small class=\"text-primary\">wszystkie ogłoszenia " + property + "</small>" : "<small class=\"text-warning\">ogłoszenia prywatne " + property + "</small>";
+
                             var rows = "<tr>" +
-                                "<td>" + item.name + "<br><small>ostatnie powiadomienie: " + item.lastCheckedAtFormatted + "</small>" + "</td>" +
+                                "<td>" + item.name + "<br>" + allOrPrivate + "<br><small>ostatnie powiadomienie: " + item.lastCheckedAtFormatted + "</small>" + "</td>" +
                                 "<td class=\"d-none d-sm-table-cell\">" + city + "</td>" +
                                 faInfo +
                                 pInfo +
