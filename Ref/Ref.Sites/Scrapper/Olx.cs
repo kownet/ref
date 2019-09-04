@@ -25,9 +25,9 @@ namespace Ref.Sites.Scrapper
         {
         }
 
-        public ScrappResponse Scrapp(City city, DealType dealType, District district)
+        public ScrappResponse Scrapp(UserSubscriptionFilter userSubscriptionFilter)
         {
-            var searchQuery = QueryStringProvider(SiteType.Olx).Get(city, dealType, district);
+            var searchQuery = QueryStringProvider(SiteType.Olx).Get(userSubscriptionFilter);
 
             var scrap = ScrapThis(searchQuery);
 
@@ -70,12 +70,19 @@ namespace Ref.Sites.Scrapper
             var result = Crawl(pages, searchQuery, doc);
 
             result.Change(o => o.Site = SiteType.Olx);
-            result.Change(o => o.Deal = dealType);
-            result.Change(o => o.CityId = city.Id);
+            result.Change(o => o.Deal = userSubscriptionFilter.Deal);
+            result.Change(o => o.CityId = userSubscriptionFilter.CityId);
+            result.Change(o => o.Property = userSubscriptionFilter.Property);
 
-            if (!(district is null))
+            if (userSubscriptionFilter.AllowPrivate && !userSubscriptionFilter.AllowFromAgency)
             {
-                result.Change(o => o.DistrictId = district.Id);
+                result.Change(o => o.IsFromPrivate = userSubscriptionFilter.AllowPrivate);
+                result.Change(o => o.IsFromAgency = userSubscriptionFilter.AllowFromAgency);
+            }
+
+            if (!(userSubscriptionFilter.DistrictId is null))
+            {
+                result.Change(o => o.DistrictId = userSubscriptionFilter.DistrictId);
             }
 
             return new ScrappResponse
@@ -144,72 +151,6 @@ namespace Ref.Sites.Scrapper
             }
 
             return result;
-        }
-
-        public ScrappResponse Scrapp(UserSubscriptionFilter userSubscriptionFilter)
-        {
-            var searchQuery = QueryStringProvider(SiteType.Olx).Get(userSubscriptionFilter);
-
-            var scrap = ScrapThis(searchQuery);
-
-            if (!scrap.Succeed)
-            {
-                return new ScrappResponse
-                {
-                    Offers = new List<Offer>(),
-                    ExceptionAccured = scrap.ExceptionAccured,
-                    ExceptionMessage = scrap.ExceptionMessage
-                };
-            }
-
-            HtmlNode doc = scrap.HtmlNode;
-
-            var noResult = doc.CssSelect(".emptynew ").FirstOrDefault();
-
-            if (noResult != null)
-            {
-                return new ScrappResponse
-                {
-                    Offers = new List<Offer>(),
-                    ThereAreNoRecords = true
-                };
-            }
-
-            var banned = doc.CssSelect(".message").FirstOrDefault();
-
-            if (banned != null)
-            {
-                return new ScrappResponse
-                {
-                    Offers = new List<Offer>(),
-                    WeAreBanned = true
-                };
-            }
-
-            int pages = PageProvider(SiteType.Olx).Get(doc);
-
-            var result = Crawl(pages, searchQuery, doc);
-
-            result.Change(o => o.Site = SiteType.Olx);
-            result.Change(o => o.Deal = userSubscriptionFilter.Deal);
-            result.Change(o => o.CityId = userSubscriptionFilter.CityId);
-            result.Change(o => o.Property = userSubscriptionFilter.Property);
-
-            if (userSubscriptionFilter.AllowPrivate && !userSubscriptionFilter.AllowFromAgency)
-            {
-                result.Change(o => o.IsFromPrivate = userSubscriptionFilter.AllowPrivate);
-                result.Change(o => o.IsFromAgency = userSubscriptionFilter.AllowFromAgency);
-            }
-
-            if (!(userSubscriptionFilter.DistrictId is null))
-            {
-                result.Change(o => o.DistrictId = userSubscriptionFilter.DistrictId);
-            }
-
-            return new ScrappResponse
-            {
-                Offers = result
-            };
         }
 
         #region Private

@@ -97,8 +97,11 @@ namespace Ref.Scrapper.Core
                                         if (!string.IsNullOrWhiteSpace(result.Abstract))
                                             offer.Abstract = result.Abstract;
 
-                                        offer.IsFromPrivate = result.IsFromPrivate;
-                                        offer.IsFromAgency = result.IsFromAgency;
+                                        if(site.Type == SiteType.Gratka || site.Type == SiteType.Gumtree)
+                                        {
+                                            offer.IsFromAgency = result.IsFromAgency;
+                                            offer.IsFromPrivate = result.IsFromPrivate;
+                                        }
 
                                         await _offerRepository.UpdateAsync(offer);
                                     }

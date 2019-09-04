@@ -26,54 +26,6 @@ namespace Ref.Sites.Scrapper
         {
         }
 
-        public ScrappResponse Scrapp(City city, DealType dealType, District district)
-        {
-            var searchQuery = QueryStringProvider(SiteType.DomiPorta).Get(city, dealType, district);
-
-            var scrap = ScrapThis(searchQuery);
-
-            if (!scrap.Succeed)
-            {
-                return new ScrappResponse
-                {
-                    Offers = new List<Offer>(),
-                    ExceptionAccured = scrap.ExceptionAccured,
-                    ExceptionMessage = scrap.ExceptionMessage
-                };
-            }
-
-            HtmlNode doc = scrap.HtmlNode;
-
-            var noResult = doc.CssSelect(".alert__title ").FirstOrDefault();
-
-            if (noResult != null)
-            {
-                return new ScrappResponse
-                {
-                    Offers = new List<Offer>(),
-                    ThereAreNoRecords = false
-                };
-            }
-
-            int pages = PageProvider(SiteType.DomiPorta).Get(doc);
-
-            var result = Crawl(pages, searchQuery, doc);
-
-            result.Change(o => o.Site = SiteType.DomiPorta);
-            result.Change(o => o.Deal = dealType);
-            result.Change(o => o.CityId = city.Id);
-
-            if (!(district is null))
-            {
-                result.Change(o => o.DistrictId = district.Id);
-            }
-
-            return new ScrappResponse
-            {
-                Offers = result
-            };
-        }
-
         private List<Offer> Crawl(int pages, string searchQuery, HtmlNode doc)
         {
             var result = new List<Offer>();

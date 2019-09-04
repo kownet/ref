@@ -25,54 +25,6 @@ namespace Ref.Sites.Scrapper
         {
         }
 
-        public ScrappResponse Scrapp(City city, DealType dealType, District district)
-        {
-            var searchQuery = QueryStringProvider(SiteType.OtoDom).Get(city, dealType, district);
-
-            var scrap = ScrapThis(searchQuery);
-
-            if (!scrap.Succeed)
-            {
-                return new ScrappResponse
-                {
-                    Offers = new List<Offer>(),
-                    ExceptionAccured = scrap.ExceptionAccured,
-                    ExceptionMessage = scrap.ExceptionMessage
-                };
-            }
-
-            HtmlNode doc = scrap.HtmlNode;
-
-            var noResult = doc.CssSelect(".search-location-extended-warning").FirstOrDefault();
-
-            if (!(noResult is null))
-            {
-                return new ScrappResponse
-                {
-                    Offers = new List<Offer>(),
-                    ThereAreNoRecords = true
-                };
-            }
-
-            int pages = PageProvider(SiteType.OtoDom).Get(doc);
-
-            var result = Crawl(pages, searchQuery, doc);
-
-            result.Change(o => o.Site = SiteType.OtoDom);
-            result.Change(o => o.Deal = dealType);
-            result.Change(o => o.CityId = city.Id);
-
-            if (!(district is null))
-            {
-                result.Change(o => o.DistrictId = district.Id);
-            }
-
-            return new ScrappResponse
-            {
-                Offers = result
-            };
-        }
-
         public ScrappResponse Scrapp(UserSubscriptionFilter userSubscriptionFilter)
         {
             var searchQuery = QueryStringProvider(SiteType.OtoDom).Get(userSubscriptionFilter);
@@ -219,11 +171,11 @@ namespace Ref.Sites.Scrapper
                                 {
                                     var privOrAgencyStr = privOrAgency.InnerText;
 
-                                    if(!string.IsNullOrWhiteSpace(privOrAgencyStr))
+                                    if (!string.IsNullOrWhiteSpace(privOrAgencyStr))
                                     {
                                         privOrAgencyStr = privOrAgencyStr.Trim();
 
-                                        if(string.Equals("Oferta prywatna", privOrAgencyStr))
+                                        if (string.Equals("Oferta prywatna", privOrAgencyStr))
                                         {
                                             ad.IsFromPrivate = true;
                                             ad.IsFromAgency = false;

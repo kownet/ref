@@ -38,7 +38,19 @@ namespace Ref.Sites.Scrapper.Single
             {
                 if (!string.IsNullOrWhiteSpace(content.InnerText.Trim()))
                 {
-                    result.Content = content.InnerText.Replace("Opis", "");
+                    var par = content.CssSelect("p");
+
+                    string parCont = string.Empty;
+
+                    if(par.AnyAndNotNull())
+                    {
+                        foreach (var p in par)
+                        {
+                            parCont += p.InnerText.Trim();
+                        }
+                    }
+
+                    result.Content = parCont.Replace("Opis", "");
                 }
             }
 

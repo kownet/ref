@@ -26,63 +26,6 @@ namespace Ref.Sites.Scrapper
         {
         }
 
-        public ScrappResponse Scrapp(City city, DealType dealType, District district)
-        {
-            var searchQuery = QueryStringProvider(SiteType.Morizon).Get(city, dealType, district);
-
-            var scrap = ScrapThis(searchQuery);
-
-            if (!scrap.Succeed)
-            {
-                return new ScrappResponse
-                {
-                    Offers = new List<Offer>(),
-                    ExceptionAccured = scrap.ExceptionAccured,
-                    ExceptionMessage = scrap.ExceptionMessage
-                };
-            }
-
-            HtmlNode doc = scrap.HtmlNode;
-
-            if (doc.InnerHtml.Contains("Ta strona została zablokowana."))
-            {
-                return new ScrappResponse
-                {
-                    Offers = new List<Offer>(),
-                    WeAreBanned = true
-                };
-            }
-
-            var noResult = doc.CssSelect(".message-title").FirstOrDefault();
-
-            if (noResult != null)
-            {
-                return new ScrappResponse
-                {
-                    Offers = new List<Offer>(),
-                    ThereAreNoRecords = true
-                };
-            }
-
-            int pages = PageProvider(SiteType.Morizon).Get(doc);
-
-            var result = Crawl(pages, searchQuery, doc);
-
-            result.Change(o => o.Site = SiteType.Morizon);
-            result.Change(o => o.Deal = dealType);
-            result.Change(o => o.CityId = city.Id);
-
-            if (!(district is null))
-            {
-                result.Change(o => o.DistrictId = district.Id);
-            }
-
-            return new ScrappResponse
-            {
-                Offers = result
-            };
-        }
-
         public ScrappResponse Scrapp(UserSubscriptionFilter userSubscriptionFilter)
         {
             var searchQuery = QueryStringProvider(SiteType.Morizon).Get(userSubscriptionFilter);

@@ -25,61 +25,6 @@ namespace Ref.Sites.Scrapper
         {
         }
 
-        public ScrappResponse Scrapp(City city, DealType dealType, District district)
-        {
-            if (dealType == DealType.Rent)
-            {
-                return new ScrappResponse
-                {
-                    Offers = new List<Offer>(),
-                    ThereAreNoRecords = true
-                };
-            }
-
-            var searchQuery = QueryStringProvider(SiteType.Adresowo).Get(city, dealType, district);
-
-            var scrap = ScrapThis($"{searchQuery}od");
-
-            if (!scrap.Succeed)
-            {
-                return new ScrappResponse
-                {
-                    Offers = new List<Offer>(),
-                    ExceptionAccured = scrap.ExceptionAccured,
-                    ExceptionMessage = scrap.ExceptionMessage
-                };
-            }
-
-            HtmlNode doc = scrap.HtmlNode;
-
-            if (doc.InnerHtml.Contains("jest pusta"))
-            {
-                return new ScrappResponse
-                {
-                    Offers = new List<Offer>(),
-                    ThereAreNoRecords = true
-                };
-            }
-
-            int pages = PageProvider(SiteType.Adresowo).Get(doc);
-
-            var result = Crawl(pages, searchQuery, doc);
-
-            result.Change(o => o.Site = SiteType.Adresowo);
-            result.Change(o => o.Deal = dealType);
-            result.Change(o => o.CityId = city.Id);
-
-            if (!(district is null))
-            {
-                result.Change(o => o.DistrictId = district.Id);
-            }
-
-            return new ScrappResponse
-            {
-                Offers = result
-            };
-        }
-
         private List<Offer> Crawl(int pages, string searchQuery, HtmlNode doc)
         {
             var result = new List<Offer>();
@@ -172,7 +117,7 @@ namespace Ref.Sites.Scrapper
                                     }
                                 }
 
-                                if(ad.Area == 0)
+                                if (ad.Area == 0)
                                 {
                                     area = article.CssSelect(".result-info__basic").FirstOrDefault();
 
