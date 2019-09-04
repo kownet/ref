@@ -57,54 +57,57 @@ namespace Ref.Sites.Scrapper.Single
                             var name = li.CssSelect(".name").FirstOrDefault();
                             var val = li.CssSelect(".value").FirstOrDefault();
 
-                            if (!string.IsNullOrWhiteSpace(name.InnerText))
+                            if (!(name is null) && !(val is null))
                             {
-                                if (name.InnerText.Contains("Wielkość (m2)"))
+                                if (!string.IsNullOrWhiteSpace(name.InnerText))
                                 {
-                                    var vali = val.InnerText;
-
-                                    if (!string.IsNullOrWhiteSpace(vali))
+                                    if (name.InnerText.Contains("Wielkość (m2)"))
                                     {
-                                        if (int.TryParse(Regex.Replace(vali, regex, string.Empty).Trim(), out int a))
+                                        var vali = val.InnerText;
+
+                                        if (!string.IsNullOrWhiteSpace(vali))
                                         {
-                                            result.Area = a;
+                                            if (int.TryParse(Regex.Replace(vali, regex, string.Empty).Trim(), out int a))
+                                            {
+                                                result.Area = a;
+                                            }
                                         }
                                     }
-                                }
 
-                                if (name.InnerText.Contains("Liczba pokoi"))
-                                {
-                                    var vali = val.InnerText;
-
-                                    if (!string.IsNullOrWhiteSpace(vali))
+                                    if (name.InnerText.Contains("Liczba pokoi"))
                                     {
-                                        if (vali.ToLower().Contains("kawalerka") || vali.ToLower().Contains("garsoniera"))
+                                        var vali = val.InnerText;
+
+                                        if (!string.IsNullOrWhiteSpace(vali))
                                         {
-                                            result.Rooms = 1;
-                                        }
-                                        if (int.TryParse(Regex.Replace(vali, regex, string.Empty).Trim(), out int r))
-                                        {
-                                            result.Rooms = r;
+                                            if (vali.ToLower().Contains("kawalerka") || vali.ToLower().Contains("garsoniera"))
+                                            {
+                                                result.Rooms = 1;
+                                            }
+                                            if (int.TryParse(Regex.Replace(vali, regex, string.Empty).Trim(), out int r))
+                                            {
+                                                result.Rooms = r;
+                                            }
                                         }
                                     }
-                                }
 
-                                if (name.InnerText.Contains("Na sprzedaż przez"))
-                                {
-                                    var vali = val.InnerText;
-
-                                    if (!string.IsNullOrWhiteSpace(vali))
+                                    if (name.InnerText.Contains("Na sprzedaż przez"))
                                     {
-                                        if (string.Equals("Agencja", vali))
-                                        {
-                                            result.IsFromAgency = true;
-                                            result.IsFromPrivate = false;
-                                        }
+                                        var vali = val.InnerText;
 
-                                        if (string.Equals("Właściciel", vali))
+                                        if (!string.IsNullOrWhiteSpace(vali))
                                         {
-                                            result.IsFromAgency = false;
-                                            result.IsFromPrivate = true;
+                                            if (string.Equals("Agencja", vali))
+                                            {
+                                                result.IsFromAgency = true;
+                                                result.IsFromPrivate = false;
+                                            }
+
+                                            if (string.Equals("Właściciel", vali))
+                                            {
+                                                result.IsFromAgency = false;
+                                                result.IsFromPrivate = true;
+                                            }
                                         }
                                     }
                                 }
